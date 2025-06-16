@@ -6,8 +6,11 @@ import { products as allProducts } from '@/lib/placeholder-data'; // For stock c
 import Stripe from 'stripe';
 
 // Ensure your Stripe secret key is set in your environment variables
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY is not set in environment variables.');
+}
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20', // Use the latest API version
+  apiVersion: '2024-06-20', 
 });
 
 const ShippingDetailsSchema = z.object({
@@ -17,21 +20,21 @@ const ShippingDetailsSchema = z.object({
   state: z.string().min(1, "Departamento es requerido."),
   zipCode: z.string().optional(),
   country: z.string().min(1, "País es requerido."),
-  phone: z.string().optional(),
+  phone: z.string().email("Se requiere un correo electrónico válido para el cliente."), // Changed to required email
 });
 
 const CartItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   quantity: z.number().min(1),
-  price: z.number(), // Price in COP (smallest currency unit, e.g., cents for USD, or base unit for COP)
+  price: z.number(), 
   stock: z.number(), 
-  imageUrls: z.array(z.string()).optional(), // For Stripe line items
+  imageUrls: z.array(z.string()).optional(),
 });
 
 const PlaceOrderInputSchema = z.object({
   shippingDetails: ShippingDetailsSchema,
-  paymentMethod: z.enum(["creditCard", "pse", "cash", "crypto"]), // Note: Stripe handles specific methods on its page
+  paymentMethod: z.enum(["creditCard", "pse", "cash", "crypto"]), 
   cartItems: z.array(CartItemSchema),
 });
 
@@ -42,8 +45,20 @@ export async function placeOrder(
 ): Promise<{ success: boolean; message?: string; sessionId?: string }> {
   console.log("Place Order Action - Input received for Stripe:", JSON.stringify(input, null, 2));
 
+  const validationResult = PlaceOrderInputSchema.safeParse(input);
+  if (!validationResult.success) {
+    console.error("Server-side validation failed:", validationResult.error.flatten().fieldErrors);
+    return { 
+        success: false, 
+        message: `Error de validación del servidor: ${validationResult.error.errors.map(e => `${e.path.join('.')} - ${e.message}`).join(', ')}`
+    };
+  }
+  
+  const validatedInput = validationResult.data;
+
+
   // 1. Validate Stock
-  for (const item of input.cartItems) {
+  for (const item of validatedInput.cartItems) {
     const productInDb = allProducts.find(p => p.id === item.id); 
     if (!productInDb) {
       return { success: false, message: `El producto "${item.name}" ya no está disponible.` };
@@ -57,57 +72,41 @@ export async function placeOrder(
   }
 
   const appUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:9002';
+  if (!process.env.NEXT_PUBLIC_APP_URL) {
+    console.warn("NEXT_PUBLIC_APP_URL is not set. Defaulting to http://localhost:9002 for redirect URLs.");
+  }
 
-  const line_items = input.cartItems.map(item => ({
-    price_data: {
-      currency: 'cop', // Colombian Pesos
-      product_data: {
-        name: item.name,
-        images: item.imageUrls && item.imageUrls.length > 0 ? [item.imageUrls[0]] : [], // Stripe uses a list of image URLs
-      },
-      unit_amount: item.price * 100, // Stripe expects amount in the smallest currency unit (centavos for COP).
-                                     // If your price is already in centavos, remove *100.
-                                     // For COP, which doesn't typically use centavos in this way, ensure item.price is the full amount.
-                                     // Stripe treats COP as a zero-decimal currency, so price * 100 might be incorrect.
-                                     // Let's assume item.price is in full COP pesos. Stripe will handle it.
-                                     // For zero-decimal currencies, Stripe expects the amount as is.
-    },
-    quantity: item.quantity,
-  }));
+
+  const line_items = validatedInput.cartItems.map(item => {
+    let imageUrl = 'https://placehold.co/100x100.png'; // Default placeholder
+    if (item.imageUrls && item.imageUrls.length > 0) {
+        imageUrl = item.imageUrls[0].startsWith('http') ? item.imageUrls[0] : `${appUrl}${item.imageUrls[0]}`;
+    }
+
+    return {
+        price_data: {
+            currency: 'cop',
+            product_data: {
+                name: item.name,
+                images: [imageUrl],
+            },
+            unit_amount: item.price, // Stripe handles COP as a zero-decimal currency.
+        },
+        quantity: item.quantity,
+    }
+  });
   
-  // Adjust unit_amount for COP: Stripe treats COP as a zero-decimal currency.
-  // So, if item.price is 4500000 for 4,500,000 COP, it should be sent as 4500000.
-  // The `* 100` is generally for currencies like USD where $1.00 = 100 cents.
-  // Let's correct this for COP.
-  const corrected_line_items = input.cartItems.map(item => ({
-    price_data: {
-      currency: 'cop',
-      product_data: {
-        name: item.name,
-        images: item.imageUrls && item.imageUrls.length > 0 ? [item.imageUrls[0].startsWith('http') ? item.imageUrls[0] : `${appUrl}${item.imageUrls[0]}`] : [],
-      },
-      unit_amount: item.price, // Pass the COP amount directly
-    },
-    quantity: item.quantity,
-  }));
-
-
   try {
-    // Create a Stripe Checkout Session
     const session = await stripe.checkout.sessions.create({
-      payment_method_types: ['card'], // Add other payment methods supported by Stripe in CO if needed
-      line_items: corrected_line_items,
+      payment_method_types: ['card'], 
+      line_items: line_items,
       mode: 'payment',
       success_url: `${appUrl}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${appUrl}/order/cancel`,
       shipping_address_collection: {
-        allowed_countries: ['CO'], // Restrict to Colombia for now
+        allowed_countries: ['CO'], 
       },
-       // Stripe will collect shipping information if not provided this way.
-       // Or you can pass customer_email and shipping details if already collected.
-      customer_email: input.shippingDetails.phone, // Example: using phone for email if that's what users provide, or get email
-      // For pre-filling shipping, you'd use 'shipping_options' or pass 'customer' with address.
-      // Simpler to let Stripe collect it if not fully integrating that part yet.
+      customer_email: validatedInput.shippingDetails.phone, // Using the validated email
     });
 
     if (!session.id) {
@@ -124,3 +123,4 @@ export async function placeOrder(
     return { success: false, message: `Error de Stripe: ${error.message}` };
   }
 }
+

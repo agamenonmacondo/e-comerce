@@ -9,7 +9,7 @@ export default function Footer() {
           <div>
             <Link href="/" className="flex items-center space-x-2 mb-4">
               <BriefcaseBusiness className="h-7 w-7 text-primary" />
-              <span className="font-bold text-2xl font-headline">iCommerce</span>
+              <span className="font-bold text-2xl font-headline">Giga Go</span>
             </Link>
             <p className="text-muted-foreground text-sm">
               Tu tienda única para lo último en tecnología y accesorios.
@@ -36,7 +36,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-border/40 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} iCommerce. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} Giga Go. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

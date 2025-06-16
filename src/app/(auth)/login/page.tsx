@@ -10,7 +10,7 @@ export default function LoginPage() {
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
             <BriefcaseBusiness className="h-8 w-8 text-primary" />
-            <span className="font-bold text-3xl font-headline">iCommerce</span>
+            <span className="font-bold text-3xl font-headline">Giga Go</span>
           </Link>
           <h2 className="text-2xl font-semibold text-foreground">¡Bienvenido de Nuevo!</h2>
           <p className="text-muted-foreground">Inicia sesión para continuar a tu cuenta.</p>

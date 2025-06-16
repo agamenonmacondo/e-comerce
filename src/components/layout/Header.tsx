@@ -11,7 +11,7 @@ export default function Header() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <Link href="/" className="mr-6 flex items-center space-x-2">
           <BriefcaseBusiness className="h-6 w-6 text-primary" />
-          <span className="font-bold text-xl font-headline">iCommerce</span>
+          <span className="font-bold text-xl font-headline">Giga Go</span>
         </Link>
         <nav className="flex flex-1 items-center space-x-6 text-sm font-medium">
           <Link href="/" className="text-foreground/70 transition-colors hover:text-foreground">

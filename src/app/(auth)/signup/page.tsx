@@ -10,10 +10,10 @@ export default function SignupPage() {
         <div className="text-center mb-8">
            <Link href="/" className="inline-flex items-center space-x-2 mb-4">
             <BriefcaseBusiness className="h-8 w-8 text-primary" />
-            <span className="font-bold text-3xl font-headline">iCommerce</span>
+            <span className="font-bold text-3xl font-headline">Giga Go</span>
           </Link>
           <h2 className="text-2xl font-semibold text-foreground">Crear una Cuenta</h2>
-          <p className="text-muted-foreground">Únete a iCommerce hoy para empezar.</p>
+          <p className="text-muted-foreground">Únete a Giga Go hoy para empezar.</p>
         </div>
         <SignupForm />
         <p className="mt-6 text-center text-sm text-muted-foreground">

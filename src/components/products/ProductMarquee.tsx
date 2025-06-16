@@ -41,18 +41,18 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
             {marqueeProducts.map((product, index) => (
               <div
                 key={`${product.id}-${index}`}
-                className="marquee-item mx-4 w-64 md:w-72 flex-shrink-0 transform transition-all duration-300 hover:scale-105 hover:z-10 group"
+                className="marquee-item mx-4 w-72 md:w-80 flex-shrink-0 transform transition-all duration-300 hover:scale-105 hover:z-10 group"
               >
                 <Link
                   href={`/products/${product.id}`}
-                  className="block relative h-80 w-full rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card"
+                  className="block relative h-96 w-full rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 bg-card"
                   aria-label={`Ver ${product.name}`}
                 >
                   <Image
                     src={product.images[0]}
                     alt={product.name}
                     fill
-                    sizes="(max-width: 768px) 256px, 288px"
+                    sizes="(max-width: 768px) 288px, 320px"
                     className="object-cover transition-opacity duration-300 group-hover:opacity-30"
                     data-ai-hint={getImageHint(product)}
                   />
@@ -72,3 +72,4 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
     </section>
   );
 }
+

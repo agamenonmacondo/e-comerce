@@ -15,12 +15,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
-        <link href="https://fonts.googleapis.com/css2?family=Source+Code+Pro:wght@400;500&display=swap" rel="stylesheet" />
-      </head>
+      {/* The <head> section with direct font links has been removed.
+          Next.js will generate the <head> based on the metadata object.
+          Fonts should be re-added using next/font if this fixes the issue. */}
       <body className="font-body antialiased">
         <ThemeProvider
           attribute="class"

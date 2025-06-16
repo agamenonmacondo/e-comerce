@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -12,24 +13,23 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CreditCard, LogOut, Settings, User, UserCircle, ShoppingBag } from 'lucide-react'; // ShoppingBag instead of CreditCard for Orders
+import { LogOut, Settings, User, UserCircle, ShoppingBag, LayoutDashboard } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 export default function UserNav() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null); // Added userEmail state
+  const [userEmail, setUserEmail] = useState<string | null>(null); 
   const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
 
   useEffect(() => {
     // Simulate a logged-in user for demonstration. 
     // In a real app, this would check auth status.
-    // To test logged out state, comment out the setIsAuthenticated(true) block.
     const timer = setTimeout(() => {
-      // setIsAuthenticated(true);
-      // setUserName("Usuario Demo");
-      // setUserEmail("usuario@example.com");
-      // setUserAvatar("https://placehold.co/40x40.png?text=UD");
+      setIsAuthenticated(true);
+      setUserName("Usuario GigaGO");
+      setUserEmail("usuario@gigago.com");
+      setUserAvatar("https://placehold.co/40x40.png?text=GG");
     }, 100); 
     return () => clearTimeout(timer);
   }, []);
@@ -50,7 +50,7 @@ export default function UserNav() {
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
             <AvatarImage src={userAvatar || undefined} alt={userName || "Usuario"} />
-            <AvatarFallback>{userName ? userName.charAt(0).toUpperCase() : <UserCircle/>}</AvatarFallback>
+            <AvatarFallback>{userName ? userName.substring(0, 2).toUpperCase() : <UserCircle/>}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
@@ -67,6 +67,12 @@ export default function UserNav() {
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
+          <DropdownMenuItem asChild>
+            <Link href="/dashboard">
+              <LayoutDashboard className="mr-2 h-4 w-4" />
+              <span>Panel de Control</span>
+            </Link>
+          </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/account">
               <User className="mr-2 h-4 w-4" />

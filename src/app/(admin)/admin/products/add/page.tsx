@@ -12,7 +12,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
 import { categories } from '@/lib/placeholder-data';
-import { PackagePlus, ChevronLeft } from 'lucide-react';
+import { PackagePlus, ChevronLeft, UploadCloud } from 'lucide-react';
 import Link from 'next/link';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
@@ -57,9 +57,6 @@ export default function AddProductPage() {
     const image1Name = data.imageUrl1?.[0]?.name || "Ninguna seleccionada";
     const image2Name = data.imageUrl2?.[0]?.name || "Ninguna seleccionada";
     
-    // En una aplicación real, aquí enviarías los datos al backend.
-    // Las imágenes (data.imageUrl1[0] y data.imageUrl2[0]) se subirían a un servicio de almacenamiento.
-
     toast({
       title: "Producto Añadido (Simulación)",
       description: `"${data.name}" ha sido añadido. Imagen principal: ${image1Name}. Imagen secundaria: ${image2Name}. (Esto es una simulación y el producto no se guardará permanentemente).`,
@@ -164,14 +161,16 @@ export default function AddProductPage() {
                 name="imageUrl1"
                 render={({ field: { onChange, value, ...rest } }) => (
                   <FormItem>
-                    <FormLabel>Imagen Principal</FormLabel>
+                    <FormLabel className="flex items-center">
+                      <UploadCloud className="mr-2 h-4 w-4 text-muted-foreground" />
+                      Imagen Principal
+                    </FormLabel>
                     <FormControl>
                       <Input 
                         type="file" 
                         accept={ACCEPTED_IMAGE_TYPES.join(',')}
                         onChange={(event) => onChange(event.target.files)} 
                         {...rest} 
-                        className="pt-2"
                       />
                     </FormControl>
                     <FormMessage />
@@ -183,14 +182,16 @@ export default function AddProductPage() {
                 name="imageUrl2"
                 render={({ field: { onChange, value, ...rest } }) => ( 
                   <FormItem>
-                    <FormLabel>Imagen Secundaria (Opcional)</FormLabel>
+                    <FormLabel className="flex items-center">
+                      <UploadCloud className="mr-2 h-4 w-4 text-muted-foreground" />
+                      Imagen Secundaria (Opcional)
+                    </FormLabel>
                      <FormControl>
                       <Input 
                         type="file" 
                         accept={ACCEPTED_IMAGE_TYPES.join(',')}
                         onChange={(event) => onChange(event.target.files)}
                         {...rest} 
-                        className="pt-2"
                       />
                     </FormControl>
                     <FormMessage />

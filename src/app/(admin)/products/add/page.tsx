@@ -23,7 +23,7 @@ const addProductFormSchema = z.object({
   categoryId: z.string({ required_error: "Debes seleccionar una categoría." }),
   imageUrl1: z.any()
     .refine((files: FileList | undefined) => files && files.length > 0, { message: "La imagen principal es requerida." })
-    .refine((files: FileList | undefined) => files && files[0]?.size <= 5 * 1024 * 1024, { message: "La imagen principal no debe exceder 5MB."}) // Example size validation
+    .refine((files: FileList | undefined) => files && files[0]?.size <= 5 * 1024 * 1024, { message: "La imagen principal no debe exceder 5MB."})
     .refine((files: FileList | undefined) => files && ['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(files[0]?.type), { message: "Tipo de archivo no soportado para la imagen principal."}),
   imageUrl2: z.any()
     .optional()
@@ -199,3 +199,5 @@ export default function AddProductPage() {
     </div>
   );
 }
+
+    

@@ -16,6 +16,7 @@ import Link from 'next/link';
 import Image from 'next/image'; 
 import { Label } from '@/components/ui/label'; 
 import { formatColombianCurrency } from '@/lib/utils';
+import { products as allProducts } from '@/lib/placeholder-data'; // Import allProducts for stock checking
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido"),
@@ -39,8 +40,31 @@ const paymentFormSchema = z.object({
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
+// Mocked cart items for summary, ideally this would come from a global state or context
+const mockCartItems = [
+  { id: allProducts[0].id, name: allProducts[0].name, quantity: 1, price: allProducts[0].price, stock: allProducts[0].stock },
+  { id: allProducts[4].id, name: allProducts[4].name, quantity: 1, price: allProducts[4].price, stock: allProducts[4].stock },
+];
+
+const calculateOrderSummary = () => {
+  const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const taxRate = 0.19;
+  const tax = subtotal * taxRate;
+  const shipping = subtotal > 200000 ? 0 : 15000;
+  const total = subtotal + tax + shipping;
+  return {
+    items: mockCartItems,
+    subtotal,
+    shipping,
+    tax,
+    total,
+  };
+};
+
+
 export default function CheckoutPage() {
   const { toast } = useToast();
+  const orderSummary = calculateOrderSummary(); // Use dynamic calculation
 
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
@@ -55,24 +79,61 @@ export default function CheckoutPage() {
 
   function onShippingSubmit(data: ShippingFormValues) {
     console.log("Datos de envío:", data);
+    // In a real app, save shipping details, then perhaps move to payment step
     toast({ title: "Detalles de Envío Guardados", description: "Procede al pago." });
   }
 
-  function onPaymentSubmit(data: PaymentFormValues) {
+  async function onPaymentSubmit(data: PaymentFormValues) {
     console.log("Datos de pago:", data);
-    toast({ title: "Pedido Enviado", description: "Procesando tu pedido (simulación). ¡Gracias por tu compra!" });
+
+    // Simulate stock check before processing payment
+    let canProceed = true;
+    let stockIssueMessage = "";
+
+    for (const item of orderSummary.items) {
+      const productInDb = allProducts.find(p => p.id === item.id);
+      if (!productInDb || productInDb.stock < item.quantity) {
+        canProceed = false;
+        stockIssueMessage = `El producto "${item.name}" ${!productInDb ? 'ya no está disponible' : 'no tiene suficiente stock (' + productInDb.stock + ' unidades disponibles)'}.`;
+        break;
+      }
+    }
+
+    if (!canProceed) {
+      toast({
+        title: "Problema con el Pedido",
+        description: stockIssueMessage + " Por favor, ajusta tu carrito.",
+        variant: "destructive",
+        duration: 7000,
+      });
+      return;
+    }
+    
+    // Simulate payment processing
+    await new Promise(resolve => setTimeout(resolve, 1500));
+
+    // Simulate stock reduction
+    let stockReductionLog = "Simulación de reducción de stock:\n";
+    orderSummary.items.forEach(item => {
+      const productInDb = allProducts.find(p => p.id === item.id);
+      if (productInDb) {
+        // In a real app, this would be a database transaction:
+        // productInDb.stock -= item.quantity;
+        stockReductionLog += `- ${item.name}: ${productInDb.stock} -> ${productInDb.stock - item.quantity}\n`;
+      }
+    });
+    console.log(stockReductionLog);
+
+
+    toast({ 
+      title: "Pedido Enviado (Simulación)", 
+      description: "¡Gracias por tu compra! El stock se reduciría aquí.",
+      duration: 5000,
+    });
+    // Here you would typically redirect to an order confirmation page
+    // router.push('/order-confirmation?orderId=mockOrderId');
   }
 
-  const orderSummary = {
-    subtotal: 1298000, 
-    shipping: 0,
-    tax: 246620, 
-    total: 1544620,
-    items: [
-      { name: 'iPhone 15 Pro', quantity: 1, price: 999000 },
-      { name: 'AirPods Pro (2da Gen)', quantity: 1, price: 299000 },
-    ]
-  };
 
   const handleCopyToClipboard = (text: string) => {
     if (navigator.clipboard) {
@@ -111,6 +172,11 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
                   <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                   {/* Removed Save Shipping Button - typically part of the final order submission
+                   <Button type="submit" className="transition-transform hover:scale-105 active:scale-95">
+                    <Save className="mr-2 h-4 w-4" /> Guardar Envío
+                  </Button> 
+                  */}
                 </form>
               </Form>
             </CardContent>
@@ -132,12 +198,20 @@ export default function CheckoutPage() {
                         <FormLabel className="text-base">Selecciona Método de Pago</FormLabel>
                         <FormControl>
                           <RadioGroup
-                            onValueChange={field.onChange}
+                            onValueChange={(value) => {
+                              field.onChange(value);
+                              // Reset card fields if not credit card
+                              if (value !== 'creditCard') {
+                                paymentForm.resetField("cardNumber");
+                                paymentForm.resetField("expiryDate");
+                                paymentForm.resetField("cvv");
+                              }
+                            }}
                             defaultValue={field.value}
                             className="grid grid-cols-1 md:grid-cols-2 gap-4"
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
-                              <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'creditCard' ? 'border-primary bg-primary/10' : ''}`}>
+                              <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'creditCard' ? 'border-primary bg-primary/10' : 'border-border'}`}>
                                 <FormControl>
                                   <RadioGroupItem value="creditCard" id="creditCard" className="sr-only"/>
                                 </FormControl>
@@ -147,7 +221,7 @@ export default function CheckoutPage() {
                               </Card>
                             </FormItem>
                              <FormItem className="flex items-center space-x-3 space-y-0">
-                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'pse' ? 'border-primary bg-primary/10' : ''}`}>
+                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'pse' ? 'border-primary bg-primary/10' : 'border-border'}`}>
                                 <FormControl>
                                   <RadioGroupItem value="pse" id="pse" className="sr-only"/>
                                 </FormControl>
@@ -158,7 +232,7 @@ export default function CheckoutPage() {
                                </Card>
                             </FormItem>
                              <FormItem className="flex items-center space-x-3 space-y-0">
-                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'cash' ? 'border-primary bg-primary/10' : ''}`}>
+                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'cash' ? 'border-primary bg-primary/10' : 'border-border'}`}>
                                 <FormControl>
                                   <RadioGroupItem value="cash" id="cash" className="sr-only"/>
                                 </FormControl>
@@ -169,7 +243,7 @@ export default function CheckoutPage() {
                                </Card>
                             </FormItem>
                             <FormItem className="flex items-center space-x-3 space-y-0">
-                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'crypto' ? 'border-primary bg-primary/10' : ''}`}>
+                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'crypto' ? 'border-primary bg-primary/10' : 'border-border'}`}>
                                 <FormControl>
                                   <RadioGroupItem value="crypto" id="crypto" className="sr-only"/>
                                 </FormControl>
@@ -188,6 +262,15 @@ export default function CheckoutPage() {
                       </FormItem>
                     )}
                   />
+                   {selectedPaymentMethod === 'creditCard' && (
+                     <div className="space-y-4">
+                        <FormField control={paymentForm.control} name="cardNumber" render={({ field }) => ( <FormItem> <FormLabel>Número de Tarjeta</FormLabel> <FormControl><Input placeholder="**** **** **** ****" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                        <div className="grid grid-cols-2 gap-4">
+                        <FormField control={paymentForm.control} name="expiryDate" render={({ field }) => ( <FormItem> <FormLabel>Fecha de Expiración</FormLabel> <FormControl><Input placeholder="MM/AA" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                        <FormField control={paymentForm.control} name="cvv" render={({ field }) => ( <FormItem> <FormLabel>CVV</FormLabel> <FormControl><Input placeholder="123" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                        </div>
+                     </div>
+                   )}
 
                   {selectedPaymentMethod === 'crypto' && (
                     <Card className="mt-6 bg-muted/20 border-primary/50 shadow-md">
@@ -238,7 +321,18 @@ export default function CheckoutPage() {
                     </Card>
                   )}
 
-                   <Button type="submit" size="lg" className="w-full text-base mt-8 transition-transform hover:scale-105 active:scale-95">
+                   <Button 
+                    type="submit" 
+                    size="lg" 
+                    className="w-full text-base mt-8 transition-transform hover:scale-105 active:scale-95"
+                    onClick={() => {
+                        // Trigger shipping form validation if not already submitted
+                        if(!shippingForm.formState.isValid && Object.keys(shippingForm.formState.errors).length > 0) {
+                             shippingForm.handleSubmit(onShippingSubmit)();
+                        }
+                    }}
+                    disabled={!shippingForm.formState.isValid}
+                    >
                     <Lock className="mr-2 h-5 w-5" /> {selectedPaymentMethod === 'crypto' ? 'Confirmar Transacción Crypto' : 'Realizar Pedido'}
                   </Button>
                 </form>

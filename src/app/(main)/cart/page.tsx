@@ -29,6 +29,24 @@ export default function CartPage() {
   }, []);
 
   const updateQuantity = (productId: string, newQuantity: number) => {
+    const productInStock = allProducts.find(p => p.id === productId);
+    if (!productInStock) return;
+
+    if (newQuantity > productInStock.stock) {
+      toast({
+        title: "Stock Insuficiente",
+        description: `Solo quedan ${productInStock.stock} unidades de ${productInStock.name}.`,
+        variant: "destructive",
+      });
+      // Set quantity to max available stock if user tries to exceed
+      setCartItems(currentItems =>
+        currentItems.map(item =>
+          item.id === productId ? { ...item, quantity: productInStock.stock } : item
+        ).filter(item => item.quantity > 0)
+      );
+      return;
+    }
+
     setCartItems(currentItems =>
       currentItems.map(item =>
         item.id === productId ? { ...item, quantity: Math.max(0, newQuantity) } : item

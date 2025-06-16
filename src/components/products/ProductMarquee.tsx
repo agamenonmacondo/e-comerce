@@ -26,7 +26,7 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
             {marqueeProducts.map((product, index) => (
               <div
                 key={`${product.id}-${index}`}
-                className="marquee-item mx-3 w-64 md:w-72 flex-shrink-0"
+                className="marquee-item mx-4 w-72 md:w-80 flex-shrink-0" // Increased width
               >
                 <Link
                   href={`/products/${product.id}`}
@@ -37,7 +37,7 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
                     src={product.images[0]}
                     alt={product.name}
                     fill
-                    sizes="(max-width: 768px) 256px, 288px"
+                    sizes="(max-width: 768px) 288px, 320px" // Adjusted sizes attribute
                     className="object-cover transition-transform duration-300 group-hover:scale-105"
                     data-ai-hint="product photo"
                   />

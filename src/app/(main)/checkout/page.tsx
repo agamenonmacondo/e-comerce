@@ -11,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { CreditCard, Home, Landmark, Lock, ShoppingCart, Copy, Phone } from 'lucide-react';
+import { CreditCard, Home, Landmark, Lock, ShoppingCart, Copy, Phone, DollarSign } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { Label } from '@/components/ui/label';
@@ -19,6 +19,7 @@ import { formatColombianCurrency } from '@/lib/utils';
 import { products as allProductsForSummary } from '@/lib/placeholder-data';
 import { placeOrder, type PlaceOrderInput } from '@/lib/actions/order.actions';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 
 
 const shippingFormSchema = z.object({
@@ -28,7 +29,7 @@ const shippingFormSchema = z.object({
   state: z.string().min(2, "El departamento es requerido"),
   zipCode: z.string().optional(),
   country: z.string().min(2, "El país es requerido"),
-  phone: z.string().optional(), // Changed back to optional phone
+  phone: z.string().optional(),
 });
 
 const paymentFormSchema = z.object({
@@ -40,6 +41,7 @@ const paymentFormSchema = z.object({
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
+// Simulating cart items - in a real app, this would come from a cart context or state management
 const mockCartItems = [
   { ...allProductsForSummary[0], quantity: 1, imageUrls: allProductsForSummary[0].imageUrls.slice(0,1) },
   { ...allProductsForSummary[4], quantity: 1, imageUrls: allProductsForSummary[4].imageUrls.slice(0,1) },
@@ -55,17 +57,17 @@ const mockCartItems = [
 
 const calculateOrderSummary = () => {
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19;
+  const taxRate = 0.19; // Example tax rate
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000;
+  const shipping = subtotal > 200000 ? 0 : 15000; // Example shipping cost
   const total = subtotal + tax + shipping;
   return {
-    items: mockCartItems.map(item => ({
+    items: mockCartItems.map(item => ({ // Ensure this matches CartItemSchema in order.actions
       id: item.id,
       name: item.name,
       quantity: item.quantity,
       price: item.price,
-      stock: item.stock,
+      stock: item.stock, // Include stock as per CartItemSchema in order.actions
       imageUrls: item.imageUrls,
     })),
     subtotal,
@@ -78,6 +80,7 @@ const calculateOrderSummary = () => {
 
 export default function CheckoutPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const orderSummary = calculateOrderSummary();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -88,7 +91,8 @@ export default function CheckoutPage() {
 
   const paymentForm = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
-    defaultValues: { paymentMethod: "creditCard" }
+    // Set a default value that is valid
+    defaultValues: { paymentMethod: "creditCard" } 
   });
 
   async function handleFinalSubmit() {
@@ -113,16 +117,22 @@ export default function CheckoutPage() {
 
     const orderInput: PlaceOrderInput = {
       shippingDetails: {
-        ...shippingData,
+        fullName: shippingData.fullName,
+        address: shippingData.address,
+        city: shippingData.city,
+        state: shippingData.state,
+        zipCode: shippingData.zipCode,
+        country: shippingData.country,
+        phone: shippingData.phone,
       },
       paymentMethod: paymentData.paymentMethod!,
-      cartItems: orderSummary.items.map(item => ({
+      cartItems: orderSummary.items.map(item => ({ // Ensure this structure matches the server action
         id: item.id,
         name: item.name,
         quantity: item.quantity,
         price: item.price,
-        stock: item.stock,
-        imageUrls: item.imageUrls,
+        stock: item.stock, // Make sure stock is included if expected by server
+        imageUrls: item.imageUrls || [],
       })),
     };
 
@@ -133,10 +143,10 @@ export default function CheckoutPage() {
             title: "Pedido Realizado (Simulación)",
             description: result.message || "Tu pedido simulado ha sido procesado.",
         });
-        // Optionally, reset forms or redirect to a generic confirmation page
-        // shippingForm.reset();
-        // paymentForm.reset();
-        // router.push('/order-confirmation'); 
+        // Reset forms or redirect
+        shippingForm.reset();
+        paymentForm.reset({paymentMethod: "creditCard"}); // Reset with default
+        router.push('/order/success'); 
     } else {
       toast({
         title: "Problema con el Pedido (Simulación)",
@@ -185,7 +195,7 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>Departamento</FormLabel> <FormControl><Input placeholder="Ej: Cundinamarca" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} defaultValue="Colombia" /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
             </CardContent>
@@ -293,7 +303,7 @@ export default function CheckoutPage() {
               onClick={handleFinalSubmit}
               size="lg"
               className="w-full text-base mt-0 lg:mt-8 transition-transform hover:scale-105 active:scale-95"
-              disabled={isSubmitting || !shippingForm.formState.isValid || !paymentForm.formState.isValid}
+              disabled={isSubmitting || !shippingForm.formState.isValid || !paymentForm.formState.isValid }
             >
             <Lock className="mr-2 h-5 w-5" />
             {isSubmitting ? 'Procesando Pedido...' : 'Realizar Pedido (Simulación)'}

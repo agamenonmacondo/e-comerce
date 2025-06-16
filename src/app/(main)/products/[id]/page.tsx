@@ -35,7 +35,7 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <div className="container mx-auto px-4 md:px-6 py-12 text-center">
-        <p className="text-xl text-muted-foreground">Loading product details...</p>
+        <p className="text-xl text-muted-foreground">Cargando detalles del producto...</p>
       </div>
     );
   }
@@ -48,11 +48,11 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     toast({
-      title: `${product.name} added to cart!`,
-      description: `Quantity: ${quantity}`,
+      title: `${product.name} añadido al carrito!`,
+      description: `Cantidad: ${quantity}`,
       action: (
         <Button variant="outline" size="sm" asChild>
-          <Link href="/cart">View Cart</Link>
+          <Link href="/cart">Ver Carrito</Link>
         </Button>
       ),
     });
@@ -139,7 +139,7 @@ export default function ProductDetailPage() {
                     <Star key={i} className={`h-5 w-5 ${i < Math.round(product.rating!) ? 'fill-amber-500' : 'fill-muted stroke-muted-foreground'}`} />
                   ))}
                 </div>
-                <span className="text-muted-foreground text-sm">({product.reviewsCount || 0} reviews)</span>
+                <span className="text-muted-foreground text-sm">({product.reviewsCount || 0} reseñas)</span>
               </div>
             )}
           </CardHeader>
@@ -148,7 +148,7 @@ export default function ProductDetailPage() {
             
             {product.details && Object.keys(product.details).length > 0 && (
               <div>
-                <h4 className="font-semibold mb-1">Key Features:</h4>
+                <h4 className="font-semibold mb-1">Características Principales:</h4>
                 <ul className="list-disc list-inside text-sm text-muted-foreground space-y-1">
                   {Object.entries(product.details).map(([key, value]) => (
                     <li key={key}><strong>{key}:</strong> {value}</li>
@@ -160,16 +160,16 @@ export default function ProductDetailPage() {
             <Separator />
             
             <div className="flex items-center justify-between">
-              <p className="text-3xl font-bold text-primary">${product.price.toFixed(2)}</p>
+              <p className="text-3xl font-bold text-primary">{product.price.toFixed(2)} €</p>
               <div className="flex items-center gap-1 text-sm text-green-600">
                 <CheckCircle className="h-4 w-4" />
-                <span>{product.stock > 0 ? `${product.stock} in stock` : 'Out of stock'}</span>
+                <span>{product.stock > 0 ? `${product.stock} en stock` : 'Agotado'}</span>
               </div>
             </div>
 
             {product.stock > 0 && (
               <div className="flex items-center space-x-4">
-                <Label htmlFor="quantity" className="text-sm font-medium">Quantity:</Label>
+                <Label htmlFor="quantity" className="text-sm font-medium">Cantidad:</Label>
                 <div className="flex items-center border rounded-md">
                   <Button variant="outline" size="icon" onClick={() => handleQuantityChange(-1)} disabled={quantity <= 1} className="h-9 w-9 rounded-r-none">
                     <Minus className="h-4 w-4" />
@@ -192,14 +192,14 @@ export default function ProductDetailPage() {
           {product.stock > 0 && (
             <CardFooter>
               <Button size="lg" className="w-full text-base transition-transform hover:scale-105 active:scale-95" onClick={handleAddToCart}>
-                <ShoppingCart className="mr-2 h-5 w-5" /> Add to Cart
+                <ShoppingCart className="mr-2 h-5 w-5" /> Añadir al Carrito
               </Button>
             </CardFooter>
           )}
            {product.stock === 0 && (
             <CardFooter>
               <Button size="lg" className="w-full text-base" disabled>
-                Out of Stock
+                Agotado
               </Button>
             </CardFooter>
           )}
@@ -210,7 +210,7 @@ export default function ProductDetailPage() {
       {relatedProducts.length > 0 && (
         <section className="mt-16 md:mt-24">
           <h2 className="text-2xl md:text-3xl font-bold font-headline mb-8 text-center md:text-left">
-            You Might Also Like
+            También te podría gustar
           </h2>
           <ProductList products={relatedProducts} />
         </section>

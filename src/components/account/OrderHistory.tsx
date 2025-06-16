@@ -19,14 +19,14 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
       <Card className="shadow-lg text-center py-12">
         <CardHeader>
           <Package className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-          <CardTitle className="text-2xl font-headline">No Orders Yet</CardTitle>
+          <CardTitle className="text-2xl font-headline">Aún no hay Pedidos</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription className="mb-6">
-            You haven&apos;t placed any orders. Start shopping to see your order history here.
+            No has realizado ningún pedido. Empieza a comprar para ver tu historial de pedidos aquí.
           </CardDescription>
           <Button asChild className="transition-transform hover:scale-105 active:scale-95">
-            <Link href="/">Start Shopping</Link>
+            <Link href="/">Empezar a Comprar</Link>
           </Button>
         </CardContent>
       </Card>
@@ -53,26 +53,26 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
   return (
     <Card className="shadow-lg">
       <CardHeader>
-        <CardTitle className="text-2xl font-headline flex items-center"><Package className="mr-3 h-6 w-6 text-primary"/>Order History</CardTitle>
-        <CardDescription>View details and status of your past orders.</CardDescription>
+        <CardTitle className="text-2xl font-headline flex items-center"><Package className="mr-3 h-6 w-6 text-primary"/>Historial de Pedidos</CardTitle>
+        <CardDescription>Ver detalles y estado de tus pedidos anteriores.</CardDescription>
       </CardHeader>
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="hidden sm:table-cell">Order ID</TableHead>
-              <TableHead>Date</TableHead>
+              <TableHead className="hidden sm:table-cell">ID Pedido</TableHead>
+              <TableHead>Fecha</TableHead>
               <TableHead>Total</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
+              <TableHead>Estado</TableHead>
+              <TableHead className="text-right">Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {orders.map(order => (
               <TableRow key={order.id}>
                 <TableCell className="hidden sm:table-cell font-mono text-xs text-muted-foreground">{order.id.substring(0,8)}...</TableCell>
-                <TableCell>{format(parseISO(order.orderDate), 'MMM dd, yyyy')}</TableCell>
-                <TableCell>${order.totalAmount.toFixed(2)}</TableCell>
+                <TableCell>{format(parseISO(order.orderDate), 'dd MMM, yyyy')}</TableCell>
+                <TableCell>{order.totalAmount.toFixed(2)} €</TableCell>
                 <TableCell>
                   <Badge variant={getStatusBadgeVariant(order.status)} 
                          className={order.status === 'Delivered' ? 'bg-green-500/20 text-green-700 border-green-400' : 
@@ -83,7 +83,7 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
                 <TableCell className="text-right">
                   <Button variant="ghost" size="sm" asChild>
                     <Link href={`/account/orders/${order.id}`}> {/* Placeholder link */}
-                      <Eye className="mr-1 h-4 w-4"/> View
+                      <Eye className="mr-1 h-4 w-4"/> Ver
                     </Link>
                   </Button>
                   {/* <Button variant="ghost" size="icon" className="ml-2">

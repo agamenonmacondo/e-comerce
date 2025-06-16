@@ -34,7 +34,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.description.substring(0, 60)}...
         </CardDescription>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xl font-semibold text-primary">${product.price.toFixed(2)}</p>
+          <p className="text-xl font-semibold text-primary">{product.price.toFixed(2)} €</p>
           {product.rating && (
             <div className="flex items-center gap-1 text-sm text-amber-500">
               <Star className="h-4 w-4 fill-amber-500" />
@@ -47,7 +47,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardFooter className="p-4 pt-0">
         <Button asChild className="w-full transition-transform hover:scale-105 active:scale-95">
           <Link href={`/products/${product.id}`}>
-            <ShoppingCart className="mr-2 h-4 w-4" /> View Details
+            <ShoppingCart className="mr-2 h-4 w-4" /> Ver Detalles
           </Link>
         </Button>
       </CardFooter>

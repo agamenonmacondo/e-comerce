@@ -83,22 +83,22 @@ export default function CheckoutPage() {
           {/* Shipping Information */}
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl font-headline flex items-center"><Home className="mr-3 h-6 w-6 text-primary"/>Shipping Address</CardTitle>
+              <CardTitle className="text-2xl font-headline flex items-center"><Home className="mr-3 h-6 w-6 text-primary"/>Dirección de Envío</CardTitle>
             </CardHeader>
             <CardContent>
               <Form {...shippingForm}>
                 <form onSubmit={shippingForm.handleSubmit(onShippingSubmit)} className="space-y-4">
                   <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField control={shippingForm.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Full Name</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
-                    <FormField control={shippingForm.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Phone (Optional)</FormLabel> <FormControl><Input placeholder="(123) 456-7890" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                    <FormField control={shippingForm.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Nombre Completo</FormLabel> <FormControl><Input placeholder="John Doe" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                    <FormField control={shippingForm.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Teléfono (Opcional)</FormLabel> <FormControl><Input placeholder="(123) 456-7890" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="address" render={({ field }) => ( <FormItem> <FormLabel>Street Address</FormLabel> <FormControl><Input placeholder="123 Main St" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                  <FormField control={shippingForm.control} name="address" render={({ field }) => ( <FormItem> <FormLabel>Dirección</FormLabel> <FormControl><Input placeholder="123 Main St" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   <div className="grid sm:grid-cols-3 gap-4">
-                    <FormField control={shippingForm.control} name="city" render={({ field }) => ( <FormItem> <FormLabel>City</FormLabel> <FormControl><Input placeholder="Techville" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
-                    <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>State / Province</FormLabel> <FormControl><Input placeholder="CA" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
-                    <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Zip / Postal Code</FormLabel> <FormControl><Input placeholder="90210" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                    <FormField control={shippingForm.control} name="city" render={({ field }) => ( <FormItem> <FormLabel>Ciudad</FormLabel> <FormControl><Input placeholder="Techville" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                    <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>Estado / Provincia</FormLabel> <FormControl><Input placeholder="CA" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                    <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal</FormLabel> <FormControl><Input placeholder="90210" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>Country</FormLabel> <FormControl><Input placeholder="United States" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Estados Unidos" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   {/* <Button type="submit" className="w-full sm:w-auto">Save Shipping Info</Button> */}
                 </form>
               </Form>
@@ -108,8 +108,8 @@ export default function CheckoutPage() {
           {/* Payment Information */}
           <Card className="shadow-lg">
             <CardHeader>
-              <CardTitle className="text-2xl font-headline flex items-center"><CreditCard className="mr-3 h-6 w-6 text-primary"/>Payment Details</CardTitle>
-              <CardDescription>All transactions are secure and encrypted.</CardDescription>
+              <CardTitle className="text-2xl font-headline flex items-center"><CreditCard className="mr-3 h-6 w-6 text-primary"/>Detalles de Pago</CardTitle>
+              <CardDescription>Todas las transacciones son seguras y encriptadas.</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...paymentForm}>
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
                     name="paymentMethod"
                     render={({ field }) => (
                       <FormItem className="space-y-3">
-                        <FormLabel className="text-base">Select Payment Method</FormLabel>
+                        <FormLabel className="text-base">Selecciona Método de Pago</FormLabel>
                         <FormControl>
                           <RadioGroup
                             onValueChange={field.onChange}
@@ -132,7 +132,7 @@ export default function CheckoutPage() {
                                   <RadioGroupItem value="creditCard" id="creditCard" className="sr-only"/>
                                 </FormControl>
                                 <FormLabel htmlFor="creditCard" className="font-medium cursor-pointer flex items-center w-full">
-                                  <Landmark className="mr-2 h-5 w-5"/> Credit Card
+                                  <Landmark className="mr-2 h-5 w-5"/> Tarjeta de Crédito
                                 </FormLabel>
                               </Card>
                             </FormItem>
@@ -153,7 +153,7 @@ export default function CheckoutPage() {
                                   <RadioGroupItem value="crypto" id="crypto" className="sr-only"/>
                                 </FormControl>
                                 <FormLabel htmlFor="crypto" className="font-medium cursor-pointer flex items-center w-full">
-                                  <Bitcoin className="mr-2 h-5 w-5"/> Cryptocurrency
+                                  <Bitcoin className="mr-2 h-5 w-5"/> Criptomoneda
                                 </FormLabel>
                                </Card>
                             </FormItem>
@@ -165,7 +165,7 @@ export default function CheckoutPage() {
                   />
                   {/* Conditional fields for credit card could be added here */}
                    <Button type="submit" size="lg" className="w-full text-base mt-8 transition-transform hover:scale-105 active:scale-95">
-                    <Lock className="mr-2 h-5 w-5" /> Place Order
+                    <Lock className="mr-2 h-5 w-5" /> Realizar Pedido
                   </Button>
                 </form>
               </Form>
@@ -177,40 +177,40 @@ export default function CheckoutPage() {
         <div className="lg:col-span-1">
           <Card className="shadow-lg sticky top-24">
             <CardHeader>
-              <CardTitle className="text-2xl font-headline flex items-center"><ShoppingCart className="mr-3 h-6 w-6 text-primary"/>Order Summary</CardTitle>
+              <CardTitle className="text-2xl font-headline flex items-center"><ShoppingCart className="mr-3 h-6 w-6 text-primary"/>Resumen del Pedido</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               {orderSummary.items.map(item => (
                 <div key={item.name} className="flex justify-between items-center text-sm">
                   <div>
                     <p className="font-medium">{item.name}</p>
-                    <p className="text-xs text-muted-foreground">Qty: {item.quantity}</p>
+                    <p className="text-xs text-muted-foreground">Cant: {item.quantity}</p>
                   </div>
-                  <p>${(item.price * item.quantity).toFixed(2)}</p>
+                  <p>{(item.price * item.quantity).toFixed(2)} €</p>
                 </div>
               ))}
               <Separator/>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>${orderSummary.subtotal.toFixed(2)}</span>
+                <span>{orderSummary.subtotal.toFixed(2)} €</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Shipping</span>
-                <span>{orderSummary.shipping === 0 ? 'Free' : `$${orderSummary.shipping.toFixed(2)}`}</span>
+                <span className="text-muted-foreground">Envío</span>
+                <span>{orderSummary.shipping === 0 ? 'Gratis' : `${orderSummary.shipping.toFixed(2)} €`}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Tax</span>
-                <span>${orderSummary.tax.toFixed(2)}</span>
+                <span className="text-muted-foreground">Impuestos</span>
+                <span>{orderSummary.tax.toFixed(2)} €</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-xl">
                 <span>Total</span>
-                <span>${orderSummary.total.toFixed(2)}</span>
+                <span>{orderSummary.total.toFixed(2)} €</span>
               </div>
             </CardContent>
              <CardFooter>
                 <p className="text-xs text-muted-foreground text-center w-full">
-                  By placing your order, you agree to our <Link href="/terms" className="underline hover:text-primary">Terms of Service</Link>.
+                  Al realizar tu pedido, aceptas nuestros <Link href="/terms" className="underline hover:text-primary">Términos de Servicio</Link>.
                 </p>
             </CardFooter>
           </Card>

@@ -59,33 +59,33 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
       <div className="flex justify-between items-center">
         <h3 className="text-lg font-semibold font-headline flex items-center">
           <ListFilter className="mr-2 h-5 w-5 text-primary" />
-          Filters
+          Filtros
         </h3>
         <Button variant="ghost" size="sm" onClick={resetFilters} className="text-xs">
           <RotateCcw className="mr-1 h-3 w-3" />
-          Reset
+          Reiniciar
         </Button>
       </div>
 
       <div>
-        <Label htmlFor="sort-by" className="text-sm font-medium">Sort By</Label>
+        <Label htmlFor="sort-by" className="text-sm font-medium">Ordenar Por</Label>
         <Select value={sortKey} onValueChange={handleSortChange}>
           <SelectTrigger id="sort-by" className="w-full mt-1">
-            <SelectValue placeholder="Select sorting" />
+            <SelectValue placeholder="Seleccionar ordenación" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="relevance">Relevance</SelectItem>
-            <SelectItem value="price-asc">Price: Low to High</SelectItem>
-            <SelectItem value="price-desc">Price: High to Low</SelectItem>
-            <SelectItem value="rating-desc">Rating: High to Low</SelectItem>
-            <SelectItem value="newest">Newest</SelectItem>
+            <SelectItem value="relevance">Relevancia</SelectItem>
+            <SelectItem value="price-asc">Precio: Bajo a Alto</SelectItem>
+            <SelectItem value="price-desc">Precio: Alto a Bajo</SelectItem>
+            <SelectItem value="rating-desc">Valoración: Alta a Baja</SelectItem>
+            <SelectItem value="newest">Más Recientes</SelectItem>
           </SelectContent>
         </Select>
       </div>
 
       <Accordion type="multiple" defaultValue={['categories', 'price']} className="w-full">
         <AccordionItem value="categories">
-          <AccordionTrigger className="text-base font-medium">Categories</AccordionTrigger>
+          <AccordionTrigger className="text-base font-medium">Categorías</AccordionTrigger>
           <AccordionContent className="space-y-2 pt-2">
             {categories.map(category => (
               <div key={category.id} className="flex items-center space-x-2">
@@ -103,7 +103,7 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
         </AccordionItem>
 
         <AccordionItem value="price">
-          <AccordionTrigger className="text-base font-medium">Price Range</AccordionTrigger>
+          <AccordionTrigger className="text-base font-medium">Rango de Precios</AccordionTrigger>
           <AccordionContent className="space-y-4 pt-4">
             <Slider
               min={0}
@@ -114,14 +114,14 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
               className="w-full"
             />
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>${priceRange[0]}</span>
-              <span>${priceRange[1]}</span>
+              <span>{priceRange[0]} €</span>
+              <span>{priceRange[1]} €</span>
             </div>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
       
-      <Button onClick={applyFilters} className="w-full mt-4">Apply Filters</Button>
+      <Button onClick={applyFilters} className="w-full mt-4">Aplicar Filtros</Button>
     </div>
   );
 }

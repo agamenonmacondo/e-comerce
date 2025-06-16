@@ -18,13 +18,13 @@ import { Mail, Lock, User } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 
 const formSchema = z.object({
-  name: z.string().min(2, { message: 'Name must be at least 2 characters.' }),
-  email: z.string().email({ message: 'Invalid email address.' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
+  email: z.string().email({ message: 'Correo electrónico inválido.' }),
+  password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
   confirmPassword: z.string(),
 }).refine(data => data.password === data.confirmPassword, {
-  message: "Passwords don't match",
-  path: ["confirmPassword"], // path of error
+  message: "Las contraseñas no coinciden",
+  path: ["confirmPassword"], 
 });
 
 export default function SignupForm() {
@@ -40,20 +40,18 @@ export default function SignupForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Simulate API call
     console.log(values);
     await new Promise(resolve => setTimeout(resolve, 1000));
     toast({
-      title: "Signup Attempt",
-      description: "Signup functionality is a placeholder.",
+      title: "Intento de Registro",
+      description: "La funcionalidad de registro es una simulación.",
     });
-    // router.push('/login'); // Redirect on successful signup
   }
 
   return (
     <Card className="shadow-xl">
       <CardHeader>
-        <CardTitle className="text-center text-xl">Sign Up</CardTitle>
+        <CardTitle className="text-center text-xl">Regístrate</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -63,11 +61,11 @@ export default function SignupForm() {
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Full Name</FormLabel>
+                  <FormLabel>Nombre Completo</FormLabel>
                   <div className="relative">
                     <User className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <FormControl>
-                      <Input placeholder="John Doe" {...field} className="pl-10" />
+                      <Input placeholder="Ej: Ana Pérez" {...field} className="pl-10" />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -79,11 +77,11 @@ export default function SignupForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo Electrónico</FormLabel>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <FormControl>
-                      <Input placeholder="you@example.com" {...field} className="pl-10" />
+                      <Input placeholder="tu@ejemplo.com" {...field} className="pl-10" />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -95,7 +93,7 @@ export default function SignupForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                   <div className="relative">
                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <FormControl>
@@ -111,7 +109,7 @@ export default function SignupForm() {
               name="confirmPassword"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Confirm Password</FormLabel>
+                  <FormLabel>Confirmar Contraseña</FormLabel>
                   <div className="relative">
                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <FormControl>
@@ -123,13 +121,13 @@ export default function SignupForm() {
               )}
             />
              <Button type="submit" className="w-full transition-transform hover:scale-105 active:scale-95">
-              Create Account
+              Crear Cuenta
             </Button>
           </form>
         </Form>
       </CardContent>
        <CardFooter className="flex flex-col items-center text-xs text-muted-foreground">
-          <p className="text-center text-xs">By signing up, you agree to our Terms and Privacy Policy.</p>
+          <p className="text-center text-xs">Al registrarte, aceptas nuestros Términos y Política de Privacidad.</p>
       </CardFooter>
     </Card>
   );

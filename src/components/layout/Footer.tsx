@@ -12,22 +12,22 @@ export default function Footer() {
               <span className="font-bold text-2xl font-headline">iCommerce</span>
             </Link>
             <p className="text-muted-foreground text-sm">
-              Your one-stop shop for the latest tech and accessories.
+              Tu tienda única para lo último en tecnología y accesorios.
             </p>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-3 font-headline">Quick Links</h3>
+            <h3 className="text-lg font-semibold mb-3 font-headline">Enlaces Rápidos</h3>
             <ul className="space-y-2 text-sm">
-              <li><Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">About Us</Link></li>
-              <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contact</Link></li>
-              <li><Link href="/faq" className="text-muted-foreground hover:text-primary transition-colors">FAQ</Link></li>
-              <li><Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link href="/about" className="text-muted-foreground hover:text-primary transition-colors">Sobre Nosotros</Link></li>
+              <li><Link href="/contact" className="text-muted-foreground hover:text-primary transition-colors">Contacto</Link></li>
+              <li><Link href="/faq" className="text-muted-foreground hover:text-primary transition-colors">Preguntas Frecuentes</Link></li>
+              <li><Link href="/terms" className="text-muted-foreground hover:text-primary transition-colors">Términos de Servicio</Link></li>
             </ul>
           </div>
           <div>
-            <h3 className="text-lg font-semibold mb-3 font-headline">Connect With Us</h3>
+            <h3 className="text-lg font-semibold mb-3 font-headline">Conéctate Con Nosotros</h3>
             <p className="text-muted-foreground text-sm mb-2">
-              Stay updated with our latest offers and products.
+              Mantente actualizado con nuestras últimas ofertas y productos.
             </p>
             {/* Placeholder for social media icons or newsletter signup */}
             <div className="flex space-x-3">
@@ -36,7 +36,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-border/40 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} iCommerce. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} iCommerce. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

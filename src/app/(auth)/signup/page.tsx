@@ -1,6 +1,7 @@
 import SignupForm from '@/components/auth/SignupForm';
 import Link from 'next/link';
 import { BriefcaseBusiness } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export default function SignupPage() {
   return (
@@ -11,14 +12,14 @@ export default function SignupPage() {
             <BriefcaseBusiness className="h-8 w-8 text-primary" />
             <span className="font-bold text-3xl font-headline">iCommerce</span>
           </Link>
-          <h2 className="text-2xl font-semibold text-foreground">Create an Account</h2>
-          <p className="text-muted-foreground">Join iCommerce today to get started.</p>
+          <h2 className="text-2xl font-semibold text-foreground">Crear una Cuenta</h2>
+          <p className="text-muted-foreground">Únete a iCommerce hoy para empezar.</p>
         </div>
         <SignupForm />
         <p className="mt-6 text-center text-sm text-muted-foreground">
-          Already have an account?{' '}
+          ¿Ya tienes una cuenta?{' '}
           <Button variant="link" asChild className="text-primary p-0 h-auto">
-            <Link href="/login">Sign in</Link>
+            <Link href="/login">Inicia sesión</Link>
           </Button>
         </p>
       </div>

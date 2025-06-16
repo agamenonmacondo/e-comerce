@@ -5,6 +5,11 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { ShoppingCart, Star } from 'lucide-react';
 
+// Helper function for Colombian currency
+const formatColombianCurrency = (amount: number) => {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+};
+
 interface ProductCardProps {
   product: Product;
 }
@@ -34,7 +39,7 @@ export default function ProductCard({ product }: ProductCardProps) {
           {product.description.substring(0, 60)}...
         </CardDescription>
         <div className="flex items-center justify-between mb-2">
-          <p className="text-xl font-semibold text-primary">{product.price.toFixed(2)} €</p>
+          <p className="text-xl font-semibold text-primary">{formatColombianCurrency(product.price)}</p>
           {product.rating && (
             <div className="flex items-center gap-1 text-sm text-amber-500">
               <Star className="h-4 w-4 fill-amber-500" />

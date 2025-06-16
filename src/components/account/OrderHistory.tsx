@@ -6,12 +6,15 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import { Package, Eye, FileText } from 'lucide-react';
+import { Package, Eye } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
+import { es } from 'date-fns/locale'; // Import Spanish locale for date-fns
 
-interface OrderHistoryProps {
-  orders: Order[];
-}
+// Helper function for Colombian currency
+const formatColombianCurrency = (amount: number) => {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+};
+
 
 export default function OrderHistory({ orders }: OrderHistoryProps) {
   if (orders.length === 0) {
@@ -35,20 +38,20 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
 
   const getStatusBadgeVariant = (status: Order['status']) => {
     switch (status) {
-      case 'Pending': return 'default';
-      case 'Processing': return 'secondary';
-      case 'Shipped': return 'outline'; // Or some other color like blue/info
-      case 'Delivered': return 'default'; // Should be success like green
-      case 'Cancelled': return 'destructive';
+      case 'Pendiente': return 'default';
+      case 'Procesando': return 'secondary';
+      case 'Enviado': return 'outline'; 
+      case 'Entregado': return 'default'; 
+      case 'Cancelado': return 'destructive';
       default: return 'default';
     }
   };
   
-  // Custom styles for badge based on status for better visual cues.
-  // Tailwind classes for colors like bg-green-500 text-white etc. are not allowed per guidelines,
-  // so relying on ShadCN variants or custom CSS variables if absolutely needed.
-  // For 'Delivered', 'default' variant is fine, but ideally it'd be green.
-  // 'Shipped' with 'outline' might be okay.
+  const getStatusText = (status: Order['status']) => {
+     // This function could map to more specific Spanish terms if needed
+    return status;
+  }
+
 
   return (
     <Card className="shadow-lg">
@@ -71,24 +74,21 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
             {orders.map(order => (
               <TableRow key={order.id}>
                 <TableCell className="hidden sm:table-cell font-mono text-xs text-muted-foreground">{order.id.substring(0,8)}...</TableCell>
-                <TableCell>{format(parseISO(order.orderDate), 'dd MMM, yyyy')}</TableCell>
-                <TableCell>{order.totalAmount.toFixed(2)} €</TableCell>
+                <TableCell>{format(parseISO(order.orderDate), 'dd MMM, yyyy', { locale: es })}</TableCell>
+                <TableCell>{formatColombianCurrency(order.totalAmount)}</TableCell>
                 <TableCell>
                   <Badge variant={getStatusBadgeVariant(order.status)} 
-                         className={order.status === 'Delivered' ? 'bg-green-500/20 text-green-700 border-green-400' : 
-                                    order.status === 'Shipped' ? 'bg-blue-500/20 text-blue-700 border-blue-400' : ''}>
-                    {order.status}
+                         className={order.status === 'Entregado' ? 'bg-green-500/20 text-green-700 border-green-400' : 
+                                    order.status === 'Enviado' ? 'bg-blue-500/20 text-blue-700 border-blue-400' : ''}>
+                    {getStatusText(order.status)}
                   </Badge>
                 </TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="sm" asChild>
-                    <Link href={`/account/orders/${order.id}`}> {/* Placeholder link */}
+                    <Link href={`/account/orders/${order.id}`}> 
                       <Eye className="mr-1 h-4 w-4"/> Ver
                     </Link>
                   </Button>
-                  {/* <Button variant="ghost" size="icon" className="ml-2">
-                     <FileText className="h-4 w-4" /> <span className="sr-only">Invoice</span>
-                  </Button> */}
                 </TableCell>
               </TableRow>
             ))}

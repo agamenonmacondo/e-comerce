@@ -4,7 +4,6 @@ import { useState } from 'react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
@@ -14,14 +13,28 @@ import { cn } from "@/lib/utils";
 
 interface FilterSidebarProps {
   categories: Category[];
-  onFilterChange: (filters: any) => void; // Replace 'any' with a proper filter type
+  onFilterChange: (filters: any) => void;
   onSortChange: (sortKey: string) => void;
   className?: string;
+  maxPrice?: number; // Max price for the slider
+  priceStep?: number; // Step for the slider
 }
 
-export default function FilterSidebar({ categories, onFilterChange, onSortChange, className }: FilterSidebarProps) {
+// Helper function for Colombian currency
+const formatColombianCurrency = (amount: number) => {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+};
+
+export default function FilterSidebar({ 
+  categories, 
+  onFilterChange, 
+  onSortChange, 
+  className,
+  maxPrice = 5000000, // Default max price in COP
+  priceStep = 100000   // Default step in COP
+}: FilterSidebarProps) {
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState<[number, number]>([0, 1500]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([0, maxPrice]);
   const [sortKey, setSortKey] = useState<string>('relevance');
 
   const handleCategoryChange = (categoryId: string, checked: boolean) => {
@@ -29,12 +42,10 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
       ? [...selectedCategories, categoryId]
       : selectedCategories.filter(id => id !== categoryId);
     setSelectedCategories(newSelectedCategories);
-    // onFilterChange({ categories: newSelectedCategories, priceRange });
   };
 
   const handlePriceChange = (newRange: [number, number]) => {
     setPriceRange(newRange);
-    // onFilterChange({ categories: selectedCategories, priceRange: newRange });
   };
   
   const handleSortChange = (value: string) => {
@@ -48,9 +59,9 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
 
   const resetFilters = () => {
     setSelectedCategories([]);
-    setPriceRange([0, 1500]);
+    setPriceRange([0, maxPrice]);
     setSortKey('relevance');
-    onFilterChange({ categories: [], priceRange: [0, 1500] });
+    onFilterChange({ categories: [], priceRange: [0, maxPrice] });
     onSortChange('relevance');
   };
 
@@ -75,9 +86,9 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="relevance">Relevancia</SelectItem>
-            <SelectItem value="price-asc">Precio: Bajo a Alto</SelectItem>
-            <SelectItem value="price-desc">Precio: Alto a Bajo</SelectItem>
-            <SelectItem value="rating-desc">Valoración: Alta a Baja</SelectItem>
+            <SelectItem value="price-asc">Precio: Menor a Mayor</SelectItem>
+            <SelectItem value="price-desc">Precio: Mayor a Menor</SelectItem>
+            <SelectItem value="rating-desc">Calificación: Mayor a Menor</SelectItem>
             <SelectItem value="newest">Más Recientes</SelectItem>
           </SelectContent>
         </Select>
@@ -107,15 +118,15 @@ export default function FilterSidebar({ categories, onFilterChange, onSortChange
           <AccordionContent className="space-y-4 pt-4">
             <Slider
               min={0}
-              max={2000}
-              step={50}
+              max={maxPrice}
+              step={priceStep}
               value={priceRange}
               onValueChange={(value) => handlePriceChange(value as [number, number])}
               className="w-full"
             />
             <div className="flex justify-between text-sm text-muted-foreground">
-              <span>{priceRange[0]} €</span>
-              <span>{priceRange[1]} €</span>
+              <span>{formatColombianCurrency(priceRange[0])}</span>
+              <span>{formatColombianCurrency(priceRange[1])}</span>
             </div>
           </AccordionContent>
         </AccordionItem>

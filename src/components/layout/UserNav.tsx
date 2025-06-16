@@ -12,23 +12,25 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { CreditCard, LogOut, Settings, User, UserCircle } from 'lucide-react';
-import { useState, useEffect } from 'react'; // Assuming some auth state management
+import { CreditCard, LogOut, Settings, User, UserCircle, ShoppingBag } from 'lucide-react'; // ShoppingBag instead of CreditCard for Orders
+import { useState, useEffect } from 'react';
 
 export default function UserNav() {
-  // Mock authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userName, setUserName] = useState<string | null>(null);
+  const [userEmail, setUserEmail] = useState<string | null>(null); // Added userEmail state
   const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    // In a real app, this would check auth status (e.g., from a context or cookie)
-    // For now, let's simulate a logged-in user after a delay
+    // Simulate a logged-in user for demonstration. 
+    // In a real app, this would check auth status.
+    // To test logged out state, comment out the setIsAuthenticated(true) block.
     const timer = setTimeout(() => {
       // setIsAuthenticated(true);
-      // setUserName("Demo User");
-      // setUserAvatar("https://placehold.co/40x40.png?text=DU");
-    }, 100); // Simulate loading user data
+      // setUserName("Usuario Demo");
+      // setUserEmail("usuario@example.com");
+      // setUserAvatar("https://placehold.co/40x40.png?text=UD");
+    }, 100); 
     return () => clearTimeout(timer);
   }, []);
 
@@ -36,7 +38,7 @@ export default function UserNav() {
     return (
       <Button variant="ghost" asChild>
         <Link href="/login">
-          <UserCircle className="mr-2 h-5 w-5" /> Login
+          <UserCircle className="mr-2 h-5 w-5" /> Iniciar Sesión
         </Link>
       </Button>
     );
@@ -47,7 +49,7 @@ export default function UserNav() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={userAvatar || undefined} alt={userName || "User"} />
+            <AvatarImage src={userAvatar || undefined} alt={userName || "Usuario"} />
             <AvatarFallback>{userName ? userName.charAt(0).toUpperCase() : <UserCircle/>}</AvatarFallback>
           </Avatar>
         </Button>
@@ -55,11 +57,12 @@ export default function UserNav() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{userName || "User"}</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              {/* user.email - if available */}
-              user@example.com 
-            </p>
+            <p className="text-sm font-medium leading-none">{userName || "Usuario"}</p>
+            {userEmail && (
+              <p className="text-xs leading-none text-muted-foreground">
+                {userEmail}
+              </p>
+            )}
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
@@ -67,24 +70,24 @@ export default function UserNav() {
           <DropdownMenuItem asChild>
             <Link href="/account">
               <User className="mr-2 h-4 w-4" />
-              <span>Profile</span>
+              <span>Perfil</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/account/orders">
-               <CreditCard className="mr-2 h-4 w-4" />
-              <span>Orders</span>
+               <ShoppingBag className="mr-2 h-4 w-4" />
+              <span>Pedidos</span>
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem disabled>
             <Settings className="mr-2 h-4 w-4" />
-            <span>Settings</span>
+            <span>Configuración</span>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setIsAuthenticated(false)}> {/* Mock logout */}
+        <DropdownMenuItem onClick={() => setIsAuthenticated(false)}> 
           <LogOut className="mr-2 h-4 w-4" />
-          <span>Log out</span>
+          <span>Cerrar Sesión</span>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>

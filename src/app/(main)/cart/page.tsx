@@ -1,5 +1,3 @@
-// This is a placeholder for the Cart page.
-// In a real application, this would fetch cart data and allow modifications.
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -10,11 +8,10 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import type { CartItem, Product } from '@/types';
+import type { CartItem } from '@/types';
 import { products as allProducts } from '@/lib/placeholder-data';
-import { CreditCard, Minus, Plus, ShoppingCart, Trash2, XCircle } from 'lucide-react';
+import { CreditCard, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 
-// Mock cart state
 const initialCartItems: CartItem[] = [
   { ...allProducts[0], quantity: 1 },
   { ...allProducts[2], quantity: 2 },
@@ -40,16 +37,21 @@ export default function CartPage() {
   const removeItem = (productId: string) => {
     setCartItems(currentItems => currentItems.filter(item => item.id !== productId));
     toast({
-      title: "Artículo eliminado",
+      title: "Artículo Eliminado",
       description: "El artículo ha sido eliminado de tu carrito.",
     });
   };
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.08; // 8% tax
+  const taxRate = 0.19; // 19% IVA Colombia (ejemplo, puede variar)
   const taxAmount = subtotal * taxRate;
-  const shippingCost = subtotal > 50 ? 0 : 10; // Free shipping over 50 €
+  const shippingCost = subtotal > 200000 ? 0 : 15000; // Envío gratis sobre $200.000 COP (ejemplo)
   const totalAmount = subtotal + taxAmount + shippingCost;
+
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+  };
+
 
   if (cartItems.length === 0) {
     return (
@@ -77,7 +79,7 @@ export default function CartPage() {
               <div className="flex-grow text-center sm:text-left">
                 <Link href={`/products/${item.id}`} className="text-lg font-semibold hover:text-primary transition-colors">{item.name}</Link>
                 <p className="text-sm text-muted-foreground">{item.category.name}</p>
-                <p className="text-lg font-medium text-primary mt-1">{item.price.toFixed(2)} €</p>
+                <p className="text-lg font-medium text-primary mt-1">{formatCurrency(item.price)}</p>
               </div>
               <div className="flex items-center space-x-2 mt-2 sm:mt-0">
                 <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)} className="h-8 w-8">
@@ -88,18 +90,18 @@ export default function CartPage() {
                   value={item.quantity} 
                   readOnly 
                   className="h-8 w-12 text-center focus-visible:ring-0"
-                  aria-label={`${item.name} quantity`}
+                  aria-label={`${item.name} cantidad`}
                 />
                 <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity + 1)} className="h-8 w-8">
                   <Plus className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="font-semibold text-lg w-24 text-right hidden sm:block">
-                {(item.price * item.quantity).toFixed(2)} €
+              <p className="font-semibold text-lg w-32 text-right hidden sm:block">
+                {formatCurrency(item.price * item.quantity)}
               </p>
               <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive/80">
                 <Trash2 className="h-5 w-5" />
-                <span className="sr-only">Remove {item.name}</span>
+                <span className="sr-only">Eliminar {item.name}</span>
               </Button>
             </Card>
           ))}
@@ -113,20 +115,20 @@ export default function CartPage() {
             <CardContent className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>{subtotal.toFixed(2)} €</span>
+                <span>{formatCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Envío</span>
-                <span>{shippingCost === 0 ? 'Gratis' : `${shippingCost.toFixed(2)} €`}</span>
+                <span>{shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Impuestos ({(taxRate * 100).toFixed(0)}%)</span>
-                <span>{taxAmount.toFixed(2)} €</span>
+                <span>{formatCurrency(taxAmount)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-xl">
                 <span>Total</span>
-                <span>{totalAmount.toFixed(2)} €</span>
+                <span>{formatCurrency(totalAmount)}</span>
               </div>
             </CardContent>
             <CardFooter>

@@ -11,10 +11,15 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { CheckCircle, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Star, Tag } from 'lucide-react';
+import { CheckCircle, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Star } from 'lucide-react';
 import Link from 'next/link';
 import ProductList from '@/components/products/ProductList';
 
+
+// Helper function for Colombian currency
+const formatColombianCurrency = (amount: number) => {
+  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
+};
 
 export default function ProductDetailPage() {
   const params = useParams();
@@ -28,7 +33,7 @@ export default function ProductDetailPage() {
     if (id) {
       const fetchedProduct = getProductById(Array.isArray(id) ? id[0] : id);
       setProduct(fetchedProduct || null);
-      setCurrentImageIndex(0); // Reset image index when product changes
+      setCurrentImageIndex(0); 
     }
   }, [id]);
 
@@ -48,7 +53,7 @@ export default function ProductDetailPage() {
 
   const handleAddToCart = () => {
     toast({
-      title: `${product.name} añadido al carrito!`,
+      title: `¡${product.name} añadido al carrito!`,
       description: `Cantidad: ${quantity}`,
       action: (
         <Button variant="outline" size="sm" asChild>
@@ -56,7 +61,6 @@ export default function ProductDetailPage() {
         </Button>
       ),
     });
-    // Add to cart logic here
   };
 
   const nextImage = () => {
@@ -70,12 +74,11 @@ export default function ProductDetailPage() {
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
       <div className="grid md:grid-cols-2 gap-8 lg:gap-12 items-start">
-        {/* Image Gallery */}
         <div className="space-y-4">
           <div className="relative aspect-square rounded-lg overflow-hidden shadow-lg border bg-card">
             <Image
               src={product.images[currentImageIndex]}
-              alt={`${product.name} image ${currentImageIndex + 1}`}
+              alt={`${product.name} imagen ${currentImageIndex + 1}`}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain transition-opacity duration-300"
@@ -88,7 +91,7 @@ export default function ProductDetailPage() {
                   size="icon"
                   className="absolute left-2 top-1/2 -translate-y-1/2 rounded-full bg-background/50 hover:bg-background/80"
                   onClick={prevImage}
-                  aria-label="Previous image"
+                  aria-label="Imagen anterior"
                 >
                   <ChevronLeft className="h-5 w-5" />
                 </Button>
@@ -97,7 +100,7 @@ export default function ProductDetailPage() {
                   size="icon"
                   className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full bg-background/50 hover:bg-background/80"
                   onClick={nextImage}
-                  aria-label="Next image"
+                  aria-label="Siguiente imagen"
                 >
                   <ChevronRight className="h-5 w-5" />
                 </Button>
@@ -111,11 +114,11 @@ export default function ProductDetailPage() {
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
                   className={`relative aspect-square rounded-md overflow-hidden border-2 ${index === currentImageIndex ? 'border-primary' : 'border-transparent'} hover:border-primary/50 transition-all`}
-                  aria-label={`View image ${index + 1}`}
+                  aria-label={`Ver imagen ${index + 1}`}
                 >
                   <Image
                     src={img}
-                    alt={`${product.name} thumbnail ${index + 1}`}
+                    alt={`${product.name} miniatura ${index + 1}`}
                     fill
                     sizes="10vw"
                     className="object-cover"
@@ -127,7 +130,6 @@ export default function ProductDetailPage() {
           )}
         </div>
 
-        {/* Product Info */}
         <Card className="shadow-lg">
           <CardHeader>
             <Link href={`/#categories`} className="text-sm text-primary hover:underline mb-1">{product.category.name}</Link>
@@ -160,7 +162,7 @@ export default function ProductDetailPage() {
             <Separator />
             
             <div className="flex items-center justify-between">
-              <p className="text-3xl font-bold text-primary">{product.price.toFixed(2)} €</p>
+              <p className="text-3xl font-bold text-primary">{formatColombianCurrency(product.price)}</p>
               <div className="flex items-center gap-1 text-sm text-green-600">
                 <CheckCircle className="h-4 w-4" />
                 <span>{product.stock > 0 ? `${product.stock} en stock` : 'Agotado'}</span>
@@ -180,7 +182,7 @@ export default function ProductDetailPage() {
                     value={quantity} 
                     readOnly 
                     className="h-9 w-12 text-center border-y-0 rounded-none focus-visible:ring-0"
-                    aria-label="Quantity"
+                    aria-label="Cantidad"
                   />
                   <Button variant="outline" size="icon" onClick={() => handleQuantityChange(1)} disabled={quantity >= product.stock} className="h-9 w-9 rounded-l-none">
                     <Plus className="h-4 w-4" />
@@ -206,11 +208,10 @@ export default function ProductDetailPage() {
         </Card>
       </div>
       
-      {/* Related Products Section */}
       {relatedProducts.length > 0 && (
         <section className="mt-16 md:mt-24">
           <h2 className="text-2xl md:text-3xl font-bold font-headline mb-8 text-center md:text-left">
-            También te podría gustar
+            También te podría interesar
           </h2>
           <ProductList products={relatedProducts} />
         </section>

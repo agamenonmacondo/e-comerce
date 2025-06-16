@@ -9,13 +9,13 @@ export interface Product {
   id: string;
   name: string;
   description: string;
-  price: number;
+  price: number; // Prices will be in COP
   images: string[];
   category: Category;
   stock: number;
-  rating?: number; // Optional, average rating
-  reviewsCount?: number; // Optional
-  details?: Record<string, string>; // e.g. {"Storage": "256GB", "Color": "Blue"}
+  rating?: number; 
+  reviewsCount?: number; 
+  details?: Record<string, string>; 
 }
 
 export interface CartItem extends Product {
@@ -26,6 +26,7 @@ export interface User {
   id: string;
   name?: string;
   email: string;
+  phone?: string; // Added phone to User type
   avatar?: string;
   addresses?: Address[];
 }
@@ -34,18 +35,21 @@ export interface Address {
   id: string;
   street: string;
   city: string;
-  state: string;
+  state: string; // For Colombia, this would be "Departamento"
   zipCode: string;
   country: string;
   isDefault?: boolean;
 }
 
+export type OrderStatus = 'Pendiente' | 'Procesando' | 'Enviado' | 'Entregado' | 'Cancelado';
+
+
 export interface Order {
   id: string;
   userId: string;
   items: CartItem[];
-  totalAmount: number;
-  status: 'Pending' | 'Processing' | 'Shipped' | 'Delivered' | 'Cancelled';
+  totalAmount: number; // Prices in COP
+  status: OrderStatus;
   orderDate: string; // ISO string date
   shippingAddress: Address;
   trackingNumber?: string;

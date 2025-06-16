@@ -14,10 +14,10 @@ export default function AccountOrdersPage() {
        <div className="flex items-center justify-between mb-8">
          <Button variant="outline" size="sm" asChild className="mb-0 md:mb-0">
           <Link href="/account">
-            <ChevronLeft className="mr-1 h-4 w-4" /> Back to Account
+            <ChevronLeft className="mr-1 h-4 w-4" /> Volver a la Cuenta
           </Link>
         </Button>
-        <h1 className="text-3xl md:text-4xl font-bold font-headline text-right">Order Dashboard</h1>
+        <h1 className="text-3xl md:text-4xl font-bold font-headline text-right">Panel de Pedidos</h1>
       </div>
       <OrderHistory orders={orders} />
     </div>

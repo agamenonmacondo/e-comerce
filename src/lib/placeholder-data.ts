@@ -2,116 +2,118 @@ import type { Product, Category, Order, User } from '@/types';
 
 export const categories: Category[] = [
   { id: '1', name: 'iPhones', slug: 'iphones' },
-  { id: '2', name: 'Other Phones', slug: 'other-phones' },
-  { id: '3', name: 'Accessories', slug: 'accessories' },
+  { id: '2', name: 'Otros Celulares', slug: 'otros-celulares' },
+  { id: '3', name: 'Accesorios', slug: 'accesorios' },
 ];
 
+// Prices in COP (Colombian Pesos)
 export const products: Product[] = [
   {
     id: '1',
     name: 'iPhone 15 Pro',
-    description: 'The ultimate iPhone experience. A17 Bionic chip, Pro camera system, and stunning ProMotion display.',
-    price: 999,
-    images: ['https://placehold.co/600x600.png?text=iPhone+15+Pro', 'https://placehold.co/600x600.png?text=iPhone+15+Pro+Back', 'https://placehold.co/600x600.png?text=iPhone+15+Pro+Side'],
+    description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
+    price: 4500000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=iPhone+15+Pro', 'https://placehold.co/600x600.png?text=iPhone+15+Pro+Atras', 'https://placehold.co/600x600.png?text=iPhone+15+Pro+Lado'],
     category: categories[0],
     stock: 50,
     rating: 4.9,
     reviewsCount: 120,
-    details: { Storage: '256GB', Color: 'Titanium Blue', Display: '6.1-inch Super Retina XDR' }
+    details: { Almacenamiento: '256GB', Color: 'Titanio Azul', Pantalla: '6.1 pulgadas Super Retina XDR' }
   },
   {
     id: '2',
     name: 'iPhone 15',
-    description: 'Powerful and packed with features. A16 Bionic chip, advanced dual-camera system, and vibrant display.',
-    price: 799,
-    images: ['https://placehold.co/600x600.png?text=iPhone+15', 'https://placehold.co/600x600.png?text=iPhone+15+Colors'],
+    description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
+    price: 3800000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=iPhone+15', 'https://placehold.co/600x600.png?text=iPhone+15+Colores'],
     category: categories[0],
     stock: 75,
     rating: 4.7,
     reviewsCount: 95,
-    details: { Storage: '128GB', Color: 'Pink', Display: '6.1-inch Super Retina XDR' }
+    details: { Almacenamiento: '128GB', Color: 'Rosado', Pantalla: '6.1 pulgadas Super Retina XDR' }
   },
   {
     id: '3',
     name: 'Pixel 8 Pro',
-    description: 'The most advanced Pixel yet. Google Tensor G3, pro-level cameras, and a brilliant Actua display.',
-    price: 899,
-    images: ['https://placehold.co/600x600.png?text=Pixel+8+Pro', 'https://placehold.co/600x600.png?text=Pixel+8+Pro+Camera'],
+    description: 'El Pixel más avanzado hasta la fecha. Google Tensor G3, cámaras de nivel profesional y una brillante pantalla Actua.',
+    price: 4200000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=Pixel+8+Pro', 'https://placehold.co/600x600.png?text=Pixel+8+Pro+Camara'],
     category: categories[1],
     stock: 40,
     rating: 4.8,
     reviewsCount: 80,
-    details: { Storage: '256GB', Color: 'Obsidian', Display: '6.7-inch Super Actua' }
+    details: { Almacenamiento: '256GB', Color: 'Obsidiana', Pantalla: '6.7 pulgadas Super Actua' }
   },
   {
     id: '4',
     name: 'Galaxy S24 Ultra',
-    description: 'Epic. Just like that. Experience the new standard with Galaxy AI, S Pen, and incredible camera.',
-    price: 1199,
-    images: ['https://placehold.co/600x600.png?text=Galaxy+S24+Ultra', 'https://placehold.co/600x600.png?text=S24+Ultra+Detail'],
+    description: 'Épico. Así de simple. Experimenta el nuevo estándar con Galaxy AI, S Pen y una cámara increíble.',
+    price: 5500000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=Galaxy+S24+Ultra', 'https://placehold.co/600x600.png?text=S24+Ultra+Detalle'],
     category: categories[1],
     stock: 30,
     rating: 4.9,
     reviewsCount: 110,
-    details: { Storage: '512GB', Color: 'Titanium Gray', Display: '6.8-inch Dynamic AMOLED 2X' }
+    details: { Almacenamiento: '512GB', Color: 'Gris Titanio', Pantalla: '6.8 pulgadas Dynamic AMOLED 2X' }
   },
   {
     id: '5',
-    name: 'AirPods Pro (2nd Gen)',
-    description: 'Adaptive Audio. Now automatically prioritizes sounds that need your attention.',
-    price: 249,
-    images: ['https://placehold.co/600x600.png?text=AirPods+Pro', 'https://placehold.co/600x600.png?text=AirPods+Pro+Case'],
+    name: 'AirPods Pro (2da Gen)',
+    description: 'Audio Adaptable. Ahora prioriza automáticamente los sonidos que necesitan tu atención.',
+    price: 950000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=AirPods+Pro', 'https://placehold.co/600x600.png?text=AirPods+Pro+Estuche'],
     category: categories[2],
     stock: 150,
     rating: 4.8,
     reviewsCount: 250,
-    details: { Connectivity: 'Bluetooth 5.3', Special: 'Active Noise Cancellation' }
+    details: { Conectividad: 'Bluetooth 5.3', Especial: 'Cancelación Activa de Ruido' }
   },
   {
     id: '6',
-    name: 'MagSafe Charger',
-    description: 'The MagSafe Charger makes wireless charging a snap. Perfectly aligned magnets attach to your iPhone.',
-    price: 39,
-    images: ['https://placehold.co/600x600.png?text=MagSafe+Charger'],
+    name: 'Cargador MagSafe',
+    description: 'El cargador MagSafe hace que la carga inalámbrica sea instantánea. Imanes perfectamente alineados se adhieren a tu iPhone.',
+    price: 180000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=Cargador+MagSafe'],
     category: categories[2],
     stock: 200,
     rating: 4.5,
     reviewsCount: 180,
-    details: { Compatibility: 'iPhone 12 and later', Type: 'Wireless Charger' }
+    details: { Compatibilidad: 'iPhone 12 y posterior', Tipo: 'Cargador Inalámbrico' }
   },
    {
     id: '7',
-    name: 'Anker USB-C Cable',
-    description: 'High-speed charging and data transfer. Durable braided nylon design.',
-    price: 19,
-    images: ['https://placehold.co/600x600.png?text=USB-C+Cable'],
+    name: 'Cable USB-C Anker',
+    description: 'Carga de alta velocidad y transferencia de datos. Diseño duradero de nylon trenzado.',
+    price: 85000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=Cable+USB-C'],
     category: categories[2],
     stock: 300,
     rating: 4.7,
     reviewsCount: 320,
-    details: { Length: '6 ft', Material: 'Braided Nylon', Type: 'USB-C to USB-C' }
+    details: { Longitud: '1.8 m', Material: 'Nylon Trenzado', Tipo: 'USB-C a USB-C' }
   },
   {
     id: '8',
-    name: 'Smart LED Desk Lamp',
-    description: 'Adjustable brightness and color temperature, with app control.',
-    price: 59,
-    images: ['https://placehold.co/600x600.png?text=Desk+Lamp'],
+    name: 'Lámpara de Escritorio LED Inteligente',
+    description: 'Brillo y temperatura de color ajustables, con control desde la app.',
+    price: 250000, // Example COP price
+    images: ['https://placehold.co/600x600.png?text=Lampara+Escritorio'],
     category: categories[2],
     stock: 80,
     rating: 4.6,
     reviewsCount: 90,
-    details: { Features: 'App Control, Dimmable', Color: 'White' }
+    details: { Funciones: 'Control por App, Regulable', Color: 'Blanco' }
   }
 ];
 
 export const mockUser: User = {
   id: 'user123',
-  name: 'Alice Wonderland',
-  email: 'alice@example.com',
-  avatar: 'https://placehold.co/100x100.png?text=AW',
+  name: 'Ana Pérez',
+  email: 'ana.perez@example.com',
+  phone: '3001234567',
+  avatar: 'https://placehold.co/100x100.png?text=AP',
   addresses: [
-    { id: 'addr1', street: '123 Main St', city: 'Techville', state: 'CA', zipCode: '90210', country: 'USA', isDefault: true },
+    { id: 'addr1', street: 'Carrera 7 # 70-30', city: 'Bogotá D.C.', state: 'Cundinamarca', zipCode: '110231', country: 'Colombia', isDefault: true },
   ],
 };
 
@@ -124,20 +126,29 @@ export const mockOrders: Order[] = [
       { ...products[4], quantity: 1 },
     ],
     totalAmount: products[0].price + products[4].price,
-    status: 'Delivered',
-    orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+    status: 'Entregado',
+    orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), 
     shippingAddress: mockUser.addresses![0],
-    trackingNumber: '1Z999AA10123456789',
+    trackingNumber: 'CO999AA10123456789',
   },
   {
     id: 'order002',
     userId: 'user123',
     items: [{ ...products[2], quantity: 1 }],
     totalAmount: products[2].price,
-    status: 'Shipped',
-    orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 days ago
+    status: 'Enviado',
+    orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), 
     shippingAddress: mockUser.addresses![0],
-    trackingNumber: '1Z999AA10198765432',
+    trackingNumber: 'CO999AA10198765432',
+  },
+  {
+    id: 'order003',
+    userId: 'user123',
+    items: [{ ...products[1], quantity: 2 }],
+    totalAmount: products[1].price * 2,
+    status: 'Procesando',
+    orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), 
+    shippingAddress: mockUser.addresses![0],
   },
 ];
 

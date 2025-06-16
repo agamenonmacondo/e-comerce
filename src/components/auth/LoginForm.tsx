@@ -18,8 +18,8 @@ import { Mail, Lock } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 
 const formSchema = z.object({
-  email: z.string().email({ message: 'Invalid email address.' }),
-  password: z.string().min(6, { message: 'Password must be at least 6 characters.' }),
+  email: z.string().email({ message: 'Correo electrónico inválido.' }),
+  password: z.string().min(6, { message: 'La contraseña debe tener al menos 6 caracteres.' }),
 });
 
 export default function LoginForm() {
@@ -33,20 +33,18 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    // Simulate API call
     console.log(values);
     await new Promise(resolve => setTimeout(resolve, 1000));
     toast({
-      title: "Login Attempt",
-      description: "Login functionality is a placeholder.",
+      title: "Intento de Inicio de Sesión",
+      description: "La funcionalidad de inicio de sesión es una simulación.",
     });
-    // router.push('/'); // Redirect on successful login
   }
 
   return (
     <Card className="shadow-xl">
       <CardHeader>
-        <CardTitle className="text-center text-xl">Sign In</CardTitle>
+        <CardTitle className="text-center text-xl">Iniciar Sesión</CardTitle>
       </CardHeader>
       <CardContent>
         <Form {...form}>
@@ -56,11 +54,11 @@ export default function LoginForm() {
               name="email"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Email</FormLabel>
+                  <FormLabel>Correo Electrónico</FormLabel>
                   <div className="relative">
                     <Mail className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <FormControl>
-                      <Input placeholder="you@example.com" {...field} className="pl-10" />
+                      <Input placeholder="tu@ejemplo.com" {...field} className="pl-10" />
                     </FormControl>
                   </div>
                   <FormMessage />
@@ -72,7 +70,7 @@ export default function LoginForm() {
               name="password"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Password</FormLabel>
+                  <FormLabel>Contraseña</FormLabel>
                   <div className="relative">
                      <Lock className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
                     <FormControl>
@@ -84,13 +82,13 @@ export default function LoginForm() {
               )}
             />
              <Button type="submit" className="w-full transition-transform hover:scale-105 active:scale-95">
-              Sign In
+              Iniciar Sesión
             </Button>
           </form>
         </Form>
       </CardContent>
        <CardFooter className="flex flex-col items-center text-xs text-muted-foreground">
-          <Button variant="link" className="text-xs p-0 h-auto mt-2">Forgot password?</Button>
+          <Button variant="link" className="text-xs p-0 h-auto mt-2">¿Olvidaste tu contraseña?</Button>
       </CardFooter>
     </Card>
   );

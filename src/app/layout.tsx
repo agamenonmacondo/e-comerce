@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
 export const metadata: Metadata = {
-  title: 'Giga Go',
-  description: 'Giga Go - Tu Tienda Online de Tecnología',
+  title: 'GigaGO',
+  description: 'GigaGO - Tu Tienda Online de Tecnología',
 };
 
 export default function RootLayout({

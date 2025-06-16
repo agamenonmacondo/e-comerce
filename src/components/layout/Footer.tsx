@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { BriefcaseBusiness } from 'lucide-react';
 
 export default function Footer() {
   return (
@@ -7,9 +6,8 @@ export default function Footer() {
       <div className="container mx-auto py-8 px-4 md:px-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           <div>
-            <Link href="/" className="flex items-center space-x-2 mb-4">
-              <BriefcaseBusiness className="h-7 w-7 text-primary" />
-              <span className="font-bold text-2xl font-headline">Giga Go</span>
+            <Link href="/" className="inline-block mb-4">
+              <span className="font-bold text-2xl font-headline">GigaGO</span>
             </Link>
             <p className="text-muted-foreground text-sm">
               Tu tienda única para lo último en tecnología y accesorios.
@@ -36,7 +34,7 @@ export default function Footer() {
           </div>
         </div>
         <div className="mt-8 pt-8 border-t border-border/40 text-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} Giga Go. Todos los derechos reservados.</p>
+          <p>&copy; {new Date().getFullYear()} GigaGO. Todos los derechos reservados.</p>
         </div>
       </div>
     </footer>

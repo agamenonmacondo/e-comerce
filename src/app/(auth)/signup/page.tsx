@@ -1,6 +1,5 @@
 import SignupForm from '@/components/auth/SignupForm';
 import Link from 'next/link';
-import { BriefcaseBusiness } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function SignupPage() {
@@ -8,12 +7,11 @@ export default function SignupPage() {
     <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-primary/10 via-background to-accent/5 p-4">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-           <Link href="/" className="inline-flex items-center space-x-2 mb-4">
-            <BriefcaseBusiness className="h-8 w-8 text-primary" />
-            <span className="font-bold text-3xl font-headline">Giga Go</span>
+           <Link href="/" className="inline-block mb-4">
+            <span className="font-bold text-3xl font-headline">GigaGO</span>
           </Link>
           <h2 className="text-2xl font-semibold text-foreground">Crear una Cuenta</h2>
-          <p className="text-muted-foreground">Únete a Giga Go hoy para empezar.</p>
+          <p className="text-muted-foreground">Únete a GigaGO hoy para empezar.</p>
         </div>
         <SignupForm />
         <p className="mt-6 text-center text-sm text-muted-foreground">

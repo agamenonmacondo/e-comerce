@@ -7,6 +7,8 @@ export const categories: Category[] = [
   { id: '3', name: 'Accesorios', slug: 'accesorios' },
 ];
 
+const now = new Date();
+
 // Prices in COP (Colombian Pesos)
 export const products: Product[] = [
   {
@@ -14,7 +16,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro',
     description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
     price: 4500000, // Example COP price
-    images: [
+    imageUrls: [ // Changed from images to imageUrls
       '/apple-iphone-16-pro-max-desert-titanium-1.png',
       '/iphone-16-pro-max-back-black-titanium-1.png',
       '/iphone-16-pro-max-different-colors-phones-1.png'
@@ -23,14 +25,16 @@ export const products: Product[] = [
     stock: 50,
     rating: 4.9,
     reviewsCount: 120,
-    details: { Almacenamiento: '256GB', Color: 'Titanio Azul', Pantalla: '6.1 pulgadas Super Retina XDR' }
+    details: { Almacenamiento: '256GB', Color: 'Titanio Azul', Pantalla: '6.1 pulgadas Super Retina XDR' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
   {
     id: '2',
     name: 'iPhone 15',
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
-    images: [
+    imageUrls: [ // Changed from images to imageUrls
       '/iphone_15_hero.png',
       'https://placehold.co/600x400.png'
     ],
@@ -38,79 +42,93 @@ export const products: Product[] = [
     stock: 75,
     rating: 4.7,
     reviewsCount: 95,
-    details: { Almacenamiento: '128GB', Color: 'Rosado', Pantalla: '6.1 pulgadas Super Retina XDR' }
+    details: { Almacenamiento: '128GB', Color: 'Rosado', Pantalla: '6.1 pulgadas Super Retina XDR' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
   {
     id: '3',
     name: 'Pixel 8 Pro',
     description: 'El Pixel más avanzado hasta la fecha. Google Tensor G3, cámaras de nivel profesional y una brillante pantalla Actua.',
     price: 4200000, // Example COP price
-    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'],
+    imageUrls: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'], // Changed from images to imageUrls
     category: categories[1],
     stock: 40,
     rating: 4.8,
     reviewsCount: 80,
-    details: { Almacenamiento: '256GB', Color: 'Obsidiana', Pantalla: '6.7 pulgadas Super Actua' }
+    details: { Almacenamiento: '256GB', Color: 'Obsidiana', Pantalla: '6.7 pulgadas Super Actua' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
   {
     id: '4',
     name: 'Galaxy S24 Ultra',
     description: 'Épico. Así de simple. Experimenta el nuevo estándar con Galaxy AI, S Pen y una cámara increíble.',
     price: 5500000, // Example COP price
-    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'],
+    imageUrls: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'], // Changed from images to imageUrls
     category: categories[1],
     stock: 30,
     rating: 4.9,
     reviewsCount: 110,
-    details: { Almacenamiento: '512GB', Color: 'Gris Titanio', Pantalla: '6.8 pulgadas Dynamic AMOLED 2X' }
+    details: { Almacenamiento: '512GB', Color: 'Gris Titanio', Pantalla: '6.8 pulgadas Dynamic AMOLED 2X' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
   {
     id: '5',
     name: 'AirPods Pro (2da Gen)',
     description: 'Audio Adaptable. Ahora prioriza automáticamente los sonidos que necesitan tu atención.',
     price: 950000, // Example COP price
-    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'],
+    imageUrls: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'], // Changed from images to imageUrls
     category: categories[2],
     stock: 150,
     rating: 4.8,
     reviewsCount: 250,
-    details: { Conectividad: 'Bluetooth 5.3', Especial: 'Cancelación Activa de Ruido' }
+    details: { Conectividad: 'Bluetooth 5.3', Especial: 'Cancelación Activa de Ruido' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
   {
     id: '6',
     name: 'Cargador MagSafe',
     description: 'El cargador MagSafe hace que la carga inalámbrica sea instantánea. Imanes perfectamente alineados se adhieren a tu iPhone.',
     price: 180000, // Example COP price
-    images: ['https://placehold.co/600x600.png'],
+    imageUrls: ['https://placehold.co/600x600.png'], // Changed from images to imageUrls
     category: categories[2],
     stock: 200,
     rating: 4.5,
     reviewsCount: 180,
-    details: { Compatibilidad: 'iPhone 12 y posterior', Tipo: 'Cargador Inalámbrico' }
+    details: { Compatibilidad: 'iPhone 12 y posterior', Tipo: 'Cargador Inalámbrico' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
    {
     id: '7',
     name: 'Cable USB-C Anker',
     description: 'Carga de alta velocidad y transferencia de datos. Diseño duradero de nylon trenzado.',
     price: 85000, // Example COP price
-    images: ['https://placehold.co/600x600.png'],
+    imageUrls: ['https://placehold.co/600x600.png'], // Changed from images to imageUrls
     category: categories[2],
     stock: 300,
     rating: 4.7,
     reviewsCount: 320,
-    details: { Longitud: '1.8 m', Material: 'Nylon Trenzado', Tipo: 'USB-C a USB-C' }
+    details: { Longitud: '1.8 m', Material: 'Nylon Trenzado', Tipo: 'USB-C a USB-C' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   },
   {
     id: '8',
     name: 'Lámpara de Escritorio LED Inteligente',
     description: 'Brillo y temperatura de color ajustables, con control desde la app.',
     price: 250000, // Example COP price
-    images: ['https://placehold.co/600x600.png'],
+    imageUrls: ['https://placehold.co/600x600.png'], // Changed from images to imageUrls
     category: categories[2],
     stock: 80,
     rating: 4.6,
     reviewsCount: 90,
-    details: { Funciones: 'Control por App, Regulable', Color: 'Blanco' }
+    details: { Funciones: 'Control por App, Regulable', Color: 'Blanco' },
+    createdAt: now, // Added
+    updatedAt: now, // Added
   }
 ];
 
@@ -162,14 +180,11 @@ export const mockOrders: Order[] = [
 
 export function getProductById(id: string): Product | undefined {
   const product = products.find(p => p.id === id);
-  // The data-ai-hint logic is primarily handled by the components rendering these images.
-  // This function just returns the product data as is from the main 'products' array.
   return product;
 }
 
 export function getProductsByCategory(categorySlug: string): Product[] {
   const category = categories.find(c => c.slug === categorySlug);
   if (!category) return [];
-  // The data-ai-hint logic is primarily handled by the components rendering these images.
   return products.filter(p => p.category.id === category.id);
 }

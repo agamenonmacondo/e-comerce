@@ -49,7 +49,7 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
                   aria-label={`Ver ${product.name}`}
                 >
                   <Image
-                    src={product.images[0]}
+                    src={product.imageUrls[0]} // Changed from product.images[0]
                     alt={product.name}
                     fill
                     sizes="(max-width: 768px) 288px, 320px"
@@ -72,4 +72,3 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
     </section>
   );
 }
-

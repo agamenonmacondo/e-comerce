@@ -28,6 +28,7 @@ export default function ProductDetailPage() {
 
   useEffect(() => {
     if (id) {
+      // TODO: Fetch product from Firestore in a real app
       const fetchedProduct = getProductById(Array.isArray(id) ? id[0] : id);
       setProduct(fetchedProduct || null);
       setCurrentImageIndex(0); 
@@ -42,6 +43,7 @@ export default function ProductDetailPage() {
     );
   }
 
+  // TODO: Fetch related products from Firestore
   const relatedProducts = allProducts.filter(p => p.category.id === product.category.id && p.id !== product.id).slice(0, 4);
 
   const handleQuantityChange = (amount: number) => {
@@ -49,6 +51,7 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
+    // TODO: Implement actual add to cart logic (e.g., update state/context or call a server action)
     toast({
       title: `¡${product.name} añadido al carrito!`,
       description: `Cantidad: ${quantity}`,
@@ -61,11 +64,11 @@ export default function ProductDetailPage() {
   };
 
   const nextImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.images.length);
+    setCurrentImageIndex((prevIndex) => (prevIndex + 1) % product.imageUrls.length);
   };
 
   const prevImage = () => {
-    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + product.images.length) % product.images.length);
+    setCurrentImageIndex((prevIndex) => (prevIndex - 1 + product.imageUrls.length) % product.imageUrls.length);
   };
   
   const getImageHint = (product: Product) => {
@@ -88,7 +91,7 @@ export default function ProductDetailPage() {
         <div className="space-y-4">
           <div className="relative aspect-square rounded-lg overflow-hidden shadow-lg border bg-card">
             <Image
-              src={product.images[currentImageIndex]}
+              src={product.imageUrls[currentImageIndex]}
               alt={`${product.name} imagen ${currentImageIndex + 1}`}
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
@@ -96,7 +99,7 @@ export default function ProductDetailPage() {
               data-ai-hint={getImageHint(product)}
               priority={currentImageIndex === 0}
             />
-             {product.images.length > 1 && (
+             {product.imageUrls.length > 1 && (
               <>
                 <Button
                   variant="outline"
@@ -119,9 +122,9 @@ export default function ProductDetailPage() {
               </>
             )}
           </div>
-          {product.images.length > 1 && (
+          {product.imageUrls.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {product.images.map((img, index) => (
+              {product.imageUrls.map((img, index) => (
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}

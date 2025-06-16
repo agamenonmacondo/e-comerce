@@ -15,8 +15,9 @@ import { CreditCard, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 
 const initialCartItems: CartItem[] = [
-  { ...allProducts[0], quantity: 1 },
-  { ...allProducts[2], quantity: 2 },
+  // Simulate adding products with all their fields, including new ones
+  { ...allProducts[0], quantity: 1, createdAt: new Date(), updatedAt: new Date() },
+  { ...allProducts[2], quantity: 2, createdAt: new Date(), updatedAt: new Date() },
 ];
 
 export default function CartPage() {
@@ -104,7 +105,7 @@ export default function CartPage() {
             <Card key={item.id} className="flex flex-col sm:flex-row items-center p-4 gap-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-md overflow-hidden flex-shrink-0 bg-muted">
                 <Image 
-                  src={item.images[0]} 
+                  src={item.imageUrls[0]} // Changed from item.images[0]
                   alt={item.name} 
                   fill sizes="10vw" 
                   className="object-cover" 

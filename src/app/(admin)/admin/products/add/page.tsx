@@ -14,6 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { categories } from '@/lib/placeholder-data';
 import { PackagePlus, ChevronLeft, UploadCloud } from 'lucide-react';
 import Link from 'next/link';
+import { addProduct } from '@/lib/actions/product.actions'; // Import the server action
+import { useState } from 'react';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
 const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
@@ -38,6 +40,7 @@ type AddProductFormValues = z.infer<typeof addProductFormSchema>;
 
 export default function AddProductPage() {
   const { toast } = useToast();
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<AddProductFormValues>({
     resolver: zodResolver(addProductFormSchema),
@@ -52,16 +55,38 @@ export default function AddProductPage() {
     },
   });
 
-  function onSubmit(data: AddProductFormValues) {
-    console.log("Datos del nuevo producto (simulación):", data);
-    const image1Name = data.imageUrl1?.[0]?.name || "Ninguna seleccionada";
-    const image2Name = data.imageUrl2?.[0]?.name || "Ninguna seleccionada";
-    
-    toast({
-      title: "Producto Añadido (Simulación)",
-      description: `"${data.name}" ha sido añadido. Imagen principal: ${image1Name}. Imagen secundaria: ${image2Name}. (Esto es una simulación y el producto no se guardará permanentemente).`,
-    });
-    form.reset(); 
+  async function onSubmit(data: AddProductFormValues) {
+    setIsSubmitting(true);
+    const formData = new FormData();
+    formData.append('name', data.name);
+    formData.append('description', data.description);
+    formData.append('price', data.price.toString());
+    formData.append('stock', data.stock.toString());
+    formData.append('categoryId', data.categoryId);
+
+    if (data.imageUrl1 && data.imageUrl1.length > 0) {
+      formData.append('imageUrl1', data.imageUrl1[0]);
+    }
+    if (data.imageUrl2 && data.imageUrl2.length > 0) {
+      formData.append('imageUrl2', data.imageUrl2[0]);
+    }
+
+    const result = await addProduct(formData);
+
+    if (result.success) {
+      toast({
+        title: "Producto Añadido",
+        description: result.message,
+      });
+      form.reset();
+    } else {
+      toast({
+        title: "Error al Añadir Producto",
+        description: result.message,
+        variant: "destructive",
+      });
+    }
+    setIsSubmitting(false);
   }
 
   return (
@@ -81,7 +106,7 @@ export default function AddProductPage() {
       <Card className="shadow-xl max-w-2xl mx-auto">
         <CardHeader>
           <CardTitle>Detalles del Producto</CardTitle>
-          <CardDescription>Completa la información para añadir un nuevo producto al catálogo (simulación).</CardDescription>
+          <CardDescription>Completa la información para añadir un nuevo producto al catálogo.</CardDescription>
         </CardHeader>
         <CardContent>
           <Form {...form}>
@@ -198,8 +223,12 @@ export default function AddProductPage() {
                   </FormItem>
                 )}
               />
-              <Button type="submit" size="lg" className="w-full transition-transform hover:scale-105 active:scale-95">
-                <PackagePlus className="mr-2 h-5 w-5" /> Añadir Producto (Simulación)
+              <Button type="submit" size="lg" className="w-full transition-transform hover:scale-105 active:scale-95" disabled={isSubmitting}>
+                {isSubmitting ? 'Añadiendo Producto...' : (
+                  <>
+                    <PackagePlus className="mr-2 h-5 w-5" /> Añadir Producto
+                  </>
+                )}
               </Button>
             </form>
           </Form>

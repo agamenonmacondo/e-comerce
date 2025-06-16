@@ -30,13 +30,13 @@ export default function ProductCard({ product }: ProductCardProps) {
       <CardHeader className="p-0">
         <Link href={`/products/${product.id}`} className="block aspect-[4/3] relative overflow-hidden">
           <Image
-            src={product.images[0]}
+            src={product.imageUrls[0]} // Changed from product.images[0]
             alt={product.name}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 hover:scale-105"
             data-ai-hint={getImageHint(product)}
-            priority={product.id === '1' || product.id === '2'} // Prioritize first few main product images
+            priority={product.id === '1' || product.id === '2'} 
           />
         </Link>
       </CardHeader>

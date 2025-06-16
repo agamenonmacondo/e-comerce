@@ -10,12 +10,14 @@ export interface Product {
   name: string;
   description: string;
   price: number; // Prices will be in COP
-  images: string[];
+  imageUrls: string[]; // Changed from images to imageUrls
   category: Category;
   stock: number;
   rating?: number; 
   reviewsCount?: number; 
   details?: Record<string, string>; 
+  createdAt: Date; // Added
+  updatedAt: Date; // Added
 }
 
 export interface CartItem extends Product {

@@ -162,47 +162,14 @@ export const mockOrders: Order[] = [
 
 export function getProductById(id: string): Product | undefined {
   const product = products.find(p => p.id === id);
-  if (product) {
-    // Ensure all images have appropriate data-ai-hint attributes
-    const updatedImages = product.images.map(imgSrc => {
-      if (imgSrc.startsWith('https://placehold.co')) {
-        if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
-          return imgSrc; // Placeholder already includes data-ai-hint via ProductCard/ProductDetailPage
-        }
-        if (product.category.slug === 'accesorios') {
-          if (product.name.toLowerCase().includes('airpods')) return imgSrc;
-          if (product.name.toLowerCase().includes('cargador')) return imgSrc;
-          if (product.name.toLowerCase().includes('cable')) return imgSrc;
-          return imgSrc;
-        }
-        return imgSrc;
-      }
-      return imgSrc; // For local images, hints are added in components
-    });
-    return { ...product, images: updatedImages };
-  }
-  return undefined;
+  // The data-ai-hint logic is primarily handled by the components rendering these images.
+  // This function just returns the product data as is from the main 'products' array.
+  return product;
 }
 
 export function getProductsByCategory(categorySlug: string): Product[] {
   const category = categories.find(c => c.slug === categorySlug);
   if (!category) return [];
-  return products.filter(p => p.category.id === category.id).map(product => {
-    const updatedImages = product.images.map(imgSrc => {
-       if (imgSrc.startsWith('https://placehold.co')) {
-        if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
-          return imgSrc;
-        }
-        if (product.category.slug === 'accesorios') {
-          if (product.name.toLowerCase().includes('airpods')) return imgSrc;
-          if (product.name.toLowerCase().includes('cargador')) return imgSrc;
-          if (product.name.toLowerCase().includes('cable')) return imgSrc;
-          return imgSrc;
-        }
-        return imgSrc;
-      }
-      return imgSrc;
-    });
-    return { ...product, images: updatedImages };
-  });
+  // The data-ai-hint logic is primarily handled by the components rendering these images.
+  return products.filter(p => p.category.id === category.id);
 }

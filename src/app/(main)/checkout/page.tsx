@@ -97,15 +97,16 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
-      console.error("Stripe publishable key is not set. Checkout will not function.");
+    if (!stripePromise) {
+      console.error("Stripe.js no se cargó, probablemente debido a una clave publicable faltante o incorrecta.");
       toast({
         title: "Error de Configuración de Pago",
-        description: "Falta la clave publicable de Stripe. El botón de pago estará desactivado hasta que se configure.",
+        description: "No se pudo inicializar Stripe. Verifica tu NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY en el archivo .env y reinicia el servidor. El botón de pago estará desactivado.",
         variant: "destructive",
+        duration: Infinity, // Hace el toast persistente
       });
     }
-  }, [toast]);
+  }, [stripePromise, toast]);
 
 
   async function handleFinalSubmit() {
@@ -119,7 +120,7 @@ export default function CheckoutPage() {
     const isPaymentValid = await paymentForm.trigger();
 
     if (!isShippingValid) {
-      toast({ title: "Error de Envío", description: "Por favor, completa los detalles de envío.", variant: "destructive" });
+      toast({ title: "Error de Envío", description: "Por favor, completa los detalles de envío correctamente.", variant: "destructive" });
       setIsSubmitting(false);
       return;
     }
@@ -135,7 +136,7 @@ export default function CheckoutPage() {
     const orderInput: PlaceOrderInput = {
       shippingDetails: {
         ...shippingData,
-        phone: shippingData.phone,
+        phone: shippingData.phone, // Este es el correo electrónico
       },
       paymentMethod: paymentData.paymentMethod!,
       cartItems: orderSummary.items.map(item => ({

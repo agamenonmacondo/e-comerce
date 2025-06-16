@@ -1,0 +1,197 @@
+
+'use client';
+
+import { useState, useEffect } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { useToast } from '@/hooks/use-toast';
+import { products as initialProducts } from '@/lib/placeholder-data';
+import type { Product } from '@/types';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Edit3, Save } from 'lucide-react';
+import { formatColombianCurrency } from '@/lib/utils';
+
+// Extend Product type for local state management in admin
+interface AdminProduct extends Product {
+  currentStock: number; // To display
+  newStockInput: string; // For the input field
+}
+
+export default function AdminDashboardPage() {
+  const { toast } = useToast();
+  const [products, setProducts] = useState<AdminProduct[]>([]);
+
+  useEffect(() => {
+    // Initialize products with current stock and an input field state
+    setProducts(
+      initialProducts.map(p => ({
+        ...p,
+        currentStock: p.stock,
+        newStockInput: p.stock.toString(),
+      }))
+    );
+  }, []);
+
+  const handleStockInputChange = (productId: string, value: string) => {
+    setProducts(prevProducts =>
+      prevProducts.map(p =>
+        p.id === productId ? { ...p, newStockInput: value } : p
+      )
+    );
+  };
+
+  const handleUpdateStock = (productId: string) => {
+    const product = products.find(p => p.id === productId);
+    if (!product) return;
+
+    const newStock = parseInt(product.newStockInput, 10);
+    if (isNaN(newStock) || newStock < 0) {
+      toast({
+        title: 'Error de Stock',
+        description: 'Por favor, introduce un número válido para el stock.',
+        variant: 'destructive',
+      });
+      return;
+    }
+
+    // Simulate updating stock
+    setProducts(prevProducts =>
+      prevProducts.map(p =>
+        p.id === productId ? { ...p, currentStock: newStock, stock: newStock /* Update base stock for consistency in this view */ } : p
+      )
+    );
+
+    toast({
+      title: 'Inventario Actualizado (Simulación)',
+      description: `El stock para ${product.name} ha sido ajustado a ${newStock}. (Esto es una simulación y no persistirá).`,
+    });
+  };
+
+  // Simulated stats
+  const totalSales = 125800000; // Example: 125,800,000 COP
+  const totalOrders = 342;
+  const newCustomers = 58;
+  const lowStockItems = products.filter(p => p.currentStock < 10).length;
+
+
+  return (
+    <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
+      <div className="mb-8">
+        <h1 className="text-3xl md:text-4xl font-bold font-headline flex items-center">
+          <BarChart3 className="mr-3 h-8 w-8 text-primary" />
+          Panel de Administración
+        </h1>
+        <p className="text-muted-foreground">Gestiona tu tienda GigaGO.</p>
+      </div>
+
+      {/* Statistics Section */}
+      <section className="mb-12">
+        <h2 className="text-2xl font-semibold font-headline mb-6">Estadísticas Clave</h2>
+        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Ventas Totales (Mes)</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{formatColombianCurrency(totalSales)}</div>
+              <p className="text-xs text-muted-foreground">+15.3% desde el mes pasado</p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Pedidos Totales (Mes)</CardTitle>
+              <ShoppingBag className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+{totalOrders}</div>
+              <p className="text-xs text-muted-foreground">+8.1% desde el mes pasado</p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Nuevos Clientes (Mes)</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">+{newCustomers}</div>
+              <p className="text-xs text-muted-foreground">Registrados este mes</p>
+            </CardContent>
+          </Card>
+          <Card className="shadow-md hover:shadow-lg transition-shadow">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Productos Bajos en Stock</CardTitle>
+              <Package className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className={`text-2xl font-bold ${lowStockItems > 0 ? 'text-destructive' : ''}`}>{lowStockItems}</div>
+              <p className="text-xs text-muted-foreground">Menos de 10 unidades</p>
+            </CardContent>
+          </Card>
+        </div>
+      </section>
+
+      {/* Inventory Management Section */}
+      <section>
+        <Card className="shadow-xl">
+          <CardHeader>
+            <CardTitle className="text-2xl font-headline flex items-center">
+              <Package className="mr-3 h-6 w-6 text-primary" />
+              Gestión de Inventario (Simulación)
+            </CardTitle>
+            <CardDescription>
+              Visualiza y ajusta el stock de tus productos. Los cambios aquí son solo para demostración y no persistirán.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Producto</TableHead>
+                  <TableHead className="w-32 text-center">Stock Actual</TableHead>
+                  <TableHead className="w-48 text-center">Ajustar Stock</TableHead>
+                  <TableHead className="w-32 text-right">Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {products.map(product => (
+                  <TableRow key={product.id}>
+                    <TableCell>
+                      <div className="font-medium">{product.name}</div>
+                      <div className="text-xs text-muted-foreground">{product.category.name}</div>
+                    </TableCell>
+                    <TableCell className="text-center font-semibold">{product.currentStock}</TableCell>
+                    <TableCell className="text-center">
+                      <Input
+                        type="number"
+                        value={product.newStockInput}
+                        onChange={e => handleStockInputChange(product.id, e.target.value)}
+                        className="h-9 text-center"
+                        min="0"
+                        aria-label={`Nuevo stock para ${product.name}`}
+                      />
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => handleUpdateStock(product.id)}
+                        className="transition-transform hover:scale-105 active:scale-95"
+                      >
+                        <Save className="mr-1.5 h-3.5 w-3.5" />
+                        Guardar
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </CardContent>
+        </Card>
+      </section>
+    </div>
+  );
+}
+
+    

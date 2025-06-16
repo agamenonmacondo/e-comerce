@@ -3,17 +3,18 @@
 import { useState, useEffect, useCallback } from 'react';
 import ProductList from '@/components/products/ProductList';
 import FilterSidebar from '@/components/products/FilterSidebar';
+import ProductMarquee from '@/components/products/ProductMarquee'; // Added import
 import { products as allProducts, categories } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import Image from 'next/image';
 import { ChevronRight } from 'lucide-react';
 
 export default function HomePage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(allProducts);
   const [currentFilters, setCurrentFilters] = useState({ categories: [], priceRange: [0, 5000000] }); // Price range in COP
   const [currentSortKey, setCurrentSortKey] = useState('relevance');
+
+  const latestProducts = allProducts.slice(0, 8); // Get first 8 products as "latest"
 
   const applyFiltersAndSort = useCallback(() => {
     let tempProducts = [...allProducts];
@@ -39,7 +40,7 @@ export default function HomePage() {
         tempProducts.sort((a, b) => (b.rating || 0) - (a.rating || 0));
         break;
       case 'newest': 
-        tempProducts.sort((a, b) => parseInt(b.id) - parseInt(a.id)); // Mock, needs date
+        tempProducts.sort((a, b) => parseInt(b.id) - parseInt(a.id)); 
         break;
       case 'relevance': 
       default:
@@ -65,28 +66,14 @@ export default function HomePage() {
 
   return (
     <>
-      <section className="bg-gradient-to-r from-primary/20 via-background to-accent/10 py-16 md:py-24">
-        <div className="container mx-auto px-4 md:px-6 text-center">
-          <h1 className="text-4xl md:text-6xl font-bold font-headline mb-6 text-foreground">
-            Descubre la Innovación
-          </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Explora lo último en tecnología de punta y accesorios con estilo. Encuentra tu próximo gadget favorito con iCommerce.
-          </p>
-          <Button size="lg" asChild className="transition-transform hover:scale-105 active:scale-95">
-            <Link href="#products">
-              Comprar Ahora <ChevronRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
-        </div>
-      </section>
+      <ProductMarquee products={latestProducts} title="Descubre Nuestras Novedades" />
 
       <section id="categories" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-bold font-headline text-center mb-10">Compra por Categoría</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {categories.map(category => (
-              <Link key={category.id} href={`#products`} onClick={() => handleFilterChange({ categories: [category.id], priceRange: [0,5000000]})} // Adjusted price range for COP
+              <Link key={category.id} href={`#products`} onClick={() => handleFilterChange({ categories: [category.id], priceRange: [0,5000000]})}
                 className="block group bg-card p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
                 <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors mb-2">{category.name}</h3>
                 <p className="text-sm text-muted-foreground">Explora todos los {category.name.toLowerCase()}.</p>
@@ -107,14 +94,13 @@ export default function HomePage() {
                 categories={categories} 
                 onFilterChange={handleFilterChange}
                 onSortChange={handleSortChange}
-                maxPrice={5000000} // Max price for COP
-                priceStep={100000} // Step for COP
+                maxPrice={5000000} 
+                priceStep={100000} 
               />
             </aside>
             <div className="w-full md:w-3/4 lg:w-4/5">
               <h2 className="text-3xl font-bold font-headline mb-8">Nuestros Productos</h2>
               <ProductList products={filteredProducts} />
-              {/* TODO: Añadir componente de Paginación aquí */}
             </div>
           </div>
         </div>

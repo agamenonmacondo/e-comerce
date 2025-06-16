@@ -86,3 +86,10 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Added marquee styles */
+@layer utilities {
+  .marquee-container:hover .marquee-content {
+    animation-play-state: paused;
+  }
+}

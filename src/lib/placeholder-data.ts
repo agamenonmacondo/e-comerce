@@ -14,7 +14,11 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro',
     description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
     price: 4500000, // Example COP price
-    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x400.png', 'https://placehold.co/400x600.png'],
+    images: [
+      '/images/apple-iphone-16-pro-max-desert-titanium-1.png', 
+      '/images/iphone-16-pro-max-back-black-titanium-1.png', 
+      '/images/iphone-16-pro-max-different-colors-phones-1.png'
+    ],
     category: categories[0],
     stock: 50,
     rating: 4.9,
@@ -26,7 +30,10 @@ export const products: Product[] = [
     name: 'iPhone 15',
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
-    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x400.png'], // Reverted to placeholder
+    images: [
+      '/images/iphone_15_hero.png', 
+      'https://placehold.co/600x400.png'
+    ],
     category: categories[0],
     stock: 75,
     rating: 4.7,

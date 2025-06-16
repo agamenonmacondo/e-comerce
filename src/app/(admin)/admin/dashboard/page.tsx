@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, FileText, Trash2 } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, FileText, Trash2, Store } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -89,12 +89,20 @@ export default function AdminDashboardPage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-4xl font-bold font-headline flex items-center">
-          <BarChart3 className="mr-3 h-8 w-8 text-primary" />
-          Panel de Administración
-        </h1>
-        <p className="text-muted-foreground">Gestiona tu tienda GigaGO.</p>
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between mb-8 gap-4">
+        <div>
+          <h1 className="text-3xl md:text-4xl font-bold font-headline flex items-center">
+            <BarChart3 className="mr-3 h-8 w-8 text-primary" />
+            Panel de Administración
+          </h1>
+          <p className="text-muted-foreground mt-1">Gestiona tu tienda GigaGO.</p>
+        </div>
+        <Button variant="outline" asChild>
+          <Link href="/">
+            <Store className="mr-2 h-4 w-4" />
+            Ver Tienda
+          </Link>
+        </Button>
       </div>
 
       <section className="mb-12">

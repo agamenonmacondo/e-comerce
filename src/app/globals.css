@@ -4,77 +4,77 @@
 
 @layer base {
   :root {
-    --background: 200 100% 97%; /* Very light, almost white, cool cyanic-blue tint */
-    --foreground: 210 20% 15%; /* Dark cool gray */
+    --background: 210 40% 98%; /* Very light cool gray, almost white */
+    --foreground: 220 20% 10%; /* Very dark, cool desaturated blue */
 
-    --card: 200 50% 100%; /* White, slightly off-white with cool tint */
-    --card-foreground: 210 20% 15%;
+    --card: 0 0% 100%; /* Pure white */
+    --card-foreground: 220 20% 10%;
 
-    --popover: 200 50% 100%;
-    --popover-foreground: 210 20% 15%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 10%;
 
-    --primary: 190 95% 55%; /* Bright Cyan/Electric Blue */
-    --primary-foreground: 210 100% 10%; /* Very Dark Blue for contrast */
+    --primary: 160 70% 45%; /* Strong, slightly desaturated teal/green */
+    --primary-foreground: 0 0% 100%; /* White for high contrast */
 
-    --secondary: 200 60% 90%; /* Light cool gray-blue */
-    --secondary-foreground: 210 20% 30%; /* Medium-dark cool gray */
+    --secondary: 210 30% 94%; /* Light cool gray */
+    --secondary-foreground: 220 20% 25%; /* Medium-dark cool gray */
 
-    --muted: 200 50% 94%; /* Very light cool gray-blue, for subtle backgrounds */
-    --muted-foreground: 210 15% 45%; /* Medium cool gray for muted text */
+    --muted: 210 30% 96%; /* Slightly lighter cool gray for muted elements */
+    --muted-foreground: 220 15% 45%; /* Medium cool gray for muted text */
 
-    --accent: 260 90% 65%; /* Vibrant Indigo/Purple */
-    --accent-foreground: 0 0% 98%; /* White */
+    --accent: 30 100% 55%; /* Vibrant orange */
+    --accent-foreground: 0 0% 0%; /* Black for contrast on orange */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 200 30% 88%; /* Cool gray border */
-    --input: 200 30% 92%;  /* Slightly lighter cool gray for input */
-    --ring: 190 80% 60%;   /* Ring color related to primary */
+    --border: 210 20% 88%; /* Cool gray border */
+    --input: 210 20% 92%;  /* Slightly lighter cool gray for input */
+    --ring: 160 70% 50%;   /* Ring color related to primary (teal/green) */
 
     --radius: 0.5rem;
 
-    --chart-1: 190 95% 55%; /* Primary */
-    --chart-2: 260 90% 65%; /* Accent */
-    --chart-3: 210 50% 50%; /* Neutral cool blue/gray */
-    --chart-4: 300 80% 60%; /* Vibrant magenta/pink */
-    --chart-5: 150 70% 50%; /* Seafoam green/teal */
+    --chart-1: 160 70% 45%; /* Primary (teal/green) */
+    --chart-2: 30 100% 55%; /* Accent (orange) */
+    --chart-3: 180 10% 50%; /* Neutral cool gray-green */
+    --chart-4: 320 70% 60%; /* Vibrant magenta/pink */
+    --chart-5: 50 100% 50%; /* Vibrant yellow/gold */
   }
 
   .dark {
-    --background: 220 30% 5%; /* Very Dark Desaturated Blue, almost black */
-    --foreground: 210 40% 95%; /* Light Gray/Off-white */
+    --background: 220 30% 8%; /* Very dark cool desaturated blue */
+    --foreground: 210 30% 95%; /* Light cool gray */
 
-    --card: 220 25% 10%; /* Darker Desaturated Blue, slightly lighter than background */
-    --card-foreground: 210 40% 95%;
+    --card: 220 25% 12%; /* Darker cool desaturated blue */
+    --card-foreground: 210 30% 95%;
 
-    --popover: 220 25% 10%;
-    --popover-foreground: 210 40% 95%;
+    --popover: 220 25% 12%;
+    --popover-foreground: 210 30% 95%;
 
-    --primary: 190 100% 60%; /* Vibrant Cyan/Electric Blue - brighter for dark mode */
-    --primary-foreground: 210 100% 10%; /* Very Dark Blue for contrast on bright primary */
+    --primary: 160 80% 55%; /* Brighter teal/green for dark mode */
+    --primary-foreground: 220 100% 5%; /* Very dark blue/black for contrast */
 
-    --secondary: 220 20% 15%; /* Dark Gray-Blue */
+    --secondary: 220 20% 18%; /* Dark gray-blue */
     --secondary-foreground: 210 30% 80%; /* Lighter Gray-Blue */
 
-    --muted: 220 15% 20%; /* Very Dark Gray-Blue for muted elements */
+    --muted: 220 15% 22%; /* Very dark gray-blue for muted elements */
     --muted-foreground: 210 25% 60%; /* Medium Gray-Blue for muted text */
 
-    --accent: 260 100% 70%; /* Bright Indigo/Purple - brighter for dark mode */
-    --accent-foreground: 0 0% 98%; /* White */
+    --accent: 30 100% 60%; /* Brighter orange for dark mode */
+    --accent-foreground: 0 0% 0%; /* Black for contrast on orange */
 
-    --destructive: 0 70% 50%; /* Slightly adjusted destructive for dark */
+    --destructive: 0 70% 50%; 
     --destructive-foreground: 0 0% 98%;
 
-    --border: 220 15% 25%; /* Dark Gray-Blue border, slightly visible */
-    --input: 220 15% 22%; /* Slightly lighter dark gray-blue for input background */
-    --ring: 190 90% 65%;   /* Bright Cyan ring, related to primary */
+    --border: 220 15% 28%; /* Dark Gray-Blue border */
+    --input: 220 15% 25%; /* Slightly lighter dark gray-blue for input */
+    --ring: 160 80% 60%;   /* Bright teal/green ring */
     
-    --chart-1: 190 100% 60%; /* Primary Dark */
-    --chart-2: 260 100% 70%; /* Accent Dark */
-    --chart-3: 210 40% 60%; /* Lighter neutral cool blue/gray for dark mode */
-    --chart-4: 300 90% 70%; /* Brighter magenta/pink for dark mode */
-    --chart-5: 150 80% 60%; /* Brighter seafoam green/teal for dark mode */
+    --chart-1: 160 80% 55%; /* Primary Dark (brighter teal/green) */
+    --chart-2: 30 100% 60%; /* Accent Dark (brighter orange) */
+    --chart-3: 180 10% 70%; /* Lighter neutral cool gray-green */
+    --chart-4: 320 80% 70%; /* Brighter magenta/pink */
+    --chart-5: 50 100% 60%; /* Brighter yellow/gold */
   }
 }
 

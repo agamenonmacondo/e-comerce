@@ -6,7 +6,7 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { ChevronLeft, ChevronsLeft, ChevronsRight, Package, PackageWarning, Filter } from 'lucide-react';
+import { ChevronLeft, ChevronsLeft, ChevronsRight, Package, AlertTriangle, Filter } from 'lucide-react';
 import { products as allProducts, categories as allCategories } from '@/lib/placeholder-data';
 import type { Product, Category } from '@/types';
 import { Input } from '@/components/ui/input';
@@ -95,7 +95,7 @@ export default function LowStockReportPage() {
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
       <div className="flex items-center justify-between mb-8">
         <h1 className="text-3xl md:text-4xl font-bold font-headline flex items-center">
-          <PackageWarning className="mr-3 h-8 w-8 text-destructive" />
+          <AlertTriangle className="mr-3 h-8 w-8 text-destructive" />
           Reporte de Productos con Bajo Stock
         </h1>
         <Button variant="outline" asChild>
@@ -195,3 +195,4 @@ export default function LowStockReportPage() {
     </div>
   );
 }
+

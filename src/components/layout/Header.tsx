@@ -1,8 +1,9 @@
 import Link from 'next/link';
-import { BriefcaseBusiness, Search, ShoppingCart, UserCircle } from 'lucide-react';
+import { BriefcaseBusiness, Search, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import UserNav from './UserNav'; // Will be created later
+import UserNav from './UserNav';
+import { ThemeToggle } from './ThemeToggle';
 
 export default function Header() {
   return (
@@ -26,6 +27,7 @@ export default function Header() {
             <Search className="absolute left-2 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <Input type="search" placeholder="Search products..." className="w-full rounded-lg bg-muted pl-8 md:w-[200px] lg:w-[300px]" />
           </div>
+          <ThemeToggle />
           <Button variant="ghost" size="icon" asChild>
             <Link href="/cart" aria-label="Shopping Cart">
               <ShoppingCart className="h-5 w-5" />

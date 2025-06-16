@@ -15,8 +15,8 @@ export const products: Product[] = [
     description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
     price: 4500000, // Example COP price
     images: [
-      '/images/apple-iphone-16-pro-max-desert-titanium-1.png', 
-      '/images/iphone-16-pro-max-back-black-titanium-1.png', 
+      '/images/apple-iphone-16-pro-max-desert-titanium-1.png',
+      '/images/iphone-16-pro-max-back-black-titanium-1.png',
       '/images/iphone-16-pro-max-different-colors-phones-1.png'
     ],
     category: categories[0],
@@ -31,8 +31,8 @@ export const products: Product[] = [
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
     images: [
-      '/images/iphone_15_hero.png', 
-      'https://placehold.co/600x400.png'
+      '/images/iphone_15_hero.png',
+      'https://placehold.co/600x400.png' // Placeholder for second image
     ],
     category: categories[0],
     stock: 75,
@@ -135,7 +135,7 @@ export const mockOrders: Order[] = [
     ],
     totalAmount: products[0].price + products[4].price,
     status: 'Entregado',
-    orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), 
+    orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
     shippingAddress: mockUser.addresses![0],
     trackingNumber: 'CO999AA10123456789',
   },
@@ -145,7 +145,7 @@ export const mockOrders: Order[] = [
     items: [{ ...products[2], quantity: 1 }],
     totalAmount: products[2].price,
     status: 'Enviado',
-    orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), 
+    orderDate: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
     shippingAddress: mockUser.addresses![0],
     trackingNumber: 'CO999AA10198765432',
   },
@@ -155,7 +155,7 @@ export const mockOrders: Order[] = [
     items: [{ ...products[1], quantity: 2 }],
     totalAmount: products[1].price * 2,
     status: 'Procesando',
-    orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), 
+    orderDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
     shippingAddress: mockUser.addresses![0],
   },
 ];
@@ -169,4 +169,3 @@ export function getProductsByCategory(categorySlug: string): Product[] {
   if (!category) return [];
   return products.filter(p => p.category.id === category.id);
 }
-

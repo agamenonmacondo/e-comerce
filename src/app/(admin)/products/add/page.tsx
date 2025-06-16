@@ -162,15 +162,15 @@ export default function AddProductPage() {
               <FormField
                 control={form.control}
                 name="imageUrl1"
-                render={({ field: { onChange, value, ...rest } }) => ( // Destructure onChange, value and ...rest from field
+                render={({ field: { onChange, value, ...rest } }) => (
                   <FormItem>
                     <FormLabel>Imagen Principal</FormLabel>
                     <FormControl>
                       <Input 
                         type="file" 
                         accept={ACCEPTED_IMAGE_TYPES.join(',')}
-                        onChange={(event) => onChange(event.target.files)} // Pass files to react-hook-form
-                        {...rest} // Pass rest of the field props
+                        onChange={(event) => onChange(event.target.files)} 
+                        {...rest} 
                       />
                     </FormControl>
                     <FormMessage />
@@ -180,15 +180,15 @@ export default function AddProductPage() {
               <FormField
                 control={form.control}
                 name="imageUrl2"
-                render={({ field: { onChange, value, ...rest } }) => ( // Destructure onChange, value and ...rest from field
+                render={({ field: { onChange, value, ...rest } }) => ( 
                   <FormItem>
                     <FormLabel>Imagen Secundaria (Opcional)</FormLabel>
                      <FormControl>
                       <Input 
                         type="file" 
                         accept={ACCEPTED_IMAGE_TYPES.join(',')}
-                        onChange={(event) => onChange(event.target.files)} // Pass files to react-hook-form
-                        {...rest} // Pass rest of the field props
+                        onChange={(event) => onChange(event.target.files)}
+                        {...rest} 
                       />
                     </FormControl>
                     <FormMessage />

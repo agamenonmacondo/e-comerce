@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,20 +11,21 @@ import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { useToast } from '@/hooks/use-toast';
 import { mockUser } from '@/lib/placeholder-data';
-import { User, Mail, Phone, MapPin, Save, ShoppingBag } from 'lucide-react'; // Changed Edit3 to ShoppingBag as View Orders Icon
+import { User, Mail, Phone, MapPin, Save, ShoppingBag, Image as ImageIcon } from 'lucide-react';
 import Link from 'next/link';
 
 const profileFormSchema = z.object({
   name: z.string().min(2, "El nombre es requerido"),
   email: z.string().email("Correo electrónico inválido"),
   phone: z.string().optional(),
+  avatarFile: z.any().optional(), // Para el input de archivo de avatar
 });
 
 const addressFormSchema = z.object({
   street: z.string().min(3, "La dirección es requerida"),
   city: z.string().min(2, "La ciudad es requerida"),
   state: z.string().min(2, "El departamento/estado es requerido"),
-  zipCode: z.string().min(3, "El código postal es requerido"), // Adjusted min for broader Colombian postal codes
+  zipCode: z.string().min(3, "El código postal es requerido"),
   country: z.string().min(2, "El país es requerido"),
 });
 
@@ -32,25 +34,33 @@ type AddressFormValues = z.infer<typeof addressFormSchema>;
 
 export default function AccountPage() {
   const { toast } = useToast();
-  const user = mockUser; // Using mock data
+  const user = mockUser; 
 
   const profileForm = useForm<ProfileFormValues>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       name: user.name || '',
       email: user.email,
-      phone: user.phone || '', // Assuming user object has a phone property
+      phone: user.phone || '',
+      avatarFile: undefined,
     },
   });
 
   const addressForm = useForm<AddressFormValues>({
     resolver: zodResolver(addressFormSchema),
-    defaultValues: user.addresses?.[0] || { street: '', city: '', state: '', zipCode: '', country: 'Colombia' }, // Default country Colombia
+    defaultValues: user.addresses?.[0] || { street: '', city: '', state: '', zipCode: '', country: 'Colombia' },
   });
 
   function onProfileSubmit(data: ProfileFormValues) {
     console.log("Datos del perfil:", data);
-    toast({ title: "Perfil Actualizado", description: "Tu información de perfil ha sido guardada." });
+    let description = "Tu información de perfil ha sido guardada.";
+    if (data.avatarFile && data.avatarFile.length > 0) {
+      const fileName = data.avatarFile[0].name;
+      description += ` Nuevo avatar seleccionado: ${fileName} (simulación de carga).`;
+      console.log("Archivo de avatar seleccionado:", data.avatarFile[0]);
+      // En una app real: aquí se subiría data.avatarFile[0] y se actualizaría la URL del avatar del usuario.
+    }
+    toast({ title: "Perfil Actualizado", description });
   }
 
   function onAddressSubmit(data: AddressFormValues) {
@@ -77,7 +87,7 @@ export default function AccountPage() {
           <Card className="shadow-lg">
             <CardHeader>
               <CardTitle className="text-2xl font-headline flex items-center"><User className="mr-3 h-6 w-6 text-primary"/>Información Personal</CardTitle>
-              <CardDescription>Administra tus detalles personales e información de contacto.</CardDescription>
+              <CardDescription>Administra tus detalles personales, información de contacto y avatar.</CardDescription>
             </CardHeader>
             <CardContent>
               <Form {...profileForm}>
@@ -105,6 +115,27 @@ export default function AccountPage() {
                       <FormMessage />
                     </FormItem>
                   )} />
+                  <FormField
+                    control={profileForm.control}
+                    name="avatarFile"
+                    render={({ field: { value, onChange, ...fieldProps } }) => (
+                      <FormItem>
+                        <FormLabel className="flex items-center"><ImageIcon className="mr-2 h-4 w-4 text-muted-foreground"/>Foto de Perfil (Avatar)</FormLabel>
+                        <FormControl>
+                          <Input
+                            {...fieldProps}
+                            type="file"
+                            accept="image/png, image/jpeg, image/gif"
+                            onChange={(event) => {
+                              onChange(event.target.files);
+                            }}
+                            className="pt-2" 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                   <Button type="submit" className="transition-transform hover:scale-105 active:scale-95">
                     <Save className="mr-2 h-4 w-4" /> Guardar Perfil
                   </Button>

@@ -26,7 +26,7 @@ export const products: Product[] = [
     name: 'iPhone 15',
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
-    images: ['/images/iphone%2015%20hero.png', 'https://placehold.co/600x400.png'],
+    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x400.png'], // Reverted to placeholder
     category: categories[0],
     stock: 75,
     rating: 4.7,

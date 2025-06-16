@@ -1,5 +1,6 @@
 import type { Product } from '@/types';
-import ProductCard from './ProductCard';
+import Image from 'next/image';
+import Link from 'next/link';
 
 interface ProductMarqueeProps {
   products: Product[];
@@ -27,7 +28,20 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
                 key={`${product.id}-${index}`}
                 className="marquee-item mx-3 w-64 md:w-72 flex-shrink-0"
               >
-                <ProductCard product={product} />
+                <Link
+                  href={`/products/${product.id}`}
+                  className="block group relative aspect-[4/3] w-full rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300 bg-muted"
+                  aria-label={`Ver ${product.name}`}
+                >
+                  <Image
+                    src={product.images[0]}
+                    alt={product.name}
+                    fill
+                    sizes="(max-width: 768px) 256px, 288px"
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    data-ai-hint="product photo"
+                  />
+                </Link>
               </div>
             ))}
           </div>

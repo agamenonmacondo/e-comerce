@@ -16,14 +16,17 @@ import Link from 'next/link';
 import Image from 'next/image'; 
 import { Label } from '@/components/ui/label'; 
 import { formatColombianCurrency } from '@/lib/utils';
-import { products as allProducts } from '@/lib/placeholder-data'; // Import allProducts for stock checking
+import { products as allProductsForSummary } from '@/lib/placeholder-data'; // Renamed to avoid conflict if needed
+import { placeOrder, type PlaceOrderInput } from '@/lib/actions/order.actions'; // Import the server action
+import { useState } from 'react';
+
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido"),
   address: z.string().min(5, "La dirección es requerida"),
   city: z.string().min(2, "La ciudad es requerida"),
   state: z.string().min(2, "El departamento es requerido"),
-  zipCode: z.string().min(3, "El código postal es requerido"), 
+  zipCode: z.string().optional(), 
   country: z.string().min(2, "El país es requerido"),
   phone: z.string().optional(),
 });
@@ -42,8 +45,8 @@ type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
 // Mocked cart items for summary, ideally this would come from a global state or context
 const mockCartItems = [
-  { id: allProducts[0].id, name: allProducts[0].name, quantity: 1, price: allProducts[0].price, stock: allProducts[0].stock },
-  { id: allProducts[4].id, name: allProducts[4].name, quantity: 1, price: allProducts[4].price, stock: allProducts[4].stock },
+  { id: allProductsForSummary[0].id, name: allProductsForSummary[0].name, quantity: 1, price: allProductsForSummary[0].price, stock: allProductsForSummary[0].stock, imageUrls: allProductsForSummary[0].imageUrls, category: allProductsForSummary[0].category, description: allProductsForSummary[0].description, createdAt: allProductsForSummary[0].createdAt, updatedAt: allProductsForSummary[0].updatedAt },
+  { id: allProductsForSummary[4].id, name: allProductsForSummary[4].name, quantity: 1, price: allProductsForSummary[4].price, stock: allProductsForSummary[4].stock, imageUrls: allProductsForSummary[4].imageUrls, category: allProductsForSummary[4].category, description: allProductsForSummary[4].description, createdAt: allProductsForSummary[4].createdAt, updatedAt: allProductsForSummary[4].updatedAt },
 ];
 
 const calculateOrderSummary = () => {
@@ -53,7 +56,13 @@ const calculateOrderSummary = () => {
   const shipping = subtotal > 200000 ? 0 : 15000;
   const total = subtotal + tax + shipping;
   return {
-    items: mockCartItems,
+    items: mockCartItems.map(item => ({
+      id: item.id,
+      name: item.name,
+      quantity: item.quantity,
+      price: item.price,
+      stock: item.stock, // Pass stock for the action to check
+    })),
     subtotal,
     shipping,
     tax,
@@ -64,7 +73,8 @@ const calculateOrderSummary = () => {
 
 export default function CheckoutPage() {
   const { toast } = useToast();
-  const orderSummary = calculateOrderSummary(); // Use dynamic calculation
+  const orderSummary = calculateOrderSummary(); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
@@ -73,65 +83,61 @@ export default function CheckoutPage() {
 
   const paymentForm = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
+    // Default payment method can be set here if desired
+    defaultValues: { paymentMethod: undefined }
   });
 
   const selectedPaymentMethod = paymentForm.watch("paymentMethod");
 
-  function onShippingSubmit(data: ShippingFormValues) {
-    console.log("Datos de envío:", data);
-    // In a real app, save shipping details, then perhaps move to payment step
-    toast({ title: "Detalles de Envío Guardados", description: "Procede al pago." });
-  }
+  async function handleFinalSubmit() {
+    setIsSubmitting(true);
+    // Trigger validation for both forms
+    const isShippingValid = await shippingForm.trigger();
+    const isPaymentValid = await paymentForm.trigger();
 
-  async function onPaymentSubmit(data: PaymentFormValues) {
-    console.log("Datos de pago:", data);
-
-    // Simulate stock check before processing payment
-    let canProceed = true;
-    let stockIssueMessage = "";
-
-    for (const item of orderSummary.items) {
-      const productInDb = allProducts.find(p => p.id === item.id);
-      if (!productInDb || productInDb.stock < item.quantity) {
-        canProceed = false;
-        stockIssueMessage = `El producto "${item.name}" ${!productInDb ? 'ya no está disponible' : 'no tiene suficiente stock (' + productInDb.stock + ' unidades disponibles)'}.`;
-        break;
-      }
+    if (!isShippingValid) {
+      toast({ title: "Error de Envío", description: "Por favor, completa los detalles de envío.", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
     }
+    if (!isPaymentValid) {
+        toast({ title: "Error de Pago", description: "Por favor, selecciona un método de pago.", variant: "destructive" });
+        setIsSubmitting(false);
+        return;
+    }
+    
+    const shippingData = shippingForm.getValues();
+    const paymentData = paymentForm.getValues();
 
-    if (!canProceed) {
+    const orderInput: PlaceOrderInput = {
+      shippingDetails: shippingData,
+      paymentMethod: paymentData.paymentMethod!, // paymentMethod is required by schema if form is valid
+      cartItems: orderSummary.items, // Pass cart items from summary
+    };
+    
+    const result = await placeOrder(orderInput);
+
+    if (result.success) {
+      toast({ 
+        title: "Pedido Enviado (Simulación)", 
+        description: result.message,
+        duration: 5000,
+      });
+      // Here you would typically redirect to an order confirmation page
+      // e.g., router.push(`/order-confirmation?orderId=${result.orderId}`);
+      // For now, we can reset forms or navigate away
+      shippingForm.reset();
+      paymentForm.reset();
+      // Potentially clear cart from client-side state here
+    } else {
       toast({
         title: "Problema con el Pedido",
-        description: stockIssueMessage + " Por favor, ajusta tu carrito.",
+        description: result.message,
         variant: "destructive",
         duration: 7000,
       });
-      return;
     }
-    
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 1500));
-
-    // Simulate stock reduction
-    let stockReductionLog = "Simulación de reducción de stock:\n";
-    orderSummary.items.forEach(item => {
-      const productInDb = allProducts.find(p => p.id === item.id);
-      if (productInDb) {
-        // In a real app, this would be a database transaction:
-        // productInDb.stock -= item.quantity;
-        stockReductionLog += `- ${item.name}: ${productInDb.stock} -> ${productInDb.stock - item.quantity}\n`;
-      }
-    });
-    console.log(stockReductionLog);
-
-
-    toast({ 
-      title: "Pedido Enviado (Simulación)", 
-      description: "¡Gracias por tu compra! El stock se reduciría aquí.",
-      duration: 5000,
-    });
-    // Here you would typically redirect to an order confirmation page
-    // router.push('/order-confirmation?orderId=mockOrderId');
+    setIsSubmitting(false);
   }
 
 
@@ -160,7 +166,7 @@ export default function CheckoutPage() {
             </CardHeader>
             <CardContent>
               <Form {...shippingForm}>
-                <form onSubmit={shippingForm.handleSubmit(onShippingSubmit)} className="space-y-4">
+                <form id="shipping-form" className="space-y-4"> {/* Removed onSubmit here */}
                   <div className="grid sm:grid-cols-2 gap-4">
                     <FormField control={shippingForm.control} name="fullName" render={({ field }) => ( <FormItem> <FormLabel>Nombre Completo</FormLabel> <FormControl><Input placeholder="Ej: Ana Pérez" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                     <FormField control={shippingForm.control} name="phone" render={({ field }) => ( <FormItem> <FormLabel>Teléfono (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 3001234567" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
@@ -171,12 +177,7 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>Departamento</FormLabel> <FormControl><Input placeholder="Ej: Cundinamarca" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
-                   {/* Removed Save Shipping Button - typically part of the final order submission
-                   <Button type="submit" className="transition-transform hover:scale-105 active:scale-95">
-                    <Save className="mr-2 h-4 w-4" /> Guardar Envío
-                  </Button> 
-                  */}
+                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} defaultValue="Colombia" /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
             </CardContent>
@@ -189,7 +190,8 @@ export default function CheckoutPage() {
             </CardHeader>
             <CardContent>
               <Form {...paymentForm}>
-                <form onSubmit={paymentForm.handleSubmit(onPaymentSubmit)} className="space-y-6">
+                 {/* Removed onSubmit from form tag, will be handled by the main button */}
+                <form id="payment-form" className="space-y-6">
                   <FormField
                     control={paymentForm.control}
                     name="paymentMethod"
@@ -200,7 +202,6 @@ export default function CheckoutPage() {
                           <RadioGroup
                             onValueChange={(value) => {
                               field.onChange(value);
-                              // Reset card fields if not credit card
                               if (value !== 'creditCard') {
                                 paymentForm.resetField("cardNumber");
                                 paymentForm.resetField("expiryDate");
@@ -258,7 +259,7 @@ export default function CheckoutPage() {
                             </FormItem>
                           </RadioGroup>
                         </FormControl>
-                        <FormMessage />
+                        <FormMessage /> {/* For paymentMethod field itself */}
                       </FormItem>
                     )}
                   />
@@ -320,25 +321,20 @@ export default function CheckoutPage() {
                       </CardContent>
                     </Card>
                   )}
-
-                   <Button 
-                    type="submit" 
-                    size="lg" 
-                    className="w-full text-base mt-8 transition-transform hover:scale-105 active:scale-95"
-                    onClick={() => {
-                        // Trigger shipping form validation if not already submitted
-                        if(!shippingForm.formState.isValid && Object.keys(shippingForm.formState.errors).length > 0) {
-                             shippingForm.handleSubmit(onShippingSubmit)();
-                        }
-                    }}
-                    disabled={!shippingForm.formState.isValid}
-                    >
-                    <Lock className="mr-2 h-5 w-5" /> {selectedPaymentMethod === 'crypto' ? 'Confirmar Transacción Crypto' : 'Realizar Pedido'}
-                  </Button>
                 </form>
               </Form>
             </CardContent>
           </Card>
+           <Button 
+              type="button" // Changed from submit to button to prevent default form submission
+              onClick={handleFinalSubmit} // Call the combined handler
+              size="lg" 
+              className="w-full text-base mt-0 lg:mt-8 transition-transform hover:scale-105 active:scale-95" // Adjusted margin for consistency
+              disabled={isSubmitting || !shippingForm.formState.isValid || !paymentForm.formState.isValid } // Disable if forms aren't valid or submitting
+            >
+            <Lock className="mr-2 h-5 w-5" /> 
+            {isSubmitting ? 'Procesando Pedido...' : (selectedPaymentMethod === 'crypto' ? 'Confirmar Transacción Crypto' : 'Realizar Pedido')}
+          </Button>
         </div>
 
         <div className="lg:col-span-1">
@@ -386,3 +382,4 @@ export default function CheckoutPage() {
     </div>
   );
 }
+

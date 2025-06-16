@@ -1,3 +1,4 @@
+
 import type { Product, Category, Order, User } from '@/types';
 
 export const categories: Category[] = [
@@ -13,7 +14,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro',
     description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
     price: 4500000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=iPhone+15+Pro', 'https://placehold.co/600x600.png?text=iPhone+15+Pro+Atras', 'https://placehold.co/600x600.png?text=iPhone+15+Pro+Lado'],
+    images: ['/images/iphone_15_pro_1.png', '/images/iphone_15_pro_2.png', '/images/iphone_15_pro_3.png'],
     category: categories[0],
     stock: 50,
     rating: 4.9,
@@ -25,7 +26,7 @@ export const products: Product[] = [
     name: 'iPhone 15',
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=iPhone+15', 'https://placehold.co/600x600.png?text=iPhone+15+Colores'],
+    images: ['/images/iphone_15_1.png', '/images/iphone_15_2.png'],
     category: categories[0],
     stock: 75,
     rating: 4.7,
@@ -37,7 +38,7 @@ export const products: Product[] = [
     name: 'Pixel 8 Pro',
     description: 'El Pixel más avanzado hasta la fecha. Google Tensor G3, cámaras de nivel profesional y una brillante pantalla Actua.',
     price: 4200000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=Pixel+8+Pro', 'https://placehold.co/600x600.png?text=Pixel+8+Pro+Camara'],
+    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'],
     category: categories[1],
     stock: 40,
     rating: 4.8,
@@ -49,7 +50,7 @@ export const products: Product[] = [
     name: 'Galaxy S24 Ultra',
     description: 'Épico. Así de simple. Experimenta el nuevo estándar con Galaxy AI, S Pen y una cámara increíble.',
     price: 5500000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=Galaxy+S24+Ultra', 'https://placehold.co/600x600.png?text=S24+Ultra+Detalle'],
+    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'],
     category: categories[1],
     stock: 30,
     rating: 4.9,
@@ -61,7 +62,7 @@ export const products: Product[] = [
     name: 'AirPods Pro (2da Gen)',
     description: 'Audio Adaptable. Ahora prioriza automáticamente los sonidos que necesitan tu atención.',
     price: 950000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=AirPods+Pro', 'https://placehold.co/600x600.png?text=AirPods+Pro+Estuche'],
+    images: ['https://placehold.co/600x600.png', 'https://placehold.co/600x600.png'],
     category: categories[2],
     stock: 150,
     rating: 4.8,
@@ -73,7 +74,7 @@ export const products: Product[] = [
     name: 'Cargador MagSafe',
     description: 'El cargador MagSafe hace que la carga inalámbrica sea instantánea. Imanes perfectamente alineados se adhieren a tu iPhone.',
     price: 180000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=Cargador+MagSafe'],
+    images: ['https://placehold.co/600x600.png'],
     category: categories[2],
     stock: 200,
     rating: 4.5,
@@ -85,7 +86,7 @@ export const products: Product[] = [
     name: 'Cable USB-C Anker',
     description: 'Carga de alta velocidad y transferencia de datos. Diseño duradero de nylon trenzado.',
     price: 85000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=Cable+USB-C'],
+    images: ['https://placehold.co/600x600.png'],
     category: categories[2],
     stock: 300,
     rating: 4.7,
@@ -97,7 +98,7 @@ export const products: Product[] = [
     name: 'Lámpara de Escritorio LED Inteligente',
     description: 'Brillo y temperatura de color ajustables, con control desde la app.',
     price: 250000, // Example COP price
-    images: ['https://placehold.co/600x600.png?text=Lampara+Escritorio'],
+    images: ['https://placehold.co/600x600.png'],
     category: categories[2],
     stock: 80,
     rating: 4.6,
@@ -111,7 +112,7 @@ export const mockUser: User = {
   name: 'Ana Pérez',
   email: 'ana.perez@example.com',
   phone: '3001234567',
-  avatar: 'https://placehold.co/100x100.png?text=AP',
+  avatar: 'https://placehold.co/100x100.png',
   addresses: [
     { id: 'addr1', street: 'Carrera 7 # 70-30', city: 'Bogotá D.C.', state: 'Cundinamarca', zipCode: '110231', country: 'Colombia', isDefault: true },
   ],
@@ -161,3 +162,4 @@ export function getProductsByCategory(categorySlug: string): Product[] {
   if (!category) return [];
   return products.filter(p => p.category.id === category.id);
 }
+

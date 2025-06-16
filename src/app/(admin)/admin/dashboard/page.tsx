@@ -9,20 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, ListChecks, UserPlus, TrendingUp, Receipt, FileText } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, FileText } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogFooter,
-  DialogClose,
-} from "@/components/ui/dialog";
-import { Badge } from '@/components/ui/badge';
 
 
 interface AdminProduct extends Product {
@@ -34,8 +24,6 @@ export default function AdminDashboardPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [products, setProducts] = useState<AdminProduct[]>([]);
-  const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
-  const [selectedStat, setSelectedStat] = useState<string | null>(null);
 
   useEffect(() => {
     setProducts(
@@ -81,98 +69,11 @@ export default function AdminDashboardPage() {
     });
   };
 
-  // These values are now primarily for display on the dashboard cards
-  // The detailed sales report page will have its own calculations based on its mock data
   const totalSalesDisplay = 125800000;
   const totalOrdersDisplay = 342;
   const newCustomersDisplay = 58;
   
   const lowStockItemsCount = products.filter(p => p.currentStock < 10).length;
-  const lowStockProductsDetail = products.filter(p => p.currentStock < 10);
-
-
-  const openDetailModal = (statType: string) => {
-    setSelectedStat(statType);
-    setIsDetailModalOpen(true);
-  };
-
-  const renderModalContent = () => {
-    if (!selectedStat) return null;
-
-    switch (selectedStat) {
-      case 'orders':
-        return (
-          <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center"><ListChecks className="mr-2 h-5 w-5 text-primary" />Detalle de Pedidos Totales (Mes)</DialogTitle>
-              <DialogDescription>Estado y lista de pedidos recientes.</DialogDescription>
-            </DialogHeader>
-            <div className="mt-4 space-y-3 text-sm py-4">
-              <p><strong>Resumen de estados (ejemplo):</strong></p>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Entregados: {Math.floor(totalOrdersDisplay * 0.85)}</li>
-                <li>Enviados: {Math.floor(totalOrdersDisplay * 0.10)}</li>
-                <li>Procesando: {totalOrdersDisplay - Math.floor(totalOrdersDisplay * 0.85) - Math.floor(totalOrdersDisplay * 0.10)}</li>
-              </ul>
-              <p className="mt-3"><strong>Últimos pedidos (ejemplo):</strong></p>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID Pedido</TableHead><TableHead>Cliente</TableHead><TableHead>Total</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow><TableCell>#ORD789</TableCell><TableCell>Carlos Villa</TableCell><TableCell>{formatColombianCurrency(250000)}</TableCell></TableRow>
-                  <TableRow><TableCell>#ORD788</TableCell><TableCell>Lucia Mora</TableCell><TableCell>{formatColombianCurrency(4800000)}</TableCell></TableRow>
-                  <TableRow><TableCell>#ORD787</TableCell><TableCell>Pedro Gómez</TableCell><TableCell>{formatColombianCurrency(120000)}</TableCell></TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </>
-        );
-      case 'customers':
-        return (
-          <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center"><UserPlus className="mr-2 h-5 w-5 text-primary" />Detalle de Nuevos Clientes (Mes)</DialogTitle>
-              <DialogDescription>Clientes registrados recientemente.</DialogDescription>
-            </DialogHeader>
-            <div className="mt-4 space-y-3 text-sm py-4">
-              <p><strong>Clientes nuevos (ejemplo):</strong></p>
-              <ul className="list-disc pl-6 space-y-1">
-                {[...Array(5)].map((_, i) => (
-                  <li key={i}>Cliente Ejemplo {i + 1} - Registrado el {new Date(Date.now() - i * 2 * 24 * 60 * 60 * 1000).toLocaleDateString('es-CO')}</li>
-                ))}
-              </ul>
-               <p className="mt-3"><strong>Total nuevos clientes este mes: {newCustomersDisplay}</strong></p>
-            </div>
-          </>
-        );
-      case 'lowStock':
-        return (
-          <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center"><Package className="mr-2 h-5 w-5 text-destructive" />Detalle de Productos Bajos en Stock</DialogTitle>
-              <DialogDescription>Productos con menos de 10 unidades disponibles.</DialogDescription>
-            </DialogHeader>
-            <div className="mt-4 text-sm py-4">
-              {lowStockProductsDetail.length > 0 ? (
-                <Table>
-                  <TableHeader><TableRow><TableHead>Producto</TableHead><TableHead className="text-right">Stock Actual</TableHead></TableRow></TableHeader>
-                  <TableBody>
-                    {lowStockProductsDetail.map(p => (
-                      <TableRow key={p.id}><TableCell>{p.name}</TableCell><TableCell className="text-right">{p.currentStock}</TableCell></TableRow>
-                    ))}
-                  </TableBody>
-                </Table>
-              ) : (<p>¡Excelente! No hay productos bajos en stock actualmente.</p>)}
-            </div>
-          </>
-        );
-      default:
-        return null;
-    }
-  };
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -199,7 +100,7 @@ export default function AdminDashboardPage() {
               </CardContent>
             </Card>
           
-            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('orders')}>
+            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push('/admin/orders-report')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pedidos Totales (Mes)</CardTitle>
                 <ShoppingBag className="h-4 w-4 text-muted-foreground" />
@@ -210,7 +111,7 @@ export default function AdminDashboardPage() {
               </CardContent>
             </Card>
           
-            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('customers')}>
+            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push('/admin/customers-report')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Nuevos Clientes (Mes)</CardTitle>
                 <Users className="h-4 w-4 text-muted-foreground" />
@@ -221,7 +122,7 @@ export default function AdminDashboardPage() {
               </CardContent>
             </Card>
           
-            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('lowStock')}>
+            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push('/admin/low-stock-report')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Productos Bajos en Stock</CardTitle>
                 <Package className="h-4 w-4 text-muted-foreground" />
@@ -300,19 +201,6 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
       </section>
-
-      <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
-        <DialogContent className="sm:max-w-lg md:max-w-xl lg:max-w-2xl overflow-y-auto max-h-[80vh]">
-          {renderModalContent()}
-          <DialogFooter className="sm:justify-end pt-4">
-            <DialogClose asChild>
-              <Button type="button" variant="secondary">
-                Cerrar
-              </Button>
-            </DialogClose>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
     </div>
   );
 }

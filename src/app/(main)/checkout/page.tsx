@@ -29,16 +29,13 @@ const shippingFormSchema = z.object({
   state: z.string().min(2, "El departamento es requerido"),
   zipCode: z.string().optional(), 
   country: z.string().min(2, "El país es requerido"),
-  phone: z.string().email("Por favor, introduce un correo electrónico válido para el cliente.").min(5, "El correo es requerido"), // Changed to email
+  phone: z.string().email("Por favor, introduce un correo electrónico válido para el cliente.").min(5, "El correo es requerido"),
 });
 
 const paymentFormSchema = z.object({
-  // paymentMethod is still conceptually useful for our internal logic or if we had other non-Stripe methods.
-  // For Stripe Checkout, Stripe handles the actual method selection on their page.
   paymentMethod: z.enum(["creditCard", "pse", "cash", "crypto"], { 
     required_error: "Debes seleccionar un método de pago conceptual (Stripe lo gestionará).",
   }),
-  // Fields like cardNumber, expiryDate, cvv are NOT needed here as Stripe Checkout handles them.
 });
 
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
@@ -59,9 +56,9 @@ const mockCartItems = [
 
 const calculateOrderSummary = () => {
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19; // This is for display; Stripe can be configured for taxes
+  const taxRate = 0.19; 
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000; // Example shipping
+  const shipping = subtotal > 200000 ? 0 : 15000; 
   const total = subtotal + tax + shipping;
   return {
     items: mockCartItems.map(item => ({
@@ -79,7 +76,6 @@ const calculateOrderSummary = () => {
   };
 };
 
-// Initialize Stripe.js
 const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
   ? loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY)
   : null;
@@ -97,7 +93,7 @@ export default function CheckoutPage() {
 
   const paymentForm = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
-    defaultValues: { paymentMethod: "creditCard" } // Default selection
+    defaultValues: { paymentMethod: "creditCard" } 
   });
 
   useEffect(() => {
@@ -139,7 +135,7 @@ export default function CheckoutPage() {
     const orderInput: PlaceOrderInput = {
       shippingDetails: {
         ...shippingData,
-        phone: shippingData.phone, // Ensure 'phone' (used as email for Stripe) is passed
+        phone: shippingData.phone, 
       },
       paymentMethod: paymentData.paymentMethod!, 
       cartItems: orderSummary.items.map(item => ({
@@ -213,7 +209,7 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>Departamento</FormLabel> <FormControl><Input placeholder="Ej: Cundinamarca" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} defaultValue="Colombia" /></FormControl> <FormMessage /> </FormItem> )} />
+                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
             </CardContent>
@@ -260,8 +256,6 @@ export default function CheckoutPage() {
                                 </FormLabel>
                                </Card>
                             </FormItem>
-                             {/* Crypto and Cash options are removed as Stripe Checkout is the primary method here.
-                                 If these are meant to be manual offline methods, they need different handling. */}
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
@@ -269,7 +263,7 @@ export default function CheckoutPage() {
                     )}
                   />
                  
-                  {selectedPaymentMethod === 'crypto' && ( // This section is likely for a manual crypto process, separate from Stripe
+                  {selectedPaymentMethod === 'crypto' && ( 
                     <Card className="mt-6 bg-muted/20 border-primary/50 shadow-md">
                       <CardHeader><CardTitle className="text-xl font-headline flex items-center">Pagar con Criptomonedas (Manual)</CardTitle></CardHeader>
                       <CardContent className="space-y-4">

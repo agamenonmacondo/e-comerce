@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, Eye, ListChecks, UserPlus, TrendingUp } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, ListChecks, UserPlus, TrendingUp } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -18,7 +18,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
   DialogFooter,
   DialogClose,
 } from "@/components/ui/dialog";
@@ -205,7 +204,7 @@ export default function AdminDashboardPage() {
       <section className="mb-12">
         <h2 className="text-2xl font-semibold font-headline mb-6">Estadísticas Clave</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-          <DialogTrigger asChild>
+          
             <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('sales')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Ventas Totales (Mes)</CardTitle>
@@ -216,8 +215,7 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground">+15.3% desde el mes pasado</p>
               </CardContent>
             </Card>
-          </DialogTrigger>
-          <DialogTrigger asChild>
+          
             <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('orders')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Pedidos Totales (Mes)</CardTitle>
@@ -228,8 +226,7 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground">+8.1% desde el mes pasado</p>
               </CardContent>
             </Card>
-          </DialogTrigger>
-          <DialogTrigger asChild>
+          
             <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('customers')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Nuevos Clientes (Mes)</CardTitle>
@@ -240,8 +237,7 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground">Registrados este mes</p>
               </CardContent>
             </Card>
-          </DialogTrigger>
-          <DialogTrigger asChild>
+          
             <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('lowStock')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Productos Bajos en Stock</CardTitle>
@@ -252,7 +248,7 @@ export default function AdminDashboardPage() {
                 <p className="text-xs text-muted-foreground">Menos de 10 unidades</p>
               </CardContent>
             </Card>
-          </DialogTrigger>
+          
         </div>
       </section>
 
@@ -324,7 +320,6 @@ export default function AdminDashboardPage() {
 
       <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
         <DialogContent className="sm:max-w-lg overflow-y-auto max-h-[80vh]">
-          {/* DialogHeader is rendered inside renderModalContent now */}
           {renderModalContent()}
           <DialogFooter className="sm:justify-end pt-4">
             <DialogClose asChild>

@@ -10,29 +10,26 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Home, Lock, ShoppingCart, Mail } from 'lucide-react'; // Mail icon for email
+import { Home, Lock, ShoppingCart, Mail } from 'lucide-react';
 import Link from 'next/link';
-import { Label } from '@/components/ui/label';
 import { formatColombianCurrency } from '@/lib/utils';
 import { products as allProductsForSummary } from '@/lib/placeholder-data';
 import { placeOrder, type PlaceOrderInput } from '@/lib/actions/order.actions';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-// Updated shippingFormSchema: email is now required instead of optional phone
 const shippingFormSchema = z.object({
-  fullName: z.string().min(2, "El nombre completo es requerido"),
-  address: z.string().min(5, "La dirección es requerida"),
-  city: z.string().min(2, "La ciudad es requerida"),
-  state: z.string().min(2, "El departamento es requerido"),
+  fullName: z.string().min(2, "El nombre completo es requerido (mín. 2 caracteres)."),
+  address: z.string().min(5, "La dirección es requerida (mín. 5 caracteres)."),
+  city: z.string().min(2, "La ciudad es requerida (mín. 2 caracteres)."),
+  state: z.string().min(2, "El departamento es requerido (mín. 2 caracteres)."),
   zipCode: z.string().optional(),
-  country: z.string().min(2, "El país es requerido"),
-  email: z.string().email("Debe ser un correo electrónico válido."), // Changed from phone, made required
+  country: z.string().min(2, "El país es requerido (mín. 2 caracteres)."),
+  email: z.string().email("Debe ser un correo electrónico válido."),
 });
 
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 
-// Simulating cart items
 const mockCartItems = [
   { ...allProductsForSummary[0], quantity: 1, imageUrls: allProductsForSummary[0].imageUrls.slice(0,1) },
   { ...allProductsForSummary[4], quantity: 1, imageUrls: allProductsForSummary[4].imageUrls.slice(0,1) },
@@ -47,9 +44,9 @@ const mockCartItems = [
 
 const calculateOrderSummary = () => {
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19; // Example tax rate
+  const taxRate = 0.19;
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000; // Example shipping cost
+  const shipping = subtotal > 200000 ? 0 : 15000;
   const total = subtotal + tax + shipping;
   return {
     items: mockCartItems.map(item => ({
@@ -58,7 +55,7 @@ const calculateOrderSummary = () => {
       quantity: item.quantity,
       price: item.price,
       stock: item.stock,
-      imageUrls: item.imageUrls,
+      imageUrls: item.imageUrls || [],
     })),
     subtotal,
     shipping,
@@ -76,13 +73,12 @@ export default function CheckoutPage() {
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
     defaultValues: { fullName: '', address: '', city: '', state: '', zipCode: '', country: 'Colombia', email: '' },
+    mode: 'onChange', // Validate on change to update isValid state more frequently
   });
 
-  // Recalculate order summary if cart items could change (not implemented here, but good for future)
   useEffect(() => {
     setOrderSummary(calculateOrderSummary());
   }, []);
-
 
   async function handleFinalSubmit() {
     setIsSubmitting(true);
@@ -107,14 +103,7 @@ export default function CheckoutPage() {
         country: shippingData.country,
         email: shippingData.email,
       },
-      cartItems: orderSummary.items.map(item => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        stock: item.stock,
-        imageUrls: item.imageUrls || [],
-      })),
+      cartItems: orderSummary.items,
     };
 
     const result = await placeOrder(orderInput);
@@ -124,9 +113,7 @@ export default function CheckoutPage() {
             title: "Redirigiendo a Bold...",
             description: result.message || "Serás redirigido para completar tu pago.",
         });
-        // Redirect to Bold's payment_url
         router.push(result.paymentUrl);
-        // No need to reset form here as user is redirected
     } else {
       toast({
         title: "Problema con el Pedido",
@@ -160,14 +147,11 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>Departamento</FormLabel> <FormControl><Input placeholder="Ej: Cundinamarca" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} defaultValue="Colombia" /></FormControl> <FormMessage /> </FormItem> )} />
+                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
             </CardContent>
           </Card>
-
-          {/* Payment method selection is removed, Bold handles it. */}
-          {/* The button below will trigger the Bold payment flow. */}
         </div>
 
         <div className="lg:col-span-1">
@@ -223,6 +207,24 @@ export default function CheckoutPage() {
               </p>
             </CardFooter>
           </Card>
+
+          {/* Bloque para mostrar errores de validación del formulario de envío */}
+          {Object.keys(shippingForm.formState.errors).length > 0 && (
+            <Card className="mt-4 shadow-md border-destructive">
+              <CardHeader>
+                <CardTitle className="text-sm font-medium text-destructive">Errores en el Formulario de Envío:</CardTitle>
+              </CardHeader>
+              <CardContent className="text-xs text-destructive">
+                <ul>
+                  {Object.entries(shippingForm.formState.errors).map(([fieldName, error]) => (
+                    <li key={fieldName}>
+                      <strong>{fieldName}:</strong> {error?.message}
+                    </li>
+                  ))}
+                </ul>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

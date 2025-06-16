@@ -15,9 +15,9 @@ export const products: Product[] = [
     description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
     price: 4500000, // Example COP price
     images: [
-      'https://placehold.co/600x600.png',
-      'https://placehold.co/600x600.png',
-      'https://placehold.co/600x600.png'
+      '/apple-iphone-16-pro-max-desert-titanium-1.png',
+      '/iphone-16-pro-max-back-black-titanium-1.png',
+      '/iphone-16-pro-max-different-colors-phones-1.png'
     ],
     category: categories[0],
     stock: 50,
@@ -31,7 +31,7 @@ export const products: Product[] = [
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
     images: [
-      'https://placehold.co/600x600.png',
+      '/iphone_15_hero.png',
       'https://placehold.co/600x400.png'
     ],
     category: categories[0],
@@ -163,7 +163,23 @@ export const mockOrders: Order[] = [
 export function getProductById(id: string): Product | undefined {
   const product = products.find(p => p.id === id);
   if (product) {
-    return { ...product };
+    // Ensure all images have appropriate data-ai-hint attributes
+    const updatedImages = product.images.map(imgSrc => {
+      if (imgSrc.startsWith('https://placehold.co')) {
+        if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+          return imgSrc; // Placeholder already includes data-ai-hint via ProductCard/ProductDetailPage
+        }
+        if (product.category.slug === 'accesorios') {
+          if (product.name.toLowerCase().includes('airpods')) return imgSrc;
+          if (product.name.toLowerCase().includes('cargador')) return imgSrc;
+          if (product.name.toLowerCase().includes('cable')) return imgSrc;
+          return imgSrc;
+        }
+        return imgSrc;
+      }
+      return imgSrc; // For local images, hints are added in components
+    });
+    return { ...product, images: updatedImages };
   }
   return undefined;
 }
@@ -171,5 +187,22 @@ export function getProductById(id: string): Product | undefined {
 export function getProductsByCategory(categorySlug: string): Product[] {
   const category = categories.find(c => c.slug === categorySlug);
   if (!category) return [];
-  return products.filter(p => p.category.id === category.id);
+  return products.filter(p => p.category.id === category.id).map(product => {
+    const updatedImages = product.images.map(imgSrc => {
+       if (imgSrc.startsWith('https://placehold.co')) {
+        if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+          return imgSrc;
+        }
+        if (product.category.slug === 'accesorios') {
+          if (product.name.toLowerCase().includes('airpods')) return imgSrc;
+          if (product.name.toLowerCase().includes('cargador')) return imgSrc;
+          if (product.name.toLowerCase().includes('cable')) return imgSrc;
+          return imgSrc;
+        }
+        return imgSrc;
+      }
+      return imgSrc;
+    });
+    return { ...product, images: updatedImages };
+  });
 }

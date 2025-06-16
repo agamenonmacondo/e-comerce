@@ -32,7 +32,7 @@ export const products: Product[] = [
     price: 3800000, // Example COP price
     images: [
       '/images/iphone_15_hero.png',
-      'https://placehold.co/600x400.png' // Placeholder for second image
+      'https://placehold.co/600x400.png' 
     ],
     category: categories[0],
     stock: 75,

@@ -4,7 +4,6 @@
 import { z } from 'zod';
 import { products as allProducts } from '@/lib/placeholder-data';
 
-// Updated ShippingDetailsSchema: email is now required
 const ShippingDetailsSchema = z.object({
   fullName: z.string().min(1, "Nombre completo es requerido."),
   address: z.string().min(1, "Dirección es requerida."),
@@ -12,7 +11,7 @@ const ShippingDetailsSchema = z.object({
   state: z.string().min(1, "Departamento es requerido."),
   zipCode: z.string().optional(),
   country: z.string().min(1, "País es requerido."),
-  email: z.string().email("Debe ser un correo electrónico válido."), // Changed from phone, made required
+  email: z.string().email("Debe ser un correo electrónico válido."),
 });
 
 const CartItemSchema = z.object({
@@ -24,7 +23,6 @@ const CartItemSchema = z.object({
   imageUrls: z.array(z.string()).optional(),
 });
 
-// Removed paymentMethod from PlaceOrderInputSchema as Bold handles payment options
 const PlaceOrderInputSchema = z.object({
   shippingDetails: ShippingDetailsSchema,
   cartItems: z.array(CartItemSchema),
@@ -35,12 +33,30 @@ export type PlaceOrderInput = z.infer<typeof PlaceOrderInputSchema>;
 export async function placeOrder(
   input: PlaceOrderInput
 ): Promise<{ success: boolean; message?: string; orderId?: string; paymentUrl?: string }> {
-  console.log("Place Order Action - Input for Bold:", JSON.stringify(input, null, 2));
+  
+  const boldSecretKey = process.env.BOLD_SECRET_KEY;
+  const boldClientId = process.env.BOLD_CLIENT_ID;
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+
+  console.log("--- Iniciando placeOrder Action ---");
+  console.log("Verificando variables de entorno para Bold:");
+  console.log(`BOLD_SECRET_KEY disponible: ${!!boldSecretKey}`);
+  console.log(`BOLD_CLIENT_ID disponible: ${!!boldClientId}`);
+  console.log(`NEXT_PUBLIC_APP_URL disponible: ${!!appUrl}`);
+  
+  if (!boldSecretKey || !boldClientId) {
+    console.error("Error Crítico: Claves API de Bold (BOLD_SECRET_KEY o BOLD_CLIENT_ID) no configuradas en .env.");
+    return { success: false, message: "Error de configuración del servidor: claves de Bold no encontradas. Revisa los logs del servidor." };
+  }
+  if (!appUrl) {
+    console.error("Error Crítico: NEXT_PUBLIC_APP_URL no configurado en .env.");
+    return { success: false, message: "Error de configuración del servidor: URL de la aplicación no encontrada. Revisa los logs del servidor." };
+  }
 
   const validationResult = PlaceOrderInputSchema.safeParse(input);
   if (!validationResult.success) {
     const errors = validationResult.error.flatten().fieldErrors;
-    console.error("Server-side validation failed:", errors);
+    console.error("Validación de entrada fallida en el servidor:", errors);
     const errorMessages = Object.entries(errors)
       .map(([field, messages]) => `${field}: ${messages?.join(', ')}`)
       .join('; ');
@@ -66,26 +82,11 @@ export async function placeOrder(
     }
   }
 
-  // 2. Prepare for Bold API call
-  const boldSecretKey = process.env.BOLD_SECRET_KEY;
-  const boldClientId = process.env.BOLD_CLIENT_ID;
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
-
-  if (!boldSecretKey || !boldClientId) {
-    console.error("Bold API keys are not configured in .env file.");
-    return { success: false, message: "Error de configuración del servidor: claves de Bold no encontradas." };
-  }
-  if (!appUrl) {
-    console.error("NEXT_PUBLIC_APP_URL is not configured in .env file.");
-    return { success: false, message: "Error de configuración del servidor: URL de la aplicación no encontrada." };
-  }
-
-  const order_id = `GIGA-${Date.now()}`; // Unique order ID for Bold
+  const order_id = `GIGA-${Date.now()}`;
   const totalAmount = validatedInput.cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  // Bold expects amount in cents for COP
   const amount_in_cents = Math.round(totalAmount * 100);
 
-  const boldApiUrl = 'https://api.bold.co/v2/payment_links'; // Confirmed Bold API endpoint
+  const boldApiUrl = 'https://api.bold.co/v2/payment_links';
 
   const boldPayload = {
     data: {
@@ -93,34 +94,37 @@ export async function placeOrder(
       amount_in_cents: amount_in_cents,
       currency: 'COP',
       payment_description: `Pedido GigaGO #${order_id}`,
-      redirect_url: `${appUrl}/order/success?orderId=${order_id}&status=success`, // Redirect URL after payment attempt
+      redirect_url: `${appUrl}/order/success?orderId=${order_id}&status=success`, // Success con status success
       customer: {
         name: validatedInput.shippingDetails.fullName,
         email: validatedInput.shippingDetails.email,
-        phone_number: "" // Bold API might require a phone number, even if empty or a placeholder
+        phone_number: "" 
       },
-      // notification_url: `${appUrl}/api/webhooks/bold`, // For server-to-server confirmation (future step)
-      // single_use: true, // Typically true for e-commerce
-      // collect_shipping_info: false, // We are collecting it
+      // Para enviar URLs de cancelación o fallo específicas si Bold las soporta directamente en la creación del link:
+      // failure_url: `${appUrl}/order/cancel?orderId=${order_id}&reason=failed`,
+      // cancel_url: `${appUrl}/order/cancel?orderId=${order_id}&reason=cancelled`,
+      // single_use: true,
+      // collect_shipping_info: false, 
     }
   };
 
-  console.log("Sending payload to Bold:", JSON.stringify(boldPayload, null, 2));
+  console.log("Payload para Bold (antes de fetch):", JSON.stringify(boldPayload, null, 2));
+  console.log("Intentando conectar a:", boldApiUrl);
 
   try {
     const response = await fetch(boldApiUrl, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Api-Key': boldSecretKey,   // Correct header for "Llave secreta" (API Key / Llave de comercio)
-        'X-Client-Id': boldClientId, // Correct header for "Llave de identidad" (Client ID)
+        'X-Api-Key': boldSecretKey,
+        'X-Client-Id': boldClientId,
       },
       body: JSON.stringify(boldPayload),
     });
 
-    const responseText = await response.text(); // Read response text first for better error diagnosis
-    console.log("Bold API Response Status:", response.status);
-    console.log("Bold API Response Text:", responseText);
+    const responseText = await response.text();
+    console.log("Respuesta de la API de Bold - Status:", response.status);
+    console.log("Respuesta de la API de Bold - Texto:", responseText);
 
     if (!response.ok) {
       let errorData;
@@ -129,35 +133,35 @@ export async function placeOrder(
       } catch (e) {
         errorData = { message: responseText || response.statusText };
       }
-      console.error('Bold API Error Data:', errorData);
+      console.error('Error de la API de Bold - Data:', errorData);
       const errorMessage = errorData?.errors?.[0]?.detail || errorData?.message || `Error HTTP ${response.status}`;
       return { success: false, message: `Error al crear link de pago Bold: ${errorMessage}` };
     }
 
     const responseData = JSON.parse(responseText);
     const paymentUrl = responseData.data?.payment_url;
-    const boldTransactionId = responseData.data?.id; // This is Bold's payment link ID
+    const boldTransactionId = responseData.data?.id;
 
     if (!paymentUrl) {
-      console.error('Payment URL not found in Bold response:', responseData);
+      console.error('URL de pago no encontrada en la respuesta de Bold:', responseData);
       return { success: false, message: 'No se pudo obtener el link de pago de Bold. Respuesta inesperada.' };
     }
 
-    console.log(`Bold Payment Link Generated: ${paymentUrl} for order ${order_id}, Bold ID: ${boldTransactionId}`);
+    console.log(`Link de pago de Bold generado: ${paymentUrl} para order ${order_id}, Bold ID: ${boldTransactionId}`);
     
-    // TODO: In a real scenario, you might save a "pending" order to Firestore here
-    // before redirecting the user. The actual order confirmation and stock update
-    // should ideally happen via a webhook from Bold.
-
     return {
       success: true,
       message: 'Link de pago generado. Redirigiendo...',
-      orderId: order_id, // Your internal order ID
+      orderId: order_id,
       paymentUrl: paymentUrl,
     };
 
   } catch (error: any) {
-    console.error('Error al contactar la API de Bold:', error);
-    return { success: false, message: `Error de conexión con la pasarela de pago: ${error.message}` };
+    console.error('Error CRÍTICO al contactar la API de Bold (fetch failed o similar):', error);
+    // Imprime más detalles del error si están disponibles
+    if (error.cause) {
+      console.error('Causa del error (si existe):', error.cause);
+    }
+    return { success: false, message: `Error de conexión con la pasarela de pago: ${error.message || 'fetch failed'}` };
   }
 }

@@ -11,13 +11,13 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { CreditCard, Home, Landmark, Lock, ShoppingCart, Copy } from 'lucide-react'; 
+import { CreditCard, Home, Landmark, Lock, ShoppingCart, Copy } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image'; 
-import { Label } from '@/components/ui/label'; 
+import Image from 'next/image';
+import { Label } from '@/components/ui/label';
 import { formatColombianCurrency } from '@/lib/utils';
 import { products as allProductsForSummary } from '@/lib/placeholder-data';
-import { placeOrder, type PlaceOrderInput } from '@/lib/actions/order.actions'; 
+import { placeOrder, type PlaceOrderInput } from '@/lib/actions/order.actions';
 import { useState, useEffect } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 import type { Stripe } from '@stripe/stripe-js';
@@ -27,13 +27,13 @@ const shippingFormSchema = z.object({
   address: z.string().min(5, "La dirección es requerida"),
   city: z.string().min(2, "La ciudad es requerida"),
   state: z.string().min(2, "El departamento es requerido"),
-  zipCode: z.string().optional(), 
+  zipCode: z.string().optional(),
   country: z.string().min(2, "El país es requerido"),
   phone: z.string().email("Por favor, introduce un correo electrónico válido para el cliente.").min(5, "El correo es requerido"),
 });
 
 const paymentFormSchema = z.object({
-  paymentMethod: z.enum(["creditCard", "pse", "cash", "crypto"], { 
+  paymentMethod: z.enum(["creditCard", "pse", "cash", "crypto"], {
     required_error: "Debes seleccionar un método de pago conceptual (Stripe lo gestionará).",
   }),
 });
@@ -56,16 +56,16 @@ const mockCartItems = [
 
 const calculateOrderSummary = () => {
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19; 
+  const taxRate = 0.19;
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000; 
+  const shipping = subtotal > 200000 ? 0 : 15000;
   const total = subtotal + tax + shipping;
   return {
     items: mockCartItems.map(item => ({
       id: item.id,
       name: item.name,
       quantity: item.quantity,
-      price: item.price, 
+      price: item.price,
       stock: item.stock,
       imageUrls: item.imageUrls,
     })),
@@ -83,7 +83,7 @@ const stripePromise = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
 
 export default function CheckoutPage() {
   const { toast } = useToast();
-  const orderSummary = calculateOrderSummary(); 
+  const orderSummary = calculateOrderSummary();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const shippingForm = useForm<ShippingFormValues>({
@@ -93,15 +93,15 @@ export default function CheckoutPage() {
 
   const paymentForm = useForm<PaymentFormValues>({
     resolver: zodResolver(paymentFormSchema),
-    defaultValues: { paymentMethod: "creditCard" } 
+    defaultValues: { paymentMethod: "creditCard" }
   });
 
   useEffect(() => {
     if (!process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY) {
       console.error("Stripe publishable key is not set. Checkout will not function.");
       toast({
-        title: "Error de Configuración",
-        description: "Falta la clave publicable de Stripe. Contacta al administrador.",
+        title: "Error de Configuración de Pago",
+        description: "Falta la clave publicable de Stripe. El botón de pago estará desactivado hasta que se configure.",
         variant: "destructive",
       });
     }
@@ -114,7 +114,7 @@ export default function CheckoutPage() {
       return;
     }
     setIsSubmitting(true);
-    
+
     const isShippingValid = await shippingForm.trigger();
     const isPaymentValid = await paymentForm.trigger();
 
@@ -128,16 +128,16 @@ export default function CheckoutPage() {
         setIsSubmitting(false);
         return;
     }
-    
+
     const shippingData = shippingForm.getValues();
     const paymentData = paymentForm.getValues();
 
     const orderInput: PlaceOrderInput = {
       shippingDetails: {
         ...shippingData,
-        phone: shippingData.phone, 
+        phone: shippingData.phone,
       },
-      paymentMethod: paymentData.paymentMethod!, 
+      paymentMethod: paymentData.paymentMethod!,
       cartItems: orderSummary.items.map(item => ({
         id: item.id,
         name: item.name,
@@ -147,7 +147,7 @@ export default function CheckoutPage() {
         imageUrls: item.imageUrls,
       })),
     };
-    
+
     const result = await placeOrder(orderInput);
 
     if (result.success && result.sessionId) {
@@ -262,8 +262,8 @@ export default function CheckoutPage() {
                       </FormItem>
                     )}
                   />
-                 
-                  {selectedPaymentMethod === 'crypto' && ( 
+
+                  {selectedPaymentMethod === 'crypto' && (
                     <Card className="mt-6 bg-muted/20 border-primary/50 shadow-md">
                       <CardHeader><CardTitle className="text-xl font-headline flex items-center">Pagar con Criptomonedas (Manual)</CardTitle></CardHeader>
                       <CardContent className="space-y-4">
@@ -290,14 +290,14 @@ export default function CheckoutPage() {
               </Form>
             </CardContent>
           </Card>
-           <Button 
+           <Button
               type="button"
               onClick={handleFinalSubmit}
-              size="lg" 
+              size="lg"
               className="w-full text-base mt-0 lg:mt-8 transition-transform hover:scale-105 active:scale-95"
               disabled={isSubmitting || !stripePromise || !shippingForm.formState.isValid || !paymentForm.formState.isValid}
             >
-            <Lock className="mr-2 h-5 w-5" /> 
+            <Lock className="mr-2 h-5 w-5" />
             {isSubmitting ? 'Procesando...' : 'Pagar con Stripe'}
           </Button>
         </div>

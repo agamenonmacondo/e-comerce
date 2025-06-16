@@ -66,24 +66,6 @@ export default function HomePage() {
 
   return (
     <>
-      <section id="categories" className="py-12 md:py-16 bg-background">
-        <div className="container mx-auto px-4 md:px-6">
-          <h2 className="text-3xl font-bold font-headline text-center mb-10">Compra por Categoría</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {categories.map(category => (
-              <Link key={category.id} href={`#products`} onClick={() => handleFilterChange({ categories: [category.id], priceRange: [0,5000000]})}
-                className="block group bg-card p-6 rounded-lg shadow-md hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
-                <h3 className="text-xl font-semibold text-foreground group-hover:text-primary transition-colors mb-2">{category.name}</h3>
-                <p className="text-sm text-muted-foreground">Explora todos los {category.name.toLowerCase()}.</p>
-                <div className="mt-4 text-primary font-medium flex items-center">
-                  Ver Productos <ChevronRight className="ml-1 h-4 w-4 transition-transform group-hover:translate-x-1" />
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
       <ProductMarquee products={latestProducts} title="Descubre Nuestras Novedades" />
       
       <section id="products" className="py-12 md:py-16">

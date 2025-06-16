@@ -11,8 +11,10 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { CreditCard, Home, Landmark, Lock, ShoppingCart } from 'lucide-react'; 
+import { CreditCard, Home, Landmark, Lock, ShoppingCart, Copy } from 'lucide-react'; 
 import Link from 'next/link';
+import Image from 'next/image'; // Import Image component
+import { Label } from '@/components/ui/label'; // Import Label component
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido"),
@@ -52,6 +54,8 @@ export default function CheckoutPage() {
     resolver: zodResolver(paymentFormSchema),
   });
 
+  const selectedPaymentMethod = paymentForm.watch("paymentMethod");
+
   function onShippingSubmit(data: ShippingFormValues) {
     console.log("Datos de envío:", data);
     toast({ title: "Detalles de Envío Guardados", description: "Procede al pago." });
@@ -59,7 +63,10 @@ export default function CheckoutPage() {
 
   function onPaymentSubmit(data: PaymentFormValues) {
     console.log("Datos de pago:", data);
-    toast({ title: "Pago Enviado", description: "Procesando pedido (simulación)." });
+    // Here you would typically redirect to an order confirmation page or handle the actual payment.
+    toast({ title: "Pedido Enviado", description: "Procesando tu pedido (simulación). ¡Gracias por tu compra!" });
+    // Potentially redirect to an order confirmation page
+    // router.push('/order-confirmation'); 
   }
 
   const orderSummary = {
@@ -72,6 +79,20 @@ export default function CheckoutPage() {
       { name: 'AirPods Pro (2da Gen)', quantity: 1, price: 299000 },
     ]
   };
+
+  const handleCopyToClipboard = (text: string) => {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(() => {
+        toast({ title: "Copiado", description: "Dirección de wallet copiada al portapapeles." });
+      }).catch(err => {
+        console.error('Error al copiar: ', err);
+        toast({ title: "Error", description: "No se pudo copiar la dirección.", variant: "destructive" });
+      });
+    } else {
+       toast({ title: "Error", description: "El portapapeles no está disponible en este navegador.", variant: "destructive" });
+    }
+  };
+
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -119,7 +140,7 @@ export default function CheckoutPage() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="grid grid-cols-1 md:grid-cols-2 gap-4" // Changed to md:grid-cols-2 for better layout with 4 items
+                            className="grid grid-cols-1 md:grid-cols-2 gap-4"
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'creditCard' ? 'border-primary bg-primary/10' : ''}`}>
@@ -173,8 +194,58 @@ export default function CheckoutPage() {
                       </FormItem>
                     )}
                   />
+
+                  {selectedPaymentMethod === 'crypto' && (
+                    <Card className="mt-6 bg-muted/20 border-primary/50 shadow-md">
+                      <CardHeader>
+                        <CardTitle className="text-xl font-headline flex items-center">
+                          <svg className="mr-2 h-5 w-5 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 0C4.478 0 0 4.478 0 10s4.478 10 10 10 10-4.478 10-10S15.522 0 10 0zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                            <path d="M10 3.658c-.838 0-1.59.192-2.278.537l.694 1.194c.43-.237.925-.377 1.442-.377.93 0 1.737.443 2.205 1.135l.756-1.103C11.987 4.11 11.047 3.658 10 3.658zm2.664 3.248c-.468-.692-1.275-1.135-2.205-1.135-.517 0-1.012.14-1.442.377l-.694-1.194C9.022 4.57 9.5 4.423 10 4.423c1.115 0 2.11.538 2.778 1.358L10.95 7.754l1.714-.848zM6.006 7.417l-.756 1.103c.462.346.86.777 1.17 1.27L7.14 8.635a3.455 3.455 0 0 0-.48-.682 3.423 3.423 0 0 0-.654-.536zm5.064 4.69c.838 0 1.59-.192 2.278-.537l-.694-1.194c-.43.237-.925.377-1.442.377-.93 0-1.737-.443-2.205-1.135l-.756 1.103C8.013 11.89 8.953 12.342 10 12.342c.362 0 .71-.054 1.07-.158v.001zm2.924-3.097c-.31-.493-.708-.924-1.17-1.27l-.72 1.155c.338.21.62.47.832.768l.916-.453a3.423 3.423 0 0 0 .142-.2zm-6.216-.818c.212-.298.494-.558.832-.768l-.72-1.155c-.462.346-.86.777-1.17 1.27l.916.453a3.42 3.42 0 0 0 .142-.2z"/>
+                          </svg>
+                          Pagar con Criptomonedas
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="space-y-4">
+                        <p className="text-sm text-muted-foreground">
+                          Escanea el código QR o copia la dirección para enviar el equivalente de <strong className="text-foreground">{formatColombianCurrency(orderSummary.total)}</strong> en tu criptomoneda preferida (ej. BTC, ETH, USDC).
+                        </p>
+                        <div className="flex flex-col items-center gap-6 sm:flex-row sm:items-start">
+                          <Image
+                            src="https://placehold.co/160x160.png"
+                            alt="Código QR para pago con criptomonedas"
+                            width={160}
+                            height={160}
+                            className="rounded-lg border-2 border-primary/30 shadow-sm"
+                            data-ai-hint="qr code payment"
+                          />
+                          <div className="space-y-3 flex-grow">
+                            <div>
+                              <Label htmlFor="crypto-address" className="text-xs text-muted-foreground">Dirección de Wallet (Ejemplo):</Label>
+                              <div className="flex items-center gap-2 mt-1">
+                                <Input
+                                  id="crypto-address"
+                                  readOnly
+                                  value="0x1234567890abcdef1234567890abcdef12345678"
+                                  className="font-mono text-xs h-9 bg-background"
+                                />
+                                <Button variant="outline" size="icon" className="h-9 w-9 flex-shrink-0" onClick={() => handleCopyToClipboard("0x1234567890abcdef1234567890abcdef12345678")}>
+                                  <Copy className="h-4 w-4" />
+                                  <span className="sr-only">Copiar dirección</span>
+                                </Button>
+                              </div>
+                            </div>
+                            <p className="text-xs text-muted-foreground pt-2">
+                              <strong className="text-foreground">Importante:</strong> Asegúrate de seleccionar la red correcta (ej. ERC20, BEP20, TRC20) compatible con nuestra wallet. Las transacciones pueden tardar varios minutos en confirmarse en la blockchain.
+                            </p>
+                          </div>
+                        </div>
+                      </CardContent>
+                    </Card>
+                  )}
+
                    <Button type="submit" size="lg" className="w-full text-base mt-8 transition-transform hover:scale-105 active:scale-95">
-                    <Lock className="mr-2 h-5 w-5" /> Realizar Pedido
+                    <Lock className="mr-2 h-5 w-5" /> {selectedPaymentMethod === 'crypto' ? 'Confirmar Transacción Crypto' : 'Realizar Pedido'}
                   </Button>
                 </form>
               </Form>
@@ -227,5 +298,3 @@ export default function CheckoutPage() {
     </div>
   );
 }
-
-    

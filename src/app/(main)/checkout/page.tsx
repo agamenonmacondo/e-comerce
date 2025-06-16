@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -10,7 +11,7 @@ import { Input } from '@/components/ui/input';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Contact, CreditCard, Home, Landmark, Lock, Truck, ShoppingCart } from 'lucide-react'; // Added ShoppingCart
+import { CreditCard, Home, Landmark, Lock, ShoppingCart } from 'lucide-react'; 
 import Link from 'next/link';
 
 const shippingFormSchema = z.object({
@@ -18,13 +19,13 @@ const shippingFormSchema = z.object({
   address: z.string().min(5, "La dirección es requerida"),
   city: z.string().min(2, "La ciudad es requerida"),
   state: z.string().min(2, "El departamento es requerido"),
-  zipCode: z.string().min(3, "El código postal es requerido"), // Adjusted for Colombian postal codes
+  zipCode: z.string().min(3, "El código postal es requerido"), 
   country: z.string().min(2, "El país es requerido"),
   phone: z.string().optional(),
 });
 
 const paymentFormSchema = z.object({
-  paymentMethod: z.enum(["creditCard", "pse", "cash"], { // Changed payment methods for Colombia
+  paymentMethod: z.enum(["creditCard", "pse", "cash", "crypto"], { 
     required_error: "Debes seleccionar un método de pago.",
   }),
   cardNumber: z.string().optional(), 
@@ -35,7 +36,6 @@ const paymentFormSchema = z.object({
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
-// Helper function for Colombian currency
 const formatColombianCurrency = (amount: number) => {
   return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
 };
@@ -60,21 +60,18 @@ export default function CheckoutPage() {
   function onPaymentSubmit(data: PaymentFormValues) {
     console.log("Datos de pago:", data);
     toast({ title: "Pago Enviado", description: "Procesando pedido (simulación)." });
-    // Simulate order placement
-    // router.push('/account/orders');
   }
 
   const orderSummary = {
-    subtotal: 1298000, // Example in COP
+    subtotal: 1298000, 
     shipping: 0,
-    tax: 246620, // Example 19% IVA
+    tax: 246620, 
     total: 1544620,
     items: [
       { name: 'iPhone 15 Pro', quantity: 1, price: 999000 },
       { name: 'AirPods Pro (2da Gen)', quantity: 1, price: 299000 },
     ]
   };
-
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -99,7 +96,6 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
                   <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
-                  {/* <Button type="submit" className="w-full sm:w-auto">Guardar Información de Envío</Button> */}
                 </form>
               </Form>
             </CardContent>
@@ -123,7 +119,7 @@ export default function CheckoutPage() {
                           <RadioGroup
                             onValueChange={field.onChange}
                             defaultValue={field.value}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-4"
+                            className="grid grid-cols-1 md:grid-cols-2 gap-4" // Changed to md:grid-cols-2 for better layout with 4 items
                           >
                             <FormItem className="flex items-center space-x-3 space-y-0">
                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'creditCard' ? 'border-primary bg-primary/10' : ''}`}>
@@ -154,6 +150,20 @@ export default function CheckoutPage() {
                                 <FormLabel htmlFor="cash" className="font-medium cursor-pointer flex items-center w-full">
                                    <svg className="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20"><path d="M17.08,7.85A3.51,3.51,0,0,0,13.5,5H6.5A3.51,3.51,0,0,0,3,8.5V11H2a1,1,0,0,0-1,1v3a1,1,0,0,0,1,1H18a1,1,0,0,0,1-1V12a1,1,0,0,0-1-1H16.92V8.5A3.43,3.43,0,0,0,17.08,7.85ZM15,11H5V8.5A1.5,1.5,0,0,1,6.5,7h7A1.5,1.5,0,0,1,15,8.5Zm1,3H4V13H16Z"/><circle cx="10" cy="10" r="1.5"/></svg>
                                   Efectivo (Efecty, Baloto)
+                                </FormLabel>
+                               </Card>
+                            </FormItem>
+                            <FormItem className="flex items-center space-x-3 space-y-0">
+                               <Card className={`p-4 rounded-lg border-2 hover:border-primary transition-all w-full ${field.value === 'crypto' ? 'border-primary bg-primary/10' : ''}`}>
+                                <FormControl>
+                                  <RadioGroupItem value="crypto" id="crypto" className="sr-only"/>
+                                </FormControl>
+                                <FormLabel htmlFor="crypto" className="font-medium cursor-pointer flex items-center w-full">
+                                  <svg className="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M10 0C4.478 0 0 4.478 0 10s4.478 10 10 10 10-4.478 10-10S15.522 0 10 0zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
+                                    <path d="M10 3.658c-.838 0-1.59.192-2.278.537l.694 1.194c.43-.237.925-.377 1.442-.377.93 0 1.737.443 2.205 1.135l.756-1.103C11.987 4.11 11.047 3.658 10 3.658zm2.664 3.248c-.468-.692-1.275-1.135-2.205-1.135-.517 0-1.012.14-1.442.377l-.694-1.194C9.022 4.57 9.5 4.423 10 4.423c1.115 0 2.11.538 2.778 1.358L10.95 7.754l1.714-.848zM6.006 7.417l-.756 1.103c.462.346.86.777 1.17 1.27L7.14 8.635a3.455 3.455 0 0 0-.48-.682 3.423 3.423 0 0 0-.654-.536zm5.064 4.69c.838 0 1.59-.192 2.278-.537l-.694-1.194c-.43.237-.925.377-1.442.377-.93 0-1.737-.443-2.205-1.135l-.756 1.103C8.013 11.89 8.953 12.342 10 12.342c.362 0 .71-.054 1.07-.158v.001zm2.924-3.097c-.31-.493-.708-.924-1.17-1.27l-.72 1.155c.338.21.62.47.832.768l.916-.453a3.423 3.423 0 0 0 .142-.2zm-6.216-.818c.212-.298.494-.558.832-.768l-.72-1.155c-.462.346-.86.777-1.17 1.27l.916.453a3.42 3.42 0 0 0 .142-.2z"/>
+                                  </svg>
+                                  Criptomonedas
                                 </FormLabel>
                                </Card>
                             </FormItem>
@@ -217,3 +227,5 @@ export default function CheckoutPage() {
     </div>
   );
 }
+
+    

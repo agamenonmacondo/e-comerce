@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import type { CartItem } from '@/types';
 import { products as allProducts } from '@/lib/placeholder-data';
 import { CreditCard, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
+import { formatColombianCurrency } from '@/lib/utils';
 
 const initialCartItems: CartItem[] = [
   { ...allProducts[0], quantity: 1 },
@@ -48,10 +49,6 @@ export default function CartPage() {
   const shippingCost = subtotal > 200000 ? 0 : 15000; // Envío gratis sobre $200.000 COP (ejemplo)
   const totalAmount = subtotal + taxAmount + shippingCost;
 
-  const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
-  };
-
 
   if (cartItems.length === 0) {
     return (
@@ -79,7 +76,7 @@ export default function CartPage() {
               <div className="flex-grow text-center sm:text-left">
                 <Link href={`/products/${item.id}`} className="text-lg font-semibold hover:text-primary transition-colors">{item.name}</Link>
                 <p className="text-sm text-muted-foreground">{item.category.name}</p>
-                <p className="text-lg font-medium text-primary mt-1">{formatCurrency(item.price)}</p>
+                <p className="text-lg font-medium text-primary mt-1">{formatColombianCurrency(item.price)}</p>
               </div>
               <div className="flex items-center space-x-2 mt-2 sm:mt-0">
                 <Button variant="outline" size="icon" onClick={() => updateQuantity(item.id, item.quantity - 1)} className="h-8 w-8">
@@ -97,7 +94,7 @@ export default function CartPage() {
                 </Button>
               </div>
               <p className="font-semibold text-lg w-32 text-right hidden sm:block">
-                {formatCurrency(item.price * item.quantity)}
+                {formatColombianCurrency(item.price * item.quantity)}
               </p>
               <Button variant="ghost" size="icon" onClick={() => removeItem(item.id)} className="text-destructive hover:text-destructive/80">
                 <Trash2 className="h-5 w-5" />
@@ -115,20 +112,20 @@ export default function CartPage() {
             <CardContent className="space-y-3">
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
-                <span>{formatCurrency(subtotal)}</span>
+                <span>{formatColombianCurrency(subtotal)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Envío</span>
-                <span>{shippingCost === 0 ? 'Gratis' : formatCurrency(shippingCost)}</span>
+                <span>{shippingCost === 0 ? 'Gratis' : formatColombianCurrency(shippingCost)}</span>
               </div>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Impuestos ({(taxRate * 100).toFixed(0)}%)</span>
-                <span>{formatCurrency(taxAmount)}</span>
+                <span>{formatColombianCurrency(taxAmount)}</span>
               </div>
               <Separator />
               <div className="flex justify-between font-bold text-xl">
                 <span>Total</span>
-                <span>{formatCurrency(totalAmount)}</span>
+                <span>{formatColombianCurrency(totalAmount)}</span>
               </div>
             </CardContent>
             <CardFooter>

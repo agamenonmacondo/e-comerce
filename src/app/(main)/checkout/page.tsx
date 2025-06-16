@@ -13,8 +13,9 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import { CreditCard, Home, Landmark, Lock, ShoppingCart, Copy } from 'lucide-react'; 
 import Link from 'next/link';
-import Image from 'next/image'; // Import Image component
-import { Label } from '@/components/ui/label'; // Import Label component
+import Image from 'next/image'; 
+import { Label } from '@/components/ui/label'; 
+import { formatColombianCurrency } from '@/lib/utils';
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido"),
@@ -38,10 +39,6 @@ const paymentFormSchema = z.object({
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 type PaymentFormValues = z.infer<typeof paymentFormSchema>;
 
-const formatColombianCurrency = (amount: number) => {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
-};
-
 export default function CheckoutPage() {
   const { toast } = useToast();
 
@@ -63,10 +60,7 @@ export default function CheckoutPage() {
 
   function onPaymentSubmit(data: PaymentFormValues) {
     console.log("Datos de pago:", data);
-    // Here you would typically redirect to an order confirmation page or handle the actual payment.
     toast({ title: "Pedido Enviado", description: "Procesando tu pedido (simulación). ¡Gracias por tu compra!" });
-    // Potentially redirect to an order confirmation page
-    // router.push('/order-confirmation'); 
   }
 
   const orderSummary = {
@@ -182,7 +176,7 @@ export default function CheckoutPage() {
                                 <FormLabel htmlFor="crypto" className="font-medium cursor-pointer flex items-center w-full">
                                   <svg className="mr-2 h-5 w-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                                     <path d="M10 0C4.478 0 0 4.478 0 10s4.478 10 10 10 10-4.478 10-10S15.522 0 10 0zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
-                                    <path d="M10 3.658c-.838 0-1.59.192-2.278.537l.694 1.194c.43-.237.925-.377 1.442-.377.93 0 1.737.443 2.205 1.135l.756-1.103C11.987 4.11 11.047 3.658 10 3.658zm2.664 3.248c-.468-.692-1.275-1.135-2.205-1.135-.517 0-1.012.14-1.442.377l-.694-1.194C9.022 4.57 9.5 4.423 10 4.423c1.115 0 2.11.538 2.778 1.358L10.95 7.754l1.714-.848zM6.006 7.417l-.756 1.103c.462.346.86.777 1.17 1.27L7.14 8.635a3.455 3.455 0 0 0-.48-.682 3.423 3.423 0 0 0-.654-.536zm5.064 4.69c.838 0 1.59-.192 2.278-.537l-.694-1.194c-.43.237-.925.377-1.442.377-.93 0-1.737-.443-2.205-1.135l-.756 1.103C8.013 11.89 8.953 12.342 10 12.342c.362 0 .71-.054 1.07-.158v.001zm2.924-3.097c-.31-.493-.708-.924-1.17-1.27l-.72 1.155c.338.21.62.47.832.768l.916-.453a3.423 3.423 0 0 0 .142-.2zm-6.216-.818c.212-.298.494-.558.832-.768l-.72-1.155c-.462.346-.86.777-1.17 1.27l.916.453a3.42 3.42 0 0 0 .142-.2z"/>
+                                    <path d="M10 3.658c-.838 0-1.59.192-2.278.537l.694 1.194c.43-.237.925-.377 1.442-.377.93 0 1.737.443 2.205 1.135l.756-1.103C11.987 4.11 11.047 3.658 10 3.658zm2.664 3.248c-.468-.692-1.275-1.135-2.205-1.135-.517 0-1.012.14-1.442.377l-.694-1.194C9.022 4.57 9.5 4.423 10 4.423c1.115 0 2.11.538 2.778 1.358L10.95 7.754l1.714-.848zM6.006 7.417l-.756 1.103c.462.346.86.777 1.17 1.27L7.14 8.635a3.455 3.455 0 0 0-.48-.682 3.423 3.423 0 0 0-.654-.536zm5.064 4.69c.838 0 1.59-.192 2.278-.537l-.694-1.194c-.43-.237-.925-.377 1.442-.377-.93 0-1.737-.443-2.205-1.135l-.756 1.103C8.013 11.89 8.953 12.342 10 12.342c.362 0 .71-.054 1.07-.158v.001zm2.924-3.097c-.31-.493-.708-.924-1.17-1.27l-.72 1.155c.338.21.62.47.832.768l.916-.453a3.423 3.423 0 0 0 .142-.2zm-6.216-.818c.212-.298.494-.558.832-.768l-.72-1.155c-.462.346-.86.777-1.17 1.27l.916.453a3.42 3.42 0 0 0 .142-.2z"/>
                                   </svg>
                                   Criptomonedas
                                 </FormLabel>
@@ -201,7 +195,7 @@ export default function CheckoutPage() {
                         <CardTitle className="text-xl font-headline flex items-center">
                           <svg className="mr-2 h-5 w-5 text-primary" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                             <path d="M10 0C4.478 0 0 4.478 0 10s4.478 10 10 10 10-4.478 10-10S15.522 0 10 0zm0 18c-4.411 0-8-3.589-8-8s3.589-8 8-8 8 3.589 8 8-3.589 8-8 8z"/>
-                            <path d="M10 3.658c-.838 0-1.59.192-2.278.537l.694 1.194c.43-.237.925-.377 1.442-.377.93 0 1.737.443 2.205 1.135l.756-1.103C11.987 4.11 11.047 3.658 10 3.658zm2.664 3.248c-.468-.692-1.275-1.135-2.205-1.135-.517 0-1.012.14-1.442.377l-.694-1.194C9.022 4.57 9.5 4.423 10 4.423c1.115 0 2.11.538 2.778 1.358L10.95 7.754l1.714-.848zM6.006 7.417l-.756 1.103c.462.346.86.777 1.17 1.27L7.14 8.635a3.455 3.455 0 0 0-.48-.682 3.423 3.423 0 0 0-.654-.536zm5.064 4.69c.838 0 1.59-.192 2.278-.537l-.694-1.194c-.43.237-.925.377-1.442.377-.93 0-1.737-.443-2.205-1.135l-.756 1.103C8.013 11.89 8.953 12.342 10 12.342c.362 0 .71-.054 1.07-.158v.001zm2.924-3.097c-.31-.493-.708-.924-1.17-1.27l-.72 1.155c.338.21.62.47.832.768l.916-.453a3.423 3.423 0 0 0 .142-.2zm-6.216-.818c.212-.298.494-.558.832-.768l-.72-1.155c-.462.346-.86.777-1.17 1.27l.916.453a3.42 3.42 0 0 0 .142-.2z"/>
+                            <path d="M10 3.658c-.838 0-1.59.192-2.278.537l.694 1.194c.43-.237.925-.377 1.442-.377.93 0 1.737.443 2.205 1.135l.756-1.103C11.987 4.11 11.047 3.658 10 3.658zm2.664 3.248c-.468-.692-1.275-1.135-2.205-1.135-.517 0-1.012.14-1.442.377l-.694-1.194C9.022 4.57 9.5 4.423 10 4.423c1.115 0 2.11.538 2.778 1.358L10.95 7.754l1.714-.848zM6.006 7.417l-.756 1.103c.462.346.86.777 1.17 1.27L7.14 8.635a3.455 3.455 0 0 0-.48-.682 3.423 3.423 0 0 0-.654-.536zm5.064 4.69c.838 0 1.59-.192 2.278-.537l-.694-1.194c-.43-.237-.925-.377 1.442-.377-.93 0-1.737-.443-2.205-1.135l-.756 1.103C8.013 11.89 8.953 12.342 10 12.342c.362 0 .71-.054 1.07-.158v.001zm2.924-3.097c-.31-.493-.708-.924-1.17-1.27l-.72 1.155c.338.21.62.47.832.768l.916-.453a3.423 3.423 0 0 0 .142-.2zm-6.216-.818c.212-.298.494-.558.832-.768l-.72-1.155c-.462.346-.86.777-1.17 1.27l.916.453a3.42 3.42 0 0 0 .142-.2z"/>
                           </svg>
                           Pagar con Criptomonedas
                         </CardTitle>

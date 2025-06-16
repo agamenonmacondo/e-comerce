@@ -14,12 +14,8 @@ import { useToast } from '@/hooks/use-toast';
 import { CheckCircle, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Star } from 'lucide-react';
 import Link from 'next/link';
 import ProductList from '@/components/products/ProductList';
+import { formatColombianCurrency } from '@/lib/utils';
 
-
-// Helper function for Colombian currency
-const formatColombianCurrency = (amount: number) => {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
-};
 
 export default function ProductDetailPage() {
   const params = useParams();

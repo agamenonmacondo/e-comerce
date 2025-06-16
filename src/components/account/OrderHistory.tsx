@@ -8,12 +8,8 @@ import { Button } from '@/components/ui/button';
 import Link from 'next/link';
 import { Package, Eye } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
-import { es } from 'date-fns/locale'; // Import Spanish locale for date-fns
-
-// Helper function for Colombian currency
-const formatColombianCurrency = (amount: number) => {
-  return new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', minimumFractionDigits: 0, maximumFractionDigits: 0 }).format(amount);
-};
+import { es } from 'date-fns/locale'; 
+import { formatColombianCurrency } from '@/lib/utils';
 
 
 export default function OrderHistory({ orders }: OrderHistoryProps) {
@@ -48,7 +44,6 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
   };
   
   const getStatusText = (status: Order['status']) => {
-     // This function could map to more specific Spanish terms if needed
     return status;
   }
 

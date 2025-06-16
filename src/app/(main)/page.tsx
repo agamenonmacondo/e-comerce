@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import ProductList from '@/components/products/ProductList';
 import FilterSidebar from '@/components/products/FilterSidebar';
-import ProductMarquee from '@/components/products/ProductMarquee'; // Added import
+import ProductMarquee from '@/components/products/ProductMarquee';
 import { products as allProducts, categories } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
 import Link from 'next/link';
@@ -66,8 +66,6 @@ export default function HomePage() {
 
   return (
     <>
-      <ProductMarquee products={latestProducts} title="Descubre Nuestras Novedades" />
-
       <section id="categories" className="py-12 md:py-16 bg-background">
         <div className="container mx-auto px-4 md:px-6">
           <h2 className="text-3xl font-bold font-headline text-center mb-10">Compra por Categoría</h2>
@@ -85,6 +83,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <ProductMarquee products={latestProducts} title="Descubre Nuestras Novedades" />
       
       <section id="products" className="py-12 md:py-16">
         <div className="container mx-auto px-4 md:px-6">

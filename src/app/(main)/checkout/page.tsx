@@ -97,13 +97,14 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
+    console.log('Stripe Promise Status:', stripePromise ? 'Loaded' : 'Not Loaded/Error');
     if (!stripePromise) {
       console.error("Stripe.js no se cargó, probablemente debido a una clave publicable faltante o incorrecta.");
       toast({
-        title: "Error de Configuración de Pago",
-        description: "No se pudo inicializar Stripe. Verifica tu NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY en el archivo .env y reinicia el servidor. El botón de pago estará desactivado.",
+        title: "Error de Configuración de Pago (Stripe)",
+        description: "Stripe.js no se pudo cargar. Verifica que NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY esté correctamente configurada en tu archivo .env y que hayas REINICIADO el servidor de desarrollo. El botón de pago estará desactivado.",
         variant: "destructive",
-        duration: Infinity, // Hace el toast persistente
+        duration: Infinity, 
       });
     }
   }, [stripePromise, toast]);
@@ -136,7 +137,6 @@ export default function CheckoutPage() {
     const orderInput: PlaceOrderInput = {
       shippingDetails: {
         ...shippingData,
-        phone: shippingData.phone, // Este es el correo electrónico
       },
       paymentMethod: paymentData.paymentMethod!,
       cartItems: orderSummary.items.map(item => ({
@@ -291,7 +291,16 @@ export default function CheckoutPage() {
               </Form>
             </CardContent>
           </Card>
-           <Button
+
+          {/* Debug Info */}
+          <div className="mt-4 p-4 border rounded-md bg-muted/50 text-xs">
+            <p>Stripe Promise Loaded: {stripePromise ? 'Sí' : 'No (¡Revisa tu clave NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY y reinicia el servidor!)'}</p>
+            <p>Shipping Form Valid: {shippingForm.formState.isValid.toString()}</p>
+            <p>Payment Form Valid: {paymentForm.formState.isValid.toString()}</p>
+            <p>Is Submitting: {isSubmitting.toString()}</p>
+          </div>
+           
+          <Button
               type="button"
               onClick={handleFinalSubmit}
               size="lg"

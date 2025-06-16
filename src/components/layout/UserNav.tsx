@@ -13,28 +13,45 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings, User, UserCircle, ShoppingBag, LayoutDashboard } from 'lucide-react';
+import { LogOut, Settings, User as UserIcon, UserCircle, ShoppingBag, LayoutDashboard } from 'lucide-react'; // Renamed User to UserIcon to avoid conflict
 import { useState, useEffect } from 'react';
+import { auth } from '@/lib/firebase/firebaseConfig'; // Import Firebase auth
+import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth'; // Import FirebaseUser
+import { useToast } from '@/hooks/use-toast';
+import { useRouter } from 'next/navigation';
+
 
 export default function UserNav() {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userName, setUserName] = useState<string | null>(null);
-  const [userEmail, setUserEmail] = useState<string | null>(null); 
-  const [userAvatar, setUserAvatar] = useState<string | undefined>(undefined);
+  const [firebaseUser, setFirebaseUser] = useState<FirebaseUser | null>(null);
+  const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
-    // Simulate a logged-in user for demonstration. 
-    // In a real app, this would check auth status.
-    const timer = setTimeout(() => {
-      setIsAuthenticated(true);
-      setUserName("Usuario GigaGO");
-      setUserEmail("usuario@gigago.com");
-      setUserAvatar("https://placehold.co/40x40.png?text=GG");
-    }, 100); 
-    return () => clearTimeout(timer);
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setFirebaseUser(user);
+    });
+    return () => unsubscribe(); // Cleanup subscription on unmount
   }, []);
 
-  if (!isAuthenticated) {
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+      toast({
+        title: "Sesión Cerrada",
+        description: "Has cerrado sesión exitosamente.",
+      });
+      router.push('/login'); // Redirect to login page after sign out
+    } catch (error) {
+      console.error("Error signing out: ", error);
+      toast({
+        title: "Error",
+        description: "No se pudo cerrar la sesión. Inténtalo de nuevo.",
+        variant: "destructive",
+      });
+    }
+  };
+
+  if (!firebaseUser) {
     return (
       <Button variant="ghost" asChild>
         <Link href="/login">
@@ -44,23 +61,26 @@ export default function UserNav() {
     );
   }
 
+  const displayName = firebaseUser.displayName || firebaseUser.email?.split('@')[0] || "Usuario";
+  const fallbackName = displayName.substring(0, 2).toUpperCase();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={userAvatar || undefined} alt={userName || "Usuario"} />
-            <AvatarFallback>{userName ? userName.substring(0, 2).toUpperCase() : <UserCircle/>}</AvatarFallback>
+            <AvatarImage src={firebaseUser.photoURL || undefined} alt={displayName} />
+            <AvatarFallback>{fallbackName}</AvatarFallback>
           </Avatar>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{userName || "Usuario"}</p>
-            {userEmail && (
+            <p className="text-sm font-medium leading-none">{displayName}</p>
+            {firebaseUser.email && (
               <p className="text-xs leading-none text-muted-foreground">
-                {userEmail}
+                {firebaseUser.email}
               </p>
             )}
           </div>
@@ -75,7 +95,7 @@ export default function UserNav() {
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
             <Link href="/account">
-              <User className="mr-2 h-4 w-4" />
+              <UserIcon className="mr-2 h-4 w-4" />
               <span>Perfil</span>
             </Link>
           </DropdownMenuItem>
@@ -85,13 +105,19 @@ export default function UserNav() {
               <span>Pedidos</span>
             </Link>
           </DropdownMenuItem>
-          <DropdownMenuItem disabled>
-            <Settings className="mr-2 h-4 w-4" />
-            <span>Configuración</span>
+          {/* 
+          // Example for admin link, you would need role management for this
+          // if (userRole === 'admin') { ... }
+          */}
+          <DropdownMenuItem asChild>
+             <Link href="/admin/dashboard">
+                <Settings className="mr-2 h-4 w-4" />
+                <span>Admin</span>
+            </Link>
           </DropdownMenuItem>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
-        <DropdownMenuItem onClick={() => setIsAuthenticated(false)}> 
+        <DropdownMenuItem onClick={handleSignOut}> 
           <LogOut className="mr-2 h-4 w-4" />
           <span>Cerrar Sesión</span>
         </DropdownMenuItem>

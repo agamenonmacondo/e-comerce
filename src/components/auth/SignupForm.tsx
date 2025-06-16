@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,6 +17,9 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Lock, User } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import { auth } from '@/lib/firebase/firebaseConfig'; // Import Firebase auth
+import { createUserWithEmailAndPassword, updateProfile } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   name: z.string().min(2, { message: 'El nombre debe tener al menos 2 caracteres.' }),
@@ -29,6 +33,7 @@ const formSchema = z.object({
 
 export default function SignupForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -40,12 +45,33 @@ export default function SignupForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast({
-      title: "Intento de Registro",
-      description: "La funcionalidad de registro es una simulación.",
-    });
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
+      // User created successfully
+      if (userCredential.user) {
+        await updateProfile(userCredential.user, {
+          displayName: values.name,
+        });
+      }
+      toast({
+        title: "Registro Exitoso",
+        description: "¡Bienvenido a GigaGO! Serás redirigido.",
+      });
+      router.push('/dashboard'); // Or wherever you want to redirect after signup
+    } catch (error: any) {
+      console.error("Error during sign up:", error);
+      let errorMessage = "Ocurrió un error durante el registro. Por favor, inténtalo de nuevo.";
+      if (error.code === 'auth/email-already-in-use') {
+        errorMessage = "Este correo electrónico ya está en uso.";
+      } else if (error.code === 'auth/weak-password') {
+        errorMessage = "La contraseña es demasiado débil.";
+      }
+      toast({
+        title: "Error de Registro",
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    }
   }
 
   return (
@@ -120,8 +146,8 @@ export default function SignupForm() {
                 </FormItem>
               )}
             />
-             <Button type="submit" className="w-full transition-transform hover:scale-105 active:scale-95">
-              Crear Cuenta
+             <Button type="submit" className="w-full transition-transform hover:scale-105 active:scale-95" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? "Registrando..." : "Crear Cuenta"}
             </Button>
           </form>
         </Form>

@@ -1,3 +1,4 @@
+
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -16,6 +17,9 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Mail, Lock } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
+import { auth } from '@/lib/firebase/firebaseConfig'; // Import Firebase auth
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { useRouter } from 'next/navigation';
 
 const formSchema = z.object({
   email: z.string().email({ message: 'Correo electrónico inválido.' }),
@@ -24,6 +28,7 @@ const formSchema = z.object({
 
 export default function LoginForm() {
   const { toast } = useToast();
+  const router = useRouter();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -33,12 +38,25 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast({
-      title: "Intento de Inicio de Sesión",
-      description: "La funcionalidad de inicio de sesión es una simulación.",
-    });
+    try {
+      await signInWithEmailAndPassword(auth, values.email, values.password);
+      toast({
+        title: "Inicio de Sesión Exitoso",
+        description: "¡Bienvenido de nuevo!",
+      });
+      router.push('/dashboard'); // Or your desired redirect path
+    } catch (error: any) {
+      console.error("Error during sign in:", error);
+      let errorMessage = "Error al iniciar sesión. Verifica tus credenciales.";
+      if (error.code === 'auth/user-not-found' || error.code === 'auth/wrong-password' || error.code === 'auth/invalid-credential') {
+        errorMessage = "Correo electrónico o contraseña incorrectos.";
+      }
+      toast({
+        title: "Error de Inicio de Sesión",
+        description: errorMessage,
+        variant: 'destructive',
+      });
+    }
   }
 
   return (
@@ -81,8 +99,8 @@ export default function LoginForm() {
                 </FormItem>
               )}
             />
-             <Button type="submit" className="w-full transition-transform hover:scale-105 active:scale-95">
-              Iniciar Sesión
+             <Button type="submit" className="w-full transition-transform hover:scale-105 active:scale-95" disabled={form.formState.isSubmitting}>
+              {form.formState.isSubmitting ? "Iniciando..." : "Iniciar Sesión"}
             </Button>
           </form>
         </Form>

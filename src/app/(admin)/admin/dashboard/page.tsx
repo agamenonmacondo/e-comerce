@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, ListChecks, UserPlus, TrendingUp } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, ListChecks, UserPlus, TrendingUp, Receipt } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import {
@@ -80,10 +80,12 @@ export default function AdminDashboardPage() {
   };
 
   const totalSales = 125800000;
-  const totalOrders = 342;
+  const totalOrders = 342; // This will also be our simulated number of transactions for the sales modal
   const newCustomers = 58;
   const lowStockItemsCount = products.filter(p => p.currentStock < 10).length;
   const lowStockProductsDetail = products.filter(p => p.currentStock < 10);
+  const averageTransactionValue = totalOrders > 0 ? totalSales / totalOrders : 0;
+
 
   const openDetailModal = (statType: string) => {
     setSelectedStat(statType);
@@ -99,9 +101,20 @@ export default function AdminDashboardPage() {
           <>
             <DialogHeader>
               <DialogTitle className="flex items-center"><TrendingUp className="mr-2 h-5 w-5 text-primary" />Detalle de Ventas Totales (Mes)</DialogTitle>
-              <DialogDescription>Un desglose de las ventas de este mes.</DialogDescription>
+              <DialogDescription>Un desglose detallado de las operaciones de venta de este mes.</DialogDescription>
             </DialogHeader>
-            <div className="mt-4 space-y-3 text-sm py-4">
+            <div className="mt-4 space-y-4 text-sm py-4">
+              <div className="grid grid-cols-2 gap-4 mb-4">
+                <Card className="p-3">
+                  <p className="text-xs text-muted-foreground">Transacciones Totales</p>
+                  <p className="text-lg font-semibold">{totalOrders}</p>
+                </Card>
+                <Card className="p-3">
+                  <p className="text-xs text-muted-foreground">Valor Promedio Transacción</p>
+                  <p className="text-lg font-semibold">{formatColombianCurrency(averageTransactionValue)}</p>
+                </Card>
+              </div>
+
               <p><strong>Productos más vendidos (ejemplo):</strong></p>
               <ul className="list-disc pl-6 space-y-1">
                 <li>iPhone 15 Pro: {formatColombianCurrency(50000000)}</li>
@@ -109,12 +122,45 @@ export default function AdminDashboardPage() {
                 <li>AirPods Pro (2da Gen): {formatColombianCurrency(15000000)}</li>
                 <li>Otros: {formatColombianCurrency(totalSales - 95000000)}</li>
               </ul>
+              
               <p className="mt-3"><strong>Desglose por método de pago (ejemplo):</strong></p>
               <ul className="list-disc pl-6 space-y-1">
                 <li>Tarjeta de Crédito/Débito: 70%</li>
                 <li>PSE (Transferencias Bancarias): 20%</li>
                 <li>Efectivo (Puntos de pago): 10%</li>
               </ul>
+
+              <p className="mt-4"><strong>Últimas Transacciones del Mes (ejemplo):</strong></p>
+              <Table>
+                <TableHeader>
+                  <TableRow>
+                    <TableHead>ID Trans.</TableHead>
+                    <TableHead>Fecha</TableHead>
+                    <TableHead>Cliente</TableHead>
+                    <TableHead className="text-right">Valor</TableHead>
+                  </TableRow>
+                </TableHeader>
+                <TableBody>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">#TRX001</TableCell>
+                    <TableCell>15/06/2024</TableCell>
+                    <TableCell>Laura V.</TableCell>
+                    <TableCell className="text-right">{formatColombianCurrency(4500000)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">#TRX002</TableCell>
+                    <TableCell>15/06/2024</TableCell>
+                    <TableCell>Juan M.</TableCell>
+                    <TableCell className="text-right">{formatColombianCurrency(180000)}</TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell className="font-mono text-xs">#TRX003</TableCell>
+                    <TableCell>14/06/2024</TableCell>
+                    <TableCell>Sofia R.</TableCell>
+                    <TableCell className="text-right">{formatColombianCurrency(950000)}</TableCell>
+                  </TableRow>
+                </TableBody>
+              </Table>
             </div>
           </>
         );
@@ -162,6 +208,7 @@ export default function AdminDashboardPage() {
                   <li key={i}>Cliente Ejemplo {i + 1} - Registrado el {new Date(Date.now() - i * 2 * 24 * 60 * 60 * 1000).toLocaleDateString('es-CO')}</li>
                 ))}
               </ul>
+               <p className="mt-3"><strong>Total nuevos clientes este mes: {newCustomers}</strong></p>
             </div>
           </>
         );
@@ -319,7 +366,7 @@ export default function AdminDashboardPage() {
       </section>
 
       <Dialog open={isDetailModalOpen} onOpenChange={setIsDetailModalOpen}>
-        <DialogContent className="sm:max-w-lg overflow-y-auto max-h-[80vh]">
+        <DialogContent className="sm:max-w-lg md:max-w-xl lg:max-w-2xl overflow-y-auto max-h-[80vh]">
           {renderModalContent()}
           <DialogFooter className="sm:justify-end pt-4">
             <DialogClose asChild>

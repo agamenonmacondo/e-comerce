@@ -9,8 +9,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Edit3, Save } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
+import Link from 'next/link';
 
 // Extend Product type for local state management in admin
 interface AdminProduct extends Product {
@@ -136,10 +137,18 @@ export default function AdminDashboardPage() {
       <section>
         <Card className="shadow-xl">
           <CardHeader>
-            <CardTitle className="text-2xl font-headline flex items-center">
-              <Package className="mr-3 h-6 w-6 text-primary" />
-              Gestión de Inventario (Simulación)
-            </CardTitle>
+            <div className="flex justify-between items-center">
+                <CardTitle className="text-2xl font-headline flex items-center">
+                <Package className="mr-3 h-6 w-6 text-primary" />
+                Ajustar Stock de Productos Existentes (Simulación)
+                </CardTitle>
+                <Button asChild>
+                    <Link href="/admin/products/add">
+                        <PlusCircle className="mr-2 h-4 w-4" />
+                        Añadir Nuevo Producto
+                    </Link>
+                </Button>
+            </div>
             <CardDescription>
               Visualiza y ajusta el stock de tus productos. Los cambios aquí son solo para demostración y no persistirán.
             </CardDescription>
@@ -193,5 +202,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-
-    

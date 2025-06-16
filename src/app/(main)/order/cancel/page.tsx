@@ -12,11 +12,11 @@ export default function OrderCancelPage() {
       <Card className="w-full max-w-lg text-center shadow-xl">
         <CardHeader>
           <XCircle className="mx-auto h-16 w-16 text-destructive mb-4" />
-          <CardTitle className="text-3xl font-bold font-headline">Pago Cancelado</CardTitle>
+          <CardTitle className="text-3xl font-bold font-headline">Proceso Cancelado</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription className="text-lg text-muted-foreground mb-6">
-            Parece que el proceso de pago fue cancelado o no se completó. Tu carrito aún conserva tus artículos.
+            El proceso de pedido fue cancelado. Tu carrito aún conserva tus artículos si deseas intentarlo de nuevo.
           </CardDescription>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <Button asChild size="lg" className="transition-transform hover:scale-105 active:scale-95">

@@ -5,8 +5,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { XCircle } from 'lucide-react';
+import { useSearchParams } from 'next/navigation';
 
 export default function OrderCancelPage() {
+  const searchParams = useSearchParams();
+  const orderId = searchParams.get('orderId'); // Bold might pass order_id or transaction_id
+
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 min-h-[60vh] flex items-center justify-center">
       <Card className="w-full max-w-lg text-center shadow-xl">
@@ -16,7 +20,11 @@ export default function OrderCancelPage() {
         </CardHeader>
         <CardContent>
           <CardDescription className="text-lg text-muted-foreground mb-6">
-            El proceso de pedido fue cancelado. Tu carrito aún conserva tus artículos si deseas intentarlo de nuevo.
+            {orderId 
+              ? `El proceso de pago para el pedido ${orderId} fue cancelado o no se completó.`
+              : "El proceso de pago fue cancelado o no se completó."}
+            <br />
+            Tu carrito aún conserva tus artículos si deseas intentarlo de nuevo.
           </CardDescription>
           <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
             <Button asChild size="lg" className="transition-transform hover:scale-105 active:scale-95">

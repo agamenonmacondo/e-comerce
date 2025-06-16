@@ -15,14 +15,23 @@ import { categories } from '@/lib/placeholder-data';
 import { PackagePlus, ChevronLeft } from 'lucide-react';
 import Link from 'next/link';
 
+const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+const ACCEPTED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
 const addProductFormSchema = z.object({
   name: z.string().min(3, "El nombre del producto es requerido (mín. 3 caracteres)."),
   description: z.string().min(10, "La descripción es requerida (mín. 10 caracteres)."),
   price: z.coerce.number().positive("El precio debe ser un número positivo."),
   stock: z.coerce.number().int().min(0, "El stock no puede ser negativo."),
   categoryId: z.string({ required_error: "Debes seleccionar una categoría." }),
-  imageUrl1: z.string().url({ message: "Por favor, introduce una URL de imagen válida." }).or(z.literal('')),
-  imageUrl2: z.string().url({ message: "Por favor, introduce una URL de imagen válida." }).optional().or(z.literal('')),
+  imageUrl1: z.any()
+    .refine((files: FileList | undefined) => files && files.length > 0, { message: "La imagen principal es requerida." })
+    .refine((files: FileList | undefined) => files && files[0]?.size <= MAX_FILE_SIZE, { message: `La imagen principal no debe exceder ${MAX_FILE_SIZE / (1024*1024)}MB.`})
+    .refine((files: FileList | undefined) => files && ACCEPTED_IMAGE_TYPES.includes(files[0]?.type), { message: "Tipo de archivo no soportado para la imagen principal."}),
+  imageUrl2: z.any()
+    .optional()
+    .refine((files: FileList | undefined) => !files || files.length === 0 || (files && files[0]?.size <= MAX_FILE_SIZE), { message: `La imagen secundaria no debe exceder ${MAX_FILE_SIZE / (1024*1024)}MB.`})
+    .refine((files: FileList | undefined) => !files || files.length === 0 || (files && ACCEPTED_IMAGE_TYPES.includes(files[0]?.type)), { message: "Tipo de archivo no soportado para la imagen secundaria."}),
 });
 
 type AddProductFormValues = z.infer<typeof addProductFormSchema>;
@@ -38,22 +47,24 @@ export default function AddProductPage() {
       price: 0,
       stock: 0,
       categoryId: undefined,
-      imageUrl1: '',
-      imageUrl2: '',
+      imageUrl1: undefined,
+      imageUrl2: undefined,
     },
   });
 
   function onSubmit(data: AddProductFormValues) {
     console.log("Datos del nuevo producto (simulación):", data);
-    // En una aplicación real, aquí enviarías los datos al backend para crear el producto.
-    // También se generaría un ID único para el producto.
-    // Las imágenes podrían subirse a un servicio de almacenamiento.
+    const image1Name = data.imageUrl1?.[0]?.name || "Ninguna seleccionada";
+    const image2Name = data.imageUrl2?.[0]?.name || "Ninguna seleccionada";
+    
+    // En una aplicación real, aquí enviarías los datos al backend.
+    // Las imágenes (data.imageUrl1[0] y data.imageUrl2[0]) se subirían a un servicio de almacenamiento.
 
     toast({
       title: "Producto Añadido (Simulación)",
-      description: `"${data.name}" ha sido añadido. Esto es una simulación y el producto no se guardará permanentemente.`,
+      description: `"${data.name}" ha sido añadido. Imagen principal: ${image1Name}. Imagen secundaria: ${image2Name}. (Esto es una simulación y el producto no se guardará permanentemente).`,
     });
-    form.reset(); // Limpiar el formulario después del envío
+    form.reset(); 
   }
 
   return (
@@ -151,10 +162,18 @@ export default function AddProductPage() {
               <FormField
                 control={form.control}
                 name="imageUrl1"
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...rest } }) => (
                   <FormItem>
-                    <FormLabel>URL de Imagen Principal</FormLabel>
-                    <FormControl><Input placeholder="https://ejemplo.com/imagen_principal.png" {...field} /></FormControl>
+                    <FormLabel>Imagen Principal</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="file" 
+                        accept={ACCEPTED_IMAGE_TYPES.join(',')}
+                        onChange={(event) => onChange(event.target.files)} 
+                        {...rest} 
+                        className="pt-2"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
@@ -162,10 +181,18 @@ export default function AddProductPage() {
               <FormField
                 control={form.control}
                 name="imageUrl2"
-                render={({ field }) => (
+                render={({ field: { onChange, value, ...rest } }) => ( 
                   <FormItem>
-                    <FormLabel>URL de Imagen Secundaria (Opcional)</FormLabel>
-                    <FormControl><Input placeholder="https://ejemplo.com/imagen_secundaria.png" {...field} /></FormControl>
+                    <FormLabel>Imagen Secundaria (Opcional)</FormLabel>
+                     <FormControl>
+                      <Input 
+                        type="file" 
+                        accept={ACCEPTED_IMAGE_TYPES.join(',')}
+                        onChange={(event) => onChange(event.target.files)}
+                        {...rest} 
+                        className="pt-2"
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}

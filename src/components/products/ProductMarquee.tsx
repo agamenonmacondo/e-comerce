@@ -1,8 +1,9 @@
+
 import type { Product } from '@/types';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { formatColombianCurrency } from '@/lib/utils'; // Import the helper
+import { formatColombianCurrency } from '@/lib/utils'; 
 
 interface ProductMarqueeProps {
   products: Product[];
@@ -15,6 +16,19 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
   }
 
   const marqueeProducts = [...products, ...products];
+
+  const getImageHint = (product: Product) => {
+    if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+      return 'phone photo';
+    }
+    if (product.category.slug === 'accesorios') {
+      if (product.name.toLowerCase().includes('airpods')) return 'earbuds product';
+      if (product.name.toLowerCase().includes('cargador')) return 'charger product';
+      if (product.name.toLowerCase().includes('cable')) return 'cable product';
+      return 'accessory product';
+    }
+    return 'product photo';
+  };
 
   return (
     <section className="py-12 md:py-16 bg-gradient-to-r from-primary/20 via-background to-accent/10 overflow-hidden">
@@ -40,7 +54,7 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
                     fill
                     sizes="(max-width: 768px) 256px, 288px"
                     className="object-cover transition-opacity duration-300 group-hover:opacity-30"
-                    data-ai-hint="product photo"
+                    data-ai-hint={getImageHint(product)}
                   />
                   <div className="absolute inset-0 flex flex-col justify-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-gradient-to-t from-black/80 via-black/50 to-transparent">
                     <h3 className="text-lg font-semibold text-white mb-1 line-clamp-2">{product.name}</h3>

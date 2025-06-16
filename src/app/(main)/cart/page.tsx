@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -8,7 +9,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/componen
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import type { CartItem } from '@/types';
+import type { CartItem, Product } from '@/types';
 import { products as allProducts } from '@/lib/placeholder-data';
 import { CreditCard, Minus, Plus, ShoppingCart, Trash2 } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
@@ -49,6 +50,19 @@ export default function CartPage() {
   const shippingCost = subtotal > 200000 ? 0 : 15000; // Envío gratis sobre $200.000 COP (ejemplo)
   const totalAmount = subtotal + taxAmount + shippingCost;
 
+  const getImageHint = (product: Product) => {
+    if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+      return 'phone photo';
+    }
+    if (product.category.slug === 'accesorios') {
+      if (product.name.toLowerCase().includes('airpods')) return 'earbuds product';
+      if (product.name.toLowerCase().includes('cargador')) return 'charger product';
+      if (product.name.toLowerCase().includes('cable')) return 'cable product';
+      return 'accessory product';
+    }
+    return 'product photo';
+  };
+
 
   if (cartItems.length === 0) {
     return (
@@ -71,7 +85,13 @@ export default function CartPage() {
           {cartItems.map(item => (
             <Card key={item.id} className="flex flex-col sm:flex-row items-center p-4 gap-4 shadow-sm hover:shadow-md transition-shadow">
               <div className="relative w-24 h-24 sm:w-32 sm:h-32 rounded-md overflow-hidden flex-shrink-0 bg-muted">
-                <Image src={item.images[0]} alt={item.name} fill sizes="10vw" className="object-cover" data-ai-hint="product photo"/>
+                <Image 
+                  src={item.images[0]} 
+                  alt={item.name} 
+                  fill sizes="10vw" 
+                  className="object-cover" 
+                  data-ai-hint={getImageHint(item)}
+                />
               </div>
               <div className="flex-grow text-center sm:text-left">
                 <Link href={`/products/${item.id}`} className="text-lg font-semibold hover:text-primary transition-colors">{item.name}</Link>

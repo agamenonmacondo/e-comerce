@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -66,6 +67,20 @@ export default function ProductDetailPage() {
   const prevImage = () => {
     setCurrentImageIndex((prevIndex) => (prevIndex - 1 + product.images.length) % product.images.length);
   };
+  
+  const getImageHint = (product: Product) => {
+    if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+      return 'phone photo';
+    }
+    if (product.category.slug === 'accesorios') {
+      if (product.name.toLowerCase().includes('airpods')) return 'earbuds product';
+      if (product.name.toLowerCase().includes('cargador')) return 'charger product';
+      if (product.name.toLowerCase().includes('cable')) return 'cable product';
+      return 'accessory product';
+    }
+    return 'product photo';
+  };
+
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -78,7 +93,8 @@ export default function ProductDetailPage() {
               fill
               sizes="(max-width: 768px) 100vw, 50vw"
               className="object-contain transition-opacity duration-300"
-              data-ai-hint="product photo"
+              data-ai-hint={getImageHint(product)}
+              priority={currentImageIndex === 0}
             />
              {product.images.length > 1 && (
               <>
@@ -118,7 +134,7 @@ export default function ProductDetailPage() {
                     fill
                     sizes="10vw"
                     className="object-cover"
-                    data-ai-hint="product thumbnail"
+                    data-ai-hint={getImageHint(product)}
                   />
                 </button>
               ))}

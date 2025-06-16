@@ -1,3 +1,4 @@
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { Product } from '@/types';
@@ -11,6 +12,19 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
+  const getImageHint = (product: Product) => {
+    if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+      return 'phone photo';
+    }
+    if (product.category.slug === 'accesorios') {
+      if (product.name.toLowerCase().includes('airpods')) return 'earbuds product';
+      if (product.name.toLowerCase().includes('cargador')) return 'charger product';
+      if (product.name.toLowerCase().includes('cable')) return 'cable product';
+      return 'accessory product';
+    }
+    return 'product photo';
+  };
+
   return (
     <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow duration-300 rounded-lg flex flex-col h-full">
       <CardHeader className="p-0">
@@ -21,7 +35,8 @@ export default function ProductCard({ product }: ProductCardProps) {
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-300 hover:scale-105"
-            data-ai-hint="product photo"
+            data-ai-hint={getImageHint(product)}
+            priority={product.id === '1' || product.id === '2'} // Prioritize first few main product images
           />
         </Link>
       </CardHeader>

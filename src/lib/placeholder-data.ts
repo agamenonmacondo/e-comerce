@@ -15,9 +15,9 @@ export const products: Product[] = [
     description: 'La experiencia iPhone definitiva. Chip A17 Bionic, sistema de cámara Pro y espectacular pantalla ProMotion.',
     price: 4500000, // Example COP price
     images: [
-      'https://placehold.co/600x600.png', // Reverted to placeholder
-      'https://placehold.co/600x600.png', // Reverted to placeholder
-      'https://placehold.co/600x600.png'  // Reverted to placeholder
+      '/images/apple-iphone-16-pro-max-desert-titanium-1.png',
+      '/images/iphone-16-pro-max-back-black-titanium-1.png',
+      '/images/iphone-16-pro-max-different-colors-phones-1.png'
     ],
     category: categories[0],
     stock: 50,
@@ -31,8 +31,8 @@ export const products: Product[] = [
     description: 'Potente y lleno de funciones. Chip A16 Bionic, sistema avanzado de doble cámara y pantalla vibrante.',
     price: 3800000, // Example COP price
     images: [
-      'https://placehold.co/600x400.png', // Reverted to placeholder
-      'https://placehold.co/600x400.png'  // Reverted to placeholder
+      '/images/iphone_15_hero.png',
+      'https://placehold.co/600x400.png'
     ],
     category: categories[0],
     stock: 75,
@@ -161,11 +161,41 @@ export const mockOrders: Order[] = [
 ];
 
 export function getProductById(id: string): Product | undefined {
-  return products.find(p => p.id === id);
+  const product = products.find(p => p.id === id);
+  if (product) {
+    return {
+      ...product,
+      images: product.images.map(img => img.startsWith('https://placehold.co') ? `${img}` : img) 
+    };
+  }
+  return undefined;
 }
 
 export function getProductsByCategory(categorySlug: string): Product[] {
   const category = categories.find(c => c.slug === categorySlug);
   if (!category) return [];
-  return products.filter(p => p.category.id === category.id);
+  return products
+    .filter(p => p.category.id === category.id)
+    .map(product => ({
+      ...product,
+      images: product.images.map(img => img.startsWith('https://placehold.co') ? `${img}` : img)
+    }));
 }
+
+// Adding data-ai-hint to products for consistency
+products.forEach(product => {
+  product.images = product.images.map(imgUrl => {
+    if (imgUrl.startsWith('/images/apple-iphone-16-pro-max-desert-titanium-1.png')) return imgUrl; // Actual image path
+    if (imgUrl.startsWith('/images/iphone-16-pro-max-back-black-titanium-1.png')) return imgUrl; // Actual image path
+    if (imgUrl.startsWith('/images/iphone-16-pro-max-different-colors-phones-1.png')) return imgUrl; // Actual image path
+    if (imgUrl.startsWith('/images/iphone_15_hero.png')) return imgUrl; // Actual image path
+    
+    // For placeholders
+    if (product.category.slug === 'iphones' || product.category.slug === 'otros-celulares') {
+      // No need to add data-ai-hint here as it's for the Image component
+    } else if (product.category.slug === 'accesorios') {
+      // No need to add data-ai-hint here
+    }
+    return imgUrl;
+  });
+});

@@ -9,9 +9,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, ListChecks, UserPlus, TrendingUp, Receipt } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, ListChecks, UserPlus, TrendingUp, Receipt, FileText } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   Dialog,
   DialogContent,
@@ -31,6 +32,7 @@ interface AdminProduct extends Product {
 
 export default function AdminDashboardPage() {
   const { toast } = useToast();
+  const router = useRouter();
   const [products, setProducts] = useState<AdminProduct[]>([]);
   const [isDetailModalOpen, setIsDetailModalOpen] = useState(false);
   const [selectedStat, setSelectedStat] = useState<string | null>(null);
@@ -79,12 +81,14 @@ export default function AdminDashboardPage() {
     });
   };
 
-  const totalSales = 125800000;
-  const totalOrders = 342; // This will also be our simulated number of transactions for the sales modal
-  const newCustomers = 58;
+  // These values are now primarily for display on the dashboard cards
+  // The detailed sales report page will have its own calculations based on its mock data
+  const totalSalesDisplay = 125800000;
+  const totalOrdersDisplay = 342;
+  const newCustomersDisplay = 58;
+  
   const lowStockItemsCount = products.filter(p => p.currentStock < 10).length;
   const lowStockProductsDetail = products.filter(p => p.currentStock < 10);
-  const averageTransactionValue = totalOrders > 0 ? totalSales / totalOrders : 0;
 
 
   const openDetailModal = (statType: string) => {
@@ -96,74 +100,6 @@ export default function AdminDashboardPage() {
     if (!selectedStat) return null;
 
     switch (selectedStat) {
-      case 'sales':
-        return (
-          <>
-            <DialogHeader>
-              <DialogTitle className="flex items-center"><TrendingUp className="mr-2 h-5 w-5 text-primary" />Detalle de Ventas Totales (Mes)</DialogTitle>
-              <DialogDescription>Un desglose detallado de las operaciones de venta de este mes.</DialogDescription>
-            </DialogHeader>
-            <div className="mt-4 space-y-4 text-sm py-4">
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <Card className="p-3">
-                  <p className="text-xs text-muted-foreground">Transacciones Totales</p>
-                  <p className="text-lg font-semibold">{totalOrders}</p>
-                </Card>
-                <Card className="p-3">
-                  <p className="text-xs text-muted-foreground">Valor Promedio Transacción</p>
-                  <p className="text-lg font-semibold">{formatColombianCurrency(averageTransactionValue)}</p>
-                </Card>
-              </div>
-
-              <p><strong>Productos más vendidos (ejemplo):</strong></p>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>iPhone 15 Pro: {formatColombianCurrency(50000000)}</li>
-                <li>Galaxy S24 Ultra: {formatColombianCurrency(30000000)}</li>
-                <li>AirPods Pro (2da Gen): {formatColombianCurrency(15000000)}</li>
-                <li>Otros: {formatColombianCurrency(totalSales - 95000000)}</li>
-              </ul>
-              
-              <p className="mt-3"><strong>Desglose por método de pago (ejemplo):</strong></p>
-              <ul className="list-disc pl-6 space-y-1">
-                <li>Tarjeta de Crédito/Débito: 70%</li>
-                <li>PSE (Transferencias Bancarias): 20%</li>
-                <li>Efectivo (Puntos de pago): 10%</li>
-              </ul>
-
-              <p className="mt-4"><strong>Últimas Transacciones del Mes (ejemplo):</strong></p>
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>ID Trans.</TableHead>
-                    <TableHead>Fecha</TableHead>
-                    <TableHead>Cliente</TableHead>
-                    <TableHead className="text-right">Valor</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  <TableRow>
-                    <TableCell className="font-mono text-xs">#TRX001</TableCell>
-                    <TableCell>15/06/2024</TableCell>
-                    <TableCell>Laura V.</TableCell>
-                    <TableCell className="text-right">{formatColombianCurrency(4500000)}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-mono text-xs">#TRX002</TableCell>
-                    <TableCell>15/06/2024</TableCell>
-                    <TableCell>Juan M.</TableCell>
-                    <TableCell className="text-right">{formatColombianCurrency(180000)}</TableCell>
-                  </TableRow>
-                  <TableRow>
-                    <TableCell className="font-mono text-xs">#TRX003</TableCell>
-                    <TableCell>14/06/2024</TableCell>
-                    <TableCell>Sofia R.</TableCell>
-                    <TableCell className="text-right">{formatColombianCurrency(950000)}</TableCell>
-                  </TableRow>
-                </TableBody>
-              </Table>
-            </div>
-          </>
-        );
       case 'orders':
         return (
           <>
@@ -174,9 +110,9 @@ export default function AdminDashboardPage() {
             <div className="mt-4 space-y-3 text-sm py-4">
               <p><strong>Resumen de estados (ejemplo):</strong></p>
               <ul className="list-disc pl-6 space-y-1">
-                <li>Entregados: {Math.floor(totalOrders * 0.85)}</li>
-                <li>Enviados: {Math.floor(totalOrders * 0.10)}</li>
-                <li>Procesando: {totalOrders - Math.floor(totalOrders * 0.85) - Math.floor(totalOrders * 0.10)}</li>
+                <li>Entregados: {Math.floor(totalOrdersDisplay * 0.85)}</li>
+                <li>Enviados: {Math.floor(totalOrdersDisplay * 0.10)}</li>
+                <li>Procesando: {totalOrdersDisplay - Math.floor(totalOrdersDisplay * 0.85) - Math.floor(totalOrdersDisplay * 0.10)}</li>
               </ul>
               <p className="mt-3"><strong>Últimos pedidos (ejemplo):</strong></p>
               <Table>
@@ -208,7 +144,7 @@ export default function AdminDashboardPage() {
                   <li key={i}>Cliente Ejemplo {i + 1} - Registrado el {new Date(Date.now() - i * 2 * 24 * 60 * 60 * 1000).toLocaleDateString('es-CO')}</li>
                 ))}
               </ul>
-               <p className="mt-3"><strong>Total nuevos clientes este mes: {newCustomers}</strong></p>
+               <p className="mt-3"><strong>Total nuevos clientes este mes: {newCustomersDisplay}</strong></p>
             </div>
           </>
         );
@@ -252,14 +188,14 @@ export default function AdminDashboardPage() {
         <h2 className="text-2xl font-semibold font-headline mb-6">Estadísticas Clave</h2>
         <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
           
-            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => openDetailModal('sales')}>
+            <Card className="shadow-md hover:shadow-lg transition-shadow cursor-pointer" onClick={() => router.push('/admin/sales-report')}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Ventas Totales (Mes)</CardTitle>
-                <DollarSign className="h-4 w-4 text-muted-foreground" />
+                <FileText className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{formatColombianCurrency(totalSales)}</div>
-                <p className="text-xs text-muted-foreground">+15.3% desde el mes pasado</p>
+                <div className="text-2xl font-bold">{formatColombianCurrency(totalSalesDisplay)}</div>
+                <p className="text-xs text-muted-foreground">Ver reporte detallado</p>
               </CardContent>
             </Card>
           
@@ -269,7 +205,7 @@ export default function AdminDashboardPage() {
                 <ShoppingBag className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+{totalOrders}</div>
+                <div className="text-2xl font-bold">+{totalOrdersDisplay}</div>
                 <p className="text-xs text-muted-foreground">+8.1% desde el mes pasado</p>
               </CardContent>
             </Card>
@@ -280,7 +216,7 @@ export default function AdminDashboardPage() {
                 <Users className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">+{newCustomers}</div>
+                <div className="text-2xl font-bold">+{newCustomersDisplay}</div>
                 <p className="text-xs text-muted-foreground">Registrados este mes</p>
               </CardContent>
             </Card>
@@ -380,4 +316,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

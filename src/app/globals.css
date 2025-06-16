@@ -4,97 +4,97 @@
 
 @layer base {
   :root {
-    --background: 198 100% 95.9%; /* Very light blue (#EBF9FF) */
-    --foreground: 220 25% 15%; /* Dark desaturated blue */
+    --background: 198 100% 95.9%; /* Very light blue (#EBF9FF) - Kept */
+    --foreground: 220 25% 15%; /* Dark desaturated blue - Kept */
 
-    --card: 0 0% 100%; /* Pure white */
-    --card-foreground: 220 25% 15%;
+    --card: 0 0% 100%; /* Pure white - Kept */
+    --card-foreground: 220 25% 15%; /* Kept */
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 220 25% 15%;
+    --popover: 0 0% 100%; /* Kept */
+    --popover-foreground: 220 25% 15%; /* Kept */
 
-    --primary: 181 100% 74.7%; /* Electric blue (#7DF9FF) */
-    --primary-foreground: 181 100% 15%; /* Very dark teal/blue */
+    --primary: 181 85% 65%; /* Refined: Slightly deeper/less saturated electric blue */
+    --primary-foreground: 181 85% 10%; /* Refined: Darker, for contrast on new primary */
 
-    --secondary: 190 60% 90%; /* Light, slightly desaturated cyan/blue */
-    --secondary-foreground: 190 60% 20%; /* Darker version for text on secondary */
+    --secondary: 190 50% 88%; /* Refined: Adjusted to be a bit less saturated, still light */
+    --secondary-foreground: 190 50% 18%; /* Refined: Darker for text on new secondary */
 
-    --muted: 200 45% 96%; /* Very light gray-blue */
-    --muted-foreground: 200 25% 45%; /* Medium gray-blue for muted text */
+    --muted: 200 40% 94%; /* Refined: Slightly adjusted, very light gray-blue */
+    --muted-foreground: 200 25% 40%; /* Refined: Medium gray-blue for muted text */
 
-    --accent: 269 100% 68%; /* Light purple (#B15DFF) */
-    --accent-foreground: 269 100% 15%; /* Very dark purple */
+    --accent: 269 80% 62%; /* Refined: Slightly deeper/less saturated light purple */
+    --accent-foreground: 269 80% 10%; /* Refined: Darker for contrast on new accent */
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 84.2% 60.2%; /* Kept */
+    --destructive-foreground: 0 0% 98%; /* Kept */
 
-    --border: 200 40% 88%; /* Light gray-blue border */
-    --input: 200 40% 92%;  /* Slightly lighter gray-blue for input */
-    --ring: 181 100% 50%;   /* A more saturated version of electric blue for ring */
+    --border: 200 35% 85%; /* Refined: Slightly adjusted light gray-blue border */
+    --input: 200 35% 90%;  /* Refined: Slightly adjusted for input */
+    --ring: 181 85% 55%;   /* Refined: A more saturated version of the new primary for ring */
 
-    --radius: 0.5rem;
+    --radius: 0.5rem; /* Kept */
 
-    /* Sidebar variables */
+    /* Sidebar variables - Light Theme */
     --sidebar-background: 198 100% 95.9%;
     --sidebar-foreground: 220 25% 15%;
-    --sidebar-primary: 181 100% 74.7%;
-    --sidebar-primary-foreground: 181 100% 15%;
-    --sidebar-accent: 269 100% 68%;
-    --sidebar-accent-foreground: 269 100% 15%;
-    --sidebar-border: 200 40% 88%;
-    --sidebar-ring: 181 100% 50%;
+    --sidebar-primary: 181 85% 65%; 
+    --sidebar-primary-foreground: 181 85% 10%;
+    --sidebar-accent: 269 80% 62%;
+    --sidebar-accent-foreground: 269 80% 10%;
+    --sidebar-border: 200 35% 85%;
+    --sidebar-ring: 181 85% 55%;
 
-    --chart-1: 181 100% 74.7%; /* New Primary */
-    --chart-2: 269 100% 68%; /* New Accent */
-    --chart-3: 200 20% 60%; /* A neutral blue-gray */
-    --chart-4: 30 80% 60%; /* Warm orange/coral */
-    --chart-5: 220 70% 65%; /* A different blue */
+    --chart-1: hsl(var(--primary));
+    --chart-2: hsl(var(--accent));
+    --chart-3: 200 20% 60%; 
+    --chart-4: 30 80% 60%; 
+    --chart-5: 220 70% 65%;
   }
 
   .dark {
-    --background: 220 20% 10%; /* Very dark cool blue */
-    --foreground: 200 30% 90%; /* Light cyan-gray */
+    --background: 220 20% 10%; /* Very dark cool blue - Kept */
+    --foreground: 200 30% 90%; /* Light cyan-gray - Kept */
 
-    --card: 220 15% 14%; /* Darker cool blue */
-    --card-foreground: 200 30% 90%;
+    --card: 220 15% 14%; /* Darker cool blue - Kept */
+    --card-foreground: 200 30% 90%; /* Kept */
 
-    --popover: 220 15% 14%;
-    --popover-foreground: 200 30% 90%;
+    --popover: 220 15% 14%; /* Kept */
+    --popover-foreground: 200 30% 90%; /* Kept */
 
-    --primary: 181 100% 65%; /* Slightly darker/more saturated Electric blue for dark mode */
-    --primary-foreground: 181 100% 10%; 
+    --primary: 181 80% 60%; /* Refined: Dark mode version of new primary */
+    --primary-foreground: 181 80% 8%; /* Refined: Very dark for contrast */
 
-    --secondary: 190 25% 18%; /* Dark desaturated cyan/blue */
-    --secondary-foreground: 190 30% 80%; 
+    --secondary: 190 25% 22%; /* Refined: Darker, less saturated cyan/blue */
+    --secondary-foreground: 190 30% 85%; /* Refined: Lighter for text on new dark secondary */
 
-    --muted: 200 15% 22%; /* Very dark gray-blue for muted elements */
-    --muted-foreground: 200 15% 60%; 
+    --muted: 200 15% 25%; /* Refined: Adjusted very dark gray-blue */
+    --muted-foreground: 200 15% 65%; /* Refined: Adjusted for muted text */
 
-    --accent: 269 100% 75%; /* Slightly lighter/brighter Purple for dark mode */
-    --accent-foreground: 269 100% 10%;
+    --accent: 269 75% 70%; /* Refined: Dark mode version of new accent */
+    --accent-foreground: 269 75% 9%; /* Refined: Very dark for contrast */
 
-    --destructive: 0 70% 50%; 
-    --destructive-foreground: 0 0% 98%;
+    --destructive: 0 62.8% 30.6%; /* Adjusted for better dark mode destructive - Kept original logic more or less */
+    --destructive-foreground: 0 0% 98%; /* Kept */
 
-    --border: 200 20% 28%; /* Dark gray-blue border */
-    --input: 200 20% 25%; 
-    --ring: 181 100% 60%;   /* Brighter electric blue ring for dark mode */
+    --border: 200 20% 30%; /* Refined: Adjusted dark gray-blue border */
+    --input: 200 20% 28%; /* Refined: Adjusted for input */
+    --ring: 181 80% 50%;   /* Refined: Brighter version of new dark primary for ring */
     
-    /* Sidebar variables - Dark */
+    /* Sidebar variables - Dark Theme */
     --sidebar-background: 220 20% 10%;
     --sidebar-foreground: 200 30% 90%;
-    --sidebar-primary: 181 100% 65%;
-    --sidebar-primary-foreground: 181 100% 10%;
-    --sidebar-accent: 269 100% 75%;
-    --sidebar-accent-foreground: 269 100% 10%;
-    --sidebar-border: 200 20% 28%;
-    --sidebar-ring: 181 100% 60%;
+    --sidebar-primary: 181 80% 60%;
+    --sidebar-primary-foreground: 181 80% 8%;
+    --sidebar-accent: 269 75% 70%;
+    --sidebar-accent-foreground: 269 75% 9%;
+    --sidebar-border: 200 20% 30%;
+    --sidebar-ring: 181 80% 50%;
     
-    --chart-1: 181 100% 65%; /* Dark mode Primary */
-    --chart-2: 269 100% 75%; /* Dark mode Accent */
-    --chart-3: 200 20% 70%; /* Lighter neutral blue-gray */
-    --chart-4: 30 70% 70%; /* Brighter warm orange/coral */
-    --chart-5: 220 60% 75%; /* Brighter version of the other blue */
+    --chart-1: hsl(var(--primary));
+    --chart-2: hsl(var(--accent));
+    --chart-3: 200 20% 70%; 
+    --chart-4: 30 70% 70%; 
+    --chart-5: 220 60% 75%;
   }
 }
 

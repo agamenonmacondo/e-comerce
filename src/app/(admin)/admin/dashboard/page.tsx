@@ -9,7 +9,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { useToast } from '@/hooks/use-toast';
 import { products as initialProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, FileText } from 'lucide-react';
+import { DollarSign, ShoppingBag, Package, Users, BarChart3, Save, PlusCircle, FileText, Trash2 } from 'lucide-react';
 import { formatColombianCurrency } from '@/lib/utils';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
@@ -66,6 +66,18 @@ export default function AdminDashboardPage() {
     toast({
       title: 'Inventario Actualizado (Simulación)',
       description: `El stock para ${product.name} ha sido ajustado a ${newStock}. (Esto es una simulación y no persistirá).`,
+    });
+  };
+
+  const handleDeleteProduct = (productId: string) => {
+    const productToDelete = products.find(p => p.id === productId);
+    if (!productToDelete) return;
+
+    setProducts(prevProducts => prevProducts.filter(p => p.id !== productId));
+    toast({
+      title: 'Producto Eliminado (Simulación)',
+      description: `El producto "${productToDelete.name}" ha sido eliminado de la lista. (Esto es una simulación y no persistirá).`,
+      variant: 'destructive' 
     });
   };
 
@@ -162,7 +174,7 @@ export default function AdminDashboardPage() {
                   <TableHead>Producto</TableHead>
                   <TableHead className="w-32 text-center">Stock Actual</TableHead>
                   <TableHead className="w-48 text-center">Ajustar Stock</TableHead>
-                  <TableHead className="w-32 text-right">Acciones</TableHead>
+                  <TableHead className="w-48 text-right">Acciones</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -184,23 +196,38 @@ export default function AdminDashboardPage() {
                       />
                     </TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleUpdateStock(product.id)}
-                        className="transition-transform hover:scale-105 active:scale-95"
-                      >
-                        <Save className="mr-1.5 h-3.5 w-3.5" />
-                        Guardar
-                      </Button>
+                      <div className="flex justify-end space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleUpdateStock(product.id)}
+                          className="transition-transform hover:scale-105 active:scale-95"
+                        >
+                          <Save className="mr-1.5 h-3.5 w-3.5" />
+                          Guardar
+                        </Button>
+                        <Button
+                          variant="destructive"
+                          size="sm"
+                          onClick={() => handleDeleteProduct(product.id)}
+                          className="transition-transform hover:scale-105 active:scale-95"
+                        >
+                          <Trash2 className="mr-1.5 h-3.5 w-3.5" />
+                          Eliminar
+                        </Button>
+                      </div>
                     </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
             </Table>
+             {products.length === 0 && (
+                <p className="text-center text-muted-foreground py-8">No hay productos para mostrar.</p>
+              )}
           </CardContent>
         </Card>
       </section>
     </div>
   );
 }
+

@@ -4,7 +4,7 @@
 
 @layer base {
   :root {
-    --background: 210 40% 98%; /* Very light cool gray, almost white */
+    --background: 40 30% 97%; /* Very light warm off-white */
     --foreground: 220 20% 10%; /* Very dark, cool desaturated blue */
 
     --card: 0 0% 100%; /* Pure white */
@@ -13,7 +13,7 @@
     --popover: 0 0% 100%;
     --popover-foreground: 220 20% 10%;
 
-    --primary: 160 70% 45%; /* Strong, slightly desaturated teal/green */
+    --primary: 260 60% 55%; /* Sophisticated purple */
     --primary-foreground: 0 0% 100%; /* White for high contrast */
 
     --secondary: 210 30% 94%; /* Light cool gray */
@@ -22,21 +22,21 @@
     --muted: 210 30% 96%; /* Slightly lighter cool gray for muted elements */
     --muted-foreground: 220 15% 45%; /* Medium cool gray for muted text */
 
-    --accent: 30 100% 55%; /* Vibrant orange */
-    --accent-foreground: 0 0% 0%; /* Black for contrast on orange */
+    --accent: 180 70% 50%; /* Bright cyan */
+    --accent-foreground: 0 0% 0%; /* Black for contrast on cyan */
 
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
 
     --border: 210 20% 88%; /* Cool gray border */
     --input: 210 20% 92%;  /* Slightly lighter cool gray for input */
-    --ring: 160 70% 50%;   /* Ring color related to primary (teal/green) */
+    --ring: 260 60% 60%;   /* Ring color related to new primary (purple) */
 
     --radius: 0.5rem;
 
-    --chart-1: 160 70% 45%; /* Primary (teal/green) */
-    --chart-2: 30 100% 55%; /* Accent (orange) */
-    --chart-3: 180 10% 50%; /* Neutral cool gray-green */
+    --chart-1: 260 60% 55%; /* New Primary (purple) */
+    --chart-2: 180 70% 50%; /* New Accent (cyan) */
+    --chart-3: 200 10% 50%; /* Neutral cool gray-blue */
     --chart-4: 320 70% 60%; /* Vibrant magenta/pink */
     --chart-5: 50 100% 50%; /* Vibrant yellow/gold */
   }
@@ -51,8 +51,8 @@
     --popover: 220 25% 12%;
     --popover-foreground: 210 30% 95%;
 
-    --primary: 160 80% 55%; /* Brighter teal/green for dark mode */
-    --primary-foreground: 220 100% 5%; /* Very dark blue/black for contrast */
+    --primary: 260 70% 65%; /* Brighter purple for dark mode */
+    --primary-foreground: 0 0% 100%; /* White for contrast on purple */
 
     --secondary: 220 20% 18%; /* Dark gray-blue */
     --secondary-foreground: 210 30% 80%; /* Lighter Gray-Blue */
@@ -60,19 +60,19 @@
     --muted: 220 15% 22%; /* Very dark gray-blue for muted elements */
     --muted-foreground: 210 25% 60%; /* Medium Gray-Blue for muted text */
 
-    --accent: 30 100% 60%; /* Brighter orange for dark mode */
-    --accent-foreground: 0 0% 0%; /* Black for contrast on orange */
+    --accent: 180 80% 60%; /* Brighter cyan for dark mode */
+    --accent-foreground: 0 0% 0%; /* Black for contrast on cyan */
 
     --destructive: 0 70% 50%; 
     --destructive-foreground: 0 0% 98%;
 
     --border: 220 15% 28%; /* Dark Gray-Blue border */
     --input: 220 15% 25%; /* Slightly lighter dark gray-blue for input */
-    --ring: 160 80% 60%;   /* Bright teal/green ring */
+    --ring: 260 70% 70%;   /* Bright purple ring for dark mode */
     
-    --chart-1: 160 80% 55%; /* Primary Dark (brighter teal/green) */
-    --chart-2: 30 100% 60%; /* Accent Dark (brighter orange) */
-    --chart-3: 180 10% 70%; /* Lighter neutral cool gray-green */
+    --chart-1: 260 70% 65%; /* New Primary Dark (brighter purple) */
+    --chart-2: 180 80% 60%; /* New Accent Dark (brighter cyan) */
+    --chart-3: 200 10% 70%; /* Lighter neutral cool gray-blue */
     --chart-4: 320 80% 70%; /* Brighter magenta/pink */
     --chart-5: 50 100% 60%; /* Brighter yellow/gold */
   }

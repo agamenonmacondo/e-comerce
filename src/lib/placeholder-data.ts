@@ -22,7 +22,7 @@ export const products: Product[] = [
     id: 'iphone-16-pro-max-256-es',
     name: 'iPhone 16 Pro Max 256GB ES (Nuevo)',
     description: 'Experimenta el pináculo de la innovación con el iPhone 16 Pro Max. Con Dynamic Island, pantalla ProMotion siempre activa, el potente chip A18 Pro y un revolucionario sistema de cámaras Pro Fusion. Apple Intelligence integrado para una experiencia más personal y privada.',
-    price: 4450000,
+    price: 4450000, // Price updated based on "EQUIPOS NUEVOS" list
     imageUrls: [
       '/images/iphone_16_promax/121032-iphone-16-pro-max.png',
       '/images/iphone_16_promax/Celular-Apple-iPhone-16-PRO---PRO-MAX-Desert-Titanium-2.png',
@@ -59,7 +59,7 @@ export const products: Product[] = [
     name: 'iPhone 13 128GB (Nuevo)',
     description: 'Un excelente iPhone 13 con 128GB de almacenamiento. Condición: Nuevo.',
     price: 2030000,
-    imageUrls: ['/images/iphone_13/iphone-13-blue-1.png'],
+    imageUrls: ['/images/iphone_13/iPhone-13-PNG-Pic.png'],
     category: iphoneCategory, stock: 15, rating: 4.5, reviewsCount: 80,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB' }, createdAt: now, updatedAt: now,
   },
@@ -133,7 +133,7 @@ export const products: Product[] = [
     name: 'iPhone 13 128GB (Usado)',
     description: 'iPhone 13 con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 1260000,
-    imageUrls: ['/images/iphone_13/iphone-13-starlight-1.png'],
+    imageUrls: ['/images/iphone_13/iphone-13-pink-select-2021-1.png'],
     category: iphoneCategory, stock: 8, rating: 4.2, reviewsCount: 50,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },

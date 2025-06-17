@@ -1,6 +1,8 @@
+
 import LoginForm from '@/components/auth/LoginForm';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
+import { ChevronLeft } from 'lucide-react';
 
 export default function LoginPage() {
   return (
@@ -14,12 +16,20 @@ export default function LoginPage() {
           <p className="text-muted-foreground">Inicia sesión para continuar a tu cuenta.</p>
         </div>
         <LoginForm />
-        <p className="mt-6 text-center text-sm text-muted-foreground">
-          ¿No tienes una cuenta?{' '}
-          <Button variant="link" asChild className="text-primary p-0 h-auto">
-            <Link href="/signup">Regístrate</Link>
+        <div className="mt-6 text-center text-sm text-muted-foreground">
+          <p className="mb-2">
+            ¿No tienes una cuenta?{' '}
+            <Button variant="link" asChild className="text-primary p-0 h-auto">
+              <Link href="/signup">Regístrate</Link>
+            </Button>
+          </p>
+          <Button variant="outline" size="sm" asChild>
+            <Link href="/">
+              <ChevronLeft className="mr-2 h-4 w-4" />
+              Volver a la Tienda
+            </Link>
           </Button>
-        </p>
+        </div>
       </div>
     </div>
   );

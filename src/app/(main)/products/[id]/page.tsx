@@ -128,7 +128,7 @@ export default function ProductDetailPage() {
                 <button
                   key={index}
                   onClick={() => setCurrentImageIndex(index)}
-                  className={`relative aspect-square rounded-md overflow-hidden border-2 ${index === currentImageIndex ? 'border-primary' : 'border-transparent'} hover:border-primary/50 transition-all`}
+                  className={`relative aspect-square rounded-md overflow-hidden border-2 ${index === currentImageIndex ? 'border-primary' : 'border-transparent'} hover:border-primary/50 transition-all bg-card`}
                   aria-label={`Ver imagen ${index + 1}`}
                 >
                   <Image
@@ -234,3 +234,4 @@ export default function ProductDetailPage() {
     </div>
   );
 }
+

@@ -68,7 +68,7 @@ export const products: Product[] = [
     name: 'iPhone 14 128GB (Nuevo)',
     description: 'Un excelente iPhone 14 con 128GB de almacenamiento. Condición: Nuevo.',
     price: 2400000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: ['/images/iphone_14/iPhone 14.png'],
     category: iphoneCategory, stock: 18, rating: 4.6, reviewsCount: 90,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB' }, createdAt: now, updatedAt: now,
   },
@@ -314,3 +314,4 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+

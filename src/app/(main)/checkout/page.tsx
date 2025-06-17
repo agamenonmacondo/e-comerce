@@ -24,12 +24,13 @@ const shippingFormSchema = z.object({
   city: z.string().min(2, "La ciudad es requerida (mín. 2 caracteres)."),
   state: z.string().min(2, "El departamento es requerido (mín. 2 caracteres)."),
   zipCode: z.string().optional(),
-  country: z.string().min(2, "El país es requerido (mín. 2 caracteres)."),
-  email: z.string().email("Debe ser un correo electrónico válido."),
+  country: z.string().min(2, "El país es requerido (mín. 2 caracteres).").default('Colombia'),
+  email: z.string().email("Debe ser un correo electrónico válido."), // Email is required for Bold
 });
 
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 
+// Simulate fetching cart items for summary (in a real app, this would come from context/state/localStorage)
 const mockCartItems = [
   { ...allProductsForSummary[0], quantity: 1, imageUrls: allProductsForSummary[0].imageUrls.slice(0,1) },
   { ...allProductsForSummary[4], quantity: 1, imageUrls: allProductsForSummary[4].imageUrls.slice(0,1) },
@@ -38,22 +39,25 @@ const mockCartItems = [
   name: item.name,
   quantity: item.quantity,
   price: item.price,
-  stock: item.stock,
+  stock: item.stock, // Important for the server-side stock check
   imageUrls: item.imageUrls,
 }));
 
 const calculateOrderSummary = () => {
+  if (mockCartItems.length === 0) {
+    return { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
+  }
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19;
+  const taxRate = 0.19; // Example 19% IVA
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000;
+  const shipping = subtotal > 200000 ? 0 : 15000; // Example: Free shipping over 200,000 COP
   const total = subtotal + tax + shipping;
   return {
     items: mockCartItems.map(item => ({
       id: item.id,
       name: item.name,
       quantity: item.quantity,
-      price: item.price,
+      price: item.price, // Price per unit
       stock: item.stock,
       imageUrls: item.imageUrls || [],
     })),
@@ -73,37 +77,50 @@ export default function CheckoutPage() {
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
     defaultValues: { fullName: '', address: '', city: '', state: '', zipCode: '', country: 'Colombia', email: '' },
-    mode: 'onChange', // Validate on change to update isValid state more frequently
+    mode: 'onChange', 
   });
 
   useEffect(() => {
+    // Recalculate summary if cart could change (e.g. if cart was in state)
     setOrderSummary(calculateOrderSummary());
-  }, []);
+    if (mockCartItems.length === 0) {
+      toast({
+        title: "Carrito Vacío",
+        description: "No puedes proceder al pago con un carrito vacío. Añade algunos productos.",
+        variant: "destructive"
+      });
+      router.push('/cart');
+    }
+  }, [router, toast]);
 
   async function handleFinalSubmit() {
     setIsSubmitting(true);
 
     const isShippingValid = await shippingForm.trigger();
-
     if (!isShippingValid) {
-      toast({ title: "Error de Envío", description: "Por favor, completa los detalles de envío correctamente.", variant: "destructive" });
+      toast({ title: "Información Incompleta", description: "Por favor, completa los detalles de envío correctamente.", variant: "destructive" });
       setIsSubmitting(false);
       return;
     }
     
+    if (orderSummary.items.length === 0) {
+      toast({ title: "Carrito Vacío", description: "Tu carrito está vacío.", variant: "destructive" });
+      setIsSubmitting(false);
+      return;
+    }
+
     const shippingData = shippingForm.getValues();
 
     const orderInput: PlaceOrderInput = {
-      shippingDetails: {
-        fullName: shippingData.fullName,
-        address: shippingData.address,
-        city: shippingData.city,
-        state: shippingData.state,
-        zipCode: shippingData.zipCode,
-        country: shippingData.country,
-        email: shippingData.email,
-      },
-      cartItems: orderSummary.items,
+      shippingDetails: shippingData,
+      cartItems: orderSummary.items.map(item => ({ // Ensure only necessary fields are sent
+        id: item.id,
+        name: item.name,
+        quantity: item.quantity,
+        price: item.price,
+        stock: item.stock,
+        imageUrls: item.imageUrls,
+      })),
     };
 
     const result = await placeOrder(orderInput);
@@ -113,13 +130,14 @@ export default function CheckoutPage() {
             title: "Redirigiendo a Bold...",
             description: result.message || "Serás redirigido para completar tu pago.",
         });
-        router.push(result.paymentUrl);
+        // Redirect to Bold's payment page
+        window.location.href = result.paymentUrl; 
     } else {
       toast({
         title: "Problema con el Pedido",
-        description: result.message || "No se pudo procesar el pedido.",
+        description: result.message || "No se pudo procesar el pedido. Inténtalo de nuevo o contacta a soporte.",
         variant: "destructive",
-        duration: 7000,
+        duration: 7000, // Longer duration for error messages
       });
       setIsSubmitting(false);
     }
@@ -147,7 +165,7 @@ export default function CheckoutPage() {
                     <FormField control={shippingForm.control} name="state" render={({ field }) => ( <FormItem> <FormLabel>Departamento</FormLabel> <FormControl><Input placeholder="Ej: Cundinamarca" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                     <FormField control={shippingForm.control} name="zipCode" render={({ field }) => ( <FormItem> <FormLabel>Código Postal (Opcional)</FormLabel> <FormControl><Input placeholder="Ej: 110111" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                   </div>
-                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input placeholder="Colombia" {...field} /></FormControl> <FormMessage /> </FormItem> )} />
+                  <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
             </CardContent>
@@ -160,7 +178,7 @@ export default function CheckoutPage() {
               <CardTitle className="text-2xl font-headline flex items-center"><ShoppingCart className="mr-3 h-6 w-6 text-primary"/>Resumen del Pedido</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {orderSummary.items.map(item => (
+              {orderSummary.items.length > 0 ? orderSummary.items.map(item => (
                 <div key={item.id} className="flex justify-between items-center text-sm">
                   <div>
                     <p className="font-medium">{item.name}</p>
@@ -168,7 +186,7 @@ export default function CheckoutPage() {
                   </div>
                   <p>{formatColombianCurrency(item.price * item.quantity)}</p>
                 </div>
-              ))}
+              )) : <p className="text-sm text-muted-foreground">Tu carrito está vacío.</p>}
               <Separator/>
               <div className="flex justify-between">
                 <span className="text-muted-foreground">Subtotal</span>
@@ -179,7 +197,7 @@ export default function CheckoutPage() {
                 <span>{orderSummary.shipping === 0 ? 'Gratis' : formatColombianCurrency(orderSummary.shipping)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Impuestos (Aprox.)</span>
+                <span className="text-muted-foreground">Impuestos ({(0.19 * 100).toFixed(0)}%)</span>
                 <span>{formatColombianCurrency(orderSummary.tax)}</span>
               </div>
               <Separator />
@@ -194,7 +212,7 @@ export default function CheckoutPage() {
                 onClick={handleFinalSubmit}
                 size="lg"
                 className="w-full text-base transition-transform hover:scale-105 active:scale-95"
-                disabled={isSubmitting || !shippingForm.formState.isValid}
+                disabled={isSubmitting || !shippingForm.formState.isValid || orderSummary.items.length === 0}
               >
                 <Lock className="mr-2 h-5 w-5" />
                 {isSubmitting ? 'Procesando...' : 'Pagar con Bold'}
@@ -207,24 +225,6 @@ export default function CheckoutPage() {
               </p>
             </CardFooter>
           </Card>
-
-          {/* Bloque para mostrar errores de validación del formulario de envío */}
-          {Object.keys(shippingForm.formState.errors).length > 0 && (
-            <Card className="mt-4 shadow-md border-destructive">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium text-destructive">Errores en el Formulario de Envío:</CardTitle>
-              </CardHeader>
-              <CardContent className="text-xs text-destructive">
-                <ul>
-                  {Object.entries(shippingForm.formState.errors).map(([fieldName, error]) => (
-                    <li key={fieldName}>
-                      <strong>{fieldName}:</strong> {error?.message}
-                    </li>
-                  ))}
-                </ul>
-              </CardContent>
-            </Card>
-          )}
         </div>
       </div>
     </div>

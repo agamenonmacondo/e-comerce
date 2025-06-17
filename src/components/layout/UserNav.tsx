@@ -13,10 +13,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { LogOut, Settings, User as UserIcon, UserCircle, ShoppingBag, LayoutDashboard } from 'lucide-react'; // Renamed User to UserIcon to avoid conflict
+import { LogOut, Settings, User as UserIcon, LogIn, UserPlus, ShoppingBag, LayoutDashboard } from 'lucide-react'; // Renamed User to UserIcon, Added LogIn, UserPlus
 import { useState, useEffect } from 'react';
-import { auth } from '@/lib/firebase/firebaseConfig'; // Import Firebase auth
-import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth'; // Import FirebaseUser
+import { auth } from '@/lib/firebase/firebaseConfig'; 
+import { onAuthStateChanged, signOut, User as FirebaseUser } from 'firebase/auth'; 
 import { useToast } from '@/hooks/use-toast';
 import { useRouter } from 'next/navigation';
 
@@ -30,7 +30,7 @@ export default function UserNav() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       setFirebaseUser(user);
     });
-    return () => unsubscribe(); // Cleanup subscription on unmount
+    return () => unsubscribe(); 
   }, []);
 
   const handleSignOut = async () => {
@@ -40,7 +40,7 @@ export default function UserNav() {
         title: "Sesión Cerrada",
         description: "Has cerrado sesión exitosamente.",
       });
-      router.push('/login'); // Redirect to login page after sign out
+      router.push('/login'); 
     } catch (error) {
       console.error("Error signing out: ", error);
       toast({
@@ -53,11 +53,18 @@ export default function UserNav() {
 
   if (!firebaseUser) {
     return (
-      <Button variant="ghost" asChild>
-        <Link href="/login">
-          <UserCircle className="mr-2 h-5 w-5" /> Iniciar Sesión
-        </Link>
-      </Button>
+      <>
+        <Button variant="ghost" asChild>
+          <Link href="/login">
+            <LogIn className="mr-2 h-5 w-5" /> Iniciar Sesión
+          </Link>
+        </Button>
+        <Button variant="outline" asChild>
+          <Link href="/signup">
+            <UserPlus className="mr-2 h-5 w-5" /> Regístrate
+          </Link>
+        </Button>
+      </>
     );
   }
 

@@ -21,8 +21,8 @@ export const products: Product[] = [
   {
     id: 'iphone-16-pro-max-256-es',
     name: 'iPhone 16 Pro Max 256GB ES (Nuevo)',
-    description: 'Experimenta el pináculo de la innovación con el iPhone 16 Pro Max. Con Dynamic Island, pantalla ProMotion siempre activa, el potente chip A18 Pro y un revolucionario sistema de cámaras Pro. Apple Intelligence integrado para una experiencia más personal y privada. Colores disponibles: ES (Naranja), Negro, Blanco, Plata.',
-    price: 4450000, // Price from "EQUIPOS NUEVOS" list for ES version
+    description: 'Experimenta el pináculo de la innovación con el iPhone 16 Pro Max. Con Dynamic Island, pantalla ProMotion siempre activa, el potente chip A18 Pro y un revolucionario sistema de cámaras Pro Fusion. Apple Intelligence integrado para una experiencia más personal y privada.',
+    price: 4450000,
     imageUrls: [
       '/images/iphone_16_promax/121032-iphone-16-pro-max.png',
       '/images/iphone_16_promax/Celular-Apple-iPhone-16-PRO---PRO-MAX-Desert-Titanium-2.png',
@@ -42,9 +42,8 @@ export const products: Product[] = [
       Resistencia: 'IP68 (hasta 6m por 30 min), Revestimiento oleofóbico',
       Inteligencia: 'Apple Intelligence integrada',
       Almacenamiento: '256GB',
-      Variante: 'ES (Naranja)', // Assuming ES refers to a color/region variant like "Naranja" from image names
+      Variante: 'ES (Titanio Desierto)',
       Condición: 'Nuevo',
-      OtrosColores: 'Negro, Blanco, Plata (Según disponibilidad)',
       'Caracteristicas Pantalla': 'Dynamic Island, True Tone, Amplia gama de colores (P3), Toque con respuesta háptica, Contraste 2.000.000:1, Brillo máx 1000 nits (normal), pico 1600 nits (HDR), pico 2000 nits (exteriores), brillo min 1 nit',
       'Detalles Camara': 'Estabilización óptica por desplazamiento (Fusion y Teleobjetivo 3D), Lente de zafiro, Flash True Tone adaptativo, Photonic Engine, Deep Fusion, HDR Inteligente 5, Retratos avanzados, Modo Noche, Fotos panorámicas, Estilos Fotográficos, Fotos espaciales, Macro 48MP, Apple ProRAW',
       'Grabacion Video Detallada': '4K Dolby Vision (24/25/30/60/100/120fps Fusion), 1080p Dolby Vision (25/30/60/120fps Fusion), ProRes hasta 4K@120fps (externo), Log, ACES, Macro video, Cámara lenta 1080p@240fps, QuickTake, Zoom audio, Audio Espacial, 4 Micrófonos, Reducción de ruido',
@@ -60,7 +59,7 @@ export const products: Product[] = [
     name: 'iPhone 13 128GB (Nuevo)',
     description: 'Un excelente iPhone 13 con 128GB de almacenamiento. Condición: Nuevo.',
     price: 2030000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: ['/images/iphone_13/iphone-13-blue-1.png'],
     category: iphoneCategory, stock: 15, rating: 4.5, reviewsCount: 80,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB' }, createdAt: now, updatedAt: now,
   },
@@ -119,7 +118,7 @@ export const products: Product[] = [
     details: { Condición: 'Nuevo', Almacenamiento: '128GB', Variante: 'ES' }, createdAt: now, updatedAt: now,
   },
   {
-    id: 'iphone-16-pro-max-256-sf-nuevo-list', // Different ID for SF version
+    id: 'iphone-16-pro-max-256-sf-nuevo-list', 
     name: 'iPhone 16 Pro Max 256GB SF (Nuevo)',
     description: 'El impresionante iPhone 16 Pro Max con 256GB, sellado de fábrica. Condición: Nuevo.',
     price: 4990000,
@@ -134,7 +133,7 @@ export const products: Product[] = [
     name: 'iPhone 13 128GB (Usado)',
     description: 'iPhone 13 con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 1260000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: ['/images/iphone_13/iphone-13-starlight-1.png'],
     category: iphoneCategory, stock: 8, rating: 4.2, reviewsCount: 50,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -186,7 +185,7 @@ export const products: Product[] = [
     details: { Condición: 'Premium', Almacenamiento: '128GB', Variante: 'ES', Garantía: '6 meses' }, createdAt: now, updatedAt: now,
   },
 
-  // MACBOOKS (Preserved from previous state)
+  // MACBOOKS 
   {
     id: 'macbook-air-m2-256gb',
     name: 'MacBook Air M2 256GB',
@@ -216,7 +215,7 @@ export const products: Product[] = [
     updatedAt: now,
   },
 
-  // ACCESORIOS (Preserved from previous state)
+  // ACCESORIOS
   {
     id: 'airpods-pro-2nd-gen',
     name: 'AirPods Pro (2da Generación)',
@@ -246,7 +245,7 @@ export const products: Product[] = [
     updatedAt: now,
   },
 
-  // APPLE WATCH (Preserved from previous state)
+  // APPLE WATCH
   {
     id: 'apple-watch-series-9',
     name: 'Apple Watch Series 9',
@@ -293,7 +292,7 @@ export const mockOrders: Order[] = [
   {
     id: 'order001',
     userId: 'user123',
-    items: [], // Items cleared as product IDs have changed
+    items: [], 
     totalAmount: 0, 
     status: 'Entregado',
     orderDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),

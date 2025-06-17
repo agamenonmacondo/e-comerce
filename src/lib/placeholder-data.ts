@@ -21,8 +21,8 @@ export const products: Product[] = [
     description: 'Experimenta el pináculo de la innovación con el iPhone 16 Pro Max. Con Dynamic Island, pantalla ProMotion siempre activa, el potente chip A18 Pro y un revolucionario sistema de cámaras Pro. Apple Intelligence integrado para una experiencia más personal y privada. Colores disponibles: ES (Naranja), Negro, Blanco, Plata.',
     price: 4000000,
     imageUrls: [
-      '/images/16 pormax/apple-iphone-16-pro-max-desert-titanium-1.png',
-      '/images/16 pormax/iphone-16-pro-max-back-black-titanium-1.png',
+      '/images/iphone_16_promax/apple-iphone-16-pro-max-desert-titanium-1.png',
+      '/images/iphone_16_promax/iphone-16-pro-max-back-black-titanium-1.png',
     ],
     category: categories.find(c => c.slug === 'iphones')!,
     stock: 25,

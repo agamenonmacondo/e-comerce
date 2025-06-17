@@ -18,7 +18,7 @@ export const products: Product[] = [
   {
     id: 'iphone-16-pro-max-256-es',
     name: 'iPhone 16 Pro Max 256GB ES',
-    description: 'El último iPhone con la tecnología más avanzada. Colores disponibles: ES (Naranja), Negro, Blanco, Plata.',
+    description: 'Experimenta el pináculo de la innovación con el iPhone 16 Pro Max. Con Dynamic Island, pantalla ProMotion siempre activa, el potente chip A18 Pro y un revolucionario sistema de cámaras Pro de 48MP. Apple Intelligence integrado para una experiencia más personal y privada. Colores disponibles: ES (Naranja), Negro, Blanco, Plata.',
     price: 4000000,
     imageUrls: [
       '/apple-iphone-16-pro-max-desert-titanium-1.png',
@@ -28,7 +28,19 @@ export const products: Product[] = [
     stock: 25,
     rating: 4.9,
     reviewsCount: 150,
-    details: { Almacenamiento: '256GB', Variante: 'ES (Naranja)', OtrosColores: 'Negro, Blanco, Plata' },
+    details: { 
+      Pantalla: 'Super Retina XDR OLED 6.9", ProMotion 120Hz, Siempre Activa',
+      Resolución: '2868 x 1320 pixeles a 460 ppi',
+      Chip: 'A18 Pro con Neural Engine de 16 núcleos',
+      'Cámara Principal': 'Sistema Pro 48MP (Fusion) + 48MP (Ultra Gran Angular) + 12MP (Teleobjetivo 5x)',
+      'Cámara Frontal': 'TrueDepth 12MP con autoenfoque',
+      Video: 'Grabación 4K Dolby Vision hasta 120 cps, ProRes, modo Cine, modo Acción',
+      Resistencia: 'IP68 (hasta 6m por 30 min), Revestimiento oleofóbico',
+      Inteligencia: 'Apple Intelligence integrada',
+      Almacenamiento: '256GB', 
+      Variante: 'ES (Naranja)', 
+      OtrosColores: 'Negro, Blanco, Plata' 
+    },
     createdAt: now,
     updatedAt: now,
   },

@@ -11,14 +11,14 @@ const ShippingDetailsSchema = z.object({
   state: z.string().min(2, "Departamento es requerido (mín. 2 caracteres)."),
   zipCode: z.string().optional(),
   country: z.string().min(2, "País es requerido (mín. 2 caracteres)."),
-  email: z.string().email("Debe ser un correo electrónico válido."), // Email is crucial for Bold
+  email: z.string().email("Debe ser un correo electrónico válido."),
 });
 
 const CartItemSchema = z.object({
   id: z.string(),
   name: z.string(),
   quantity: z.number().min(1),
-  price: z.number(), // Price per unit
+  price: z.number(),
   stock: z.number(),
   imageUrls: z.array(z.string()).optional(),
 });
@@ -38,16 +38,22 @@ export async function placeOrder(
 
   const boldSecretKey = process.env.BOLD_SECRET_KEY;
   const boldClientId = process.env.BOLD_CLIENT_ID;
+  const boldApiUrlFromEnv = process.env.BOLD_URL; // Use BOLD_URL from .env
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
   console.log("Verificando variables de entorno para Bold:");
   console.log(`BOLD_SECRET_KEY disponible: ${!!boldSecretKey}`);
   console.log(`BOLD_CLIENT_ID disponible: ${!!boldClientId}`);
+  console.log(`BOLD_URL disponible: ${!!boldApiUrlFromEnv}`); // Check BOLD_URL
   console.log(`NEXT_PUBLIC_APP_URL disponible: ${!!appUrl}`);
   
   if (!boldSecretKey || !boldClientId) {
     console.error("Error Crítico: Claves API de Bold (BOLD_SECRET_KEY o BOLD_CLIENT_ID) no configuradas en .env.");
     return { success: false, message: "Error de configuración del servidor: credenciales de Bold incompletas. Revisa los logs del servidor." };
+  }
+  if (!boldApiUrlFromEnv) {
+    console.error("Error Crítico: BOLD_URL no configurada en .env.");
+    return { success: false, message: "Error de configuración del servidor: URL de la API de Bold no encontrada. Revisa los logs del servidor." };
   }
   if (!appUrl) {
     console.error("Error Crítico: NEXT_PUBLIC_APP_URL no configurado en .env.");
@@ -69,7 +75,6 @@ export async function placeOrder(
 
   const { shippingDetails, cartItems } = validationResult.data;
 
-  // 1. Validate Stock (using placeholder data for now)
   for (const item of cartItems) {
     const productInDb = allProducts.find(p => p.id === item.id);
     if (!productInDb) {
@@ -83,46 +88,33 @@ export async function placeOrder(
     }
   }
 
-  const order_id = `GIGA-${Date.now()}`; // Generate a unique order ID
+  const order_id = `GIGA-${Date.now()}`; 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  // Assuming tax and shipping are calculated similarly to the frontend for consistency,
-  // or you might recalculate them here if business logic dictates.
-  // For Bold, we need the final total amount.
   const taxRate = 0.19; 
   const taxAmount = subtotal * taxRate;
   const shippingCost = subtotal > 200000 ? 0 : 15000; 
   const totalAmount = subtotal + taxAmount + shippingCost;
+  const amount_in_cents = Math.round(totalAmount * 100);
 
-  const amount_in_cents = Math.round(totalAmount * 100); // Convert to cents for COP
-
-  // TODO: In a real app, create an order document in Firestore here with 'pending' status.
-
-  const boldApiUrl = 'https://api.bold.co/v2/payment_links';
   const boldPayload = {
     data: {
       order_id: order_id,
       amount_in_cents: amount_in_cents,
       currency: 'COP',
       payment_description: `Pedido GigaGO #${order_id}`,
-      // Bold appends transaction details to this URL on success/failure/pending
       redirect_url: `${appUrl}/order/success`, 
       customer: {
         name: shippingDetails.fullName,
         email: shippingDetails.email,
-        // phone_number is optional for Bold payment links but good to have if available
-        // phone_number: shippingDetails.phone || "", 
       },
-      // single_use: true, // Recommended for typical e-commerce orders
-      // collect_shipping_info: false, // We are collecting it
-      // expiration_date: new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString(), // Optional: Link expires in 24h
     }
   };
 
   console.log("Payload para API de Bold:", JSON.stringify(boldPayload, null, 2));
-  console.log("Intentando conectar a Bold API en:", boldApiUrl);
+  console.log("Intentando conectar a Bold API en (desde BOLD_URL):", boldApiUrlFromEnv);
 
   try {
-    const response = await fetch(boldApiUrl, {
+    const response = await fetch(boldApiUrlFromEnv, { // Use boldApiUrlFromEnv
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -132,7 +124,7 @@ export async function placeOrder(
       body: JSON.stringify(boldPayload),
     });
 
-    const responseText = await response.text(); // Read as text first for better error logging
+    const responseText = await response.text();
     console.log("Respuesta de la API de Bold - Status:", response.status);
     console.log("Respuesta de la API de Bold - Texto:", responseText);
 
@@ -150,7 +142,7 @@ export async function placeOrder(
 
     const responseData = JSON.parse(responseText);
     const paymentUrl = responseData.data?.payment_url;
-    const boldTransactionId = responseData.data?.id; // Bold's transaction ID for the payment link
+    const boldTransactionId = responseData.data?.id;
 
     if (!paymentUrl) {
       console.error('URL de pago no encontrada en la respuesta de Bold:', responseData);
@@ -159,12 +151,10 @@ export async function placeOrder(
 
     console.log(`Link de pago de Bold generado: ${paymentUrl} para order ${order_id}, Bold Transaction ID: ${boldTransactionId}`);
     
-    // TODO: Update your order document in Firestore with the order_id, boldTransactionId, and set status to 'pending_payment' or similar.
-
     return {
       success: true,
       message: 'Link de pago generado. Redirigiendo...',
-      orderId: order_id, // Our internal order ID
+      orderId: order_id,
       paymentUrl: paymentUrl,
     };
 
@@ -176,4 +166,3 @@ export async function placeOrder(
     return { success: false, message: `Error de conexión con la pasarela de pago: ${error.message || 'fetch failed'}. Revisa la consola del servidor.` };
   }
 }
-

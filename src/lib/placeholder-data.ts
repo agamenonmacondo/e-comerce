@@ -23,6 +23,7 @@ export const products: Product[] = [
     imageUrls: [
       '/images/iphone_16_promax/apple-iphone-16-pro-max-desert-titanium-1.png',
       '/images/iphone_16_promax/iphone-16-pro-max-back-black-titanium-1.png',
+      '/images/iphone_16_promax/iphone-16-pro-max-different-colors-phones-1.png',
     ],
     category: categories.find(c => c.slug === 'iphones')!,
     stock: 25,

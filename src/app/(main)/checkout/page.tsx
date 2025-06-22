@@ -25,12 +25,11 @@ const shippingFormSchema = z.object({
   state: z.string().min(2, "El departamento es requerido (mín. 2 caracteres)."),
   zipCode: z.string().optional(),
   country: z.string().min(2, "El país es requerido (mín. 2 caracteres).").default('Colombia'),
-  email: z.string().email("Debe ser un correo electrónico válido."), // Email is required for Bold
+  email: z.string().email("Debe ser un correo electrónico válido."), 
 });
 
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 
-// Simulate fetching cart items for summary (in a real app, this would come from context/state/localStorage)
 const mockCartItems = [
   { ...allProductsForSummary[0], quantity: 1, imageUrls: allProductsForSummary[0].imageUrls.slice(0,1) },
   { ...allProductsForSummary[4], quantity: 1, imageUrls: allProductsForSummary[4].imageUrls.slice(0,1) },
@@ -39,7 +38,7 @@ const mockCartItems = [
   name: item.name,
   quantity: item.quantity,
   price: item.price,
-  stock: item.stock, // Important for the server-side stock check
+  stock: item.stock, 
   imageUrls: item.imageUrls,
 }));
 
@@ -48,16 +47,16 @@ const calculateOrderSummary = () => {
     return { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
   }
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19; // Example 19% IVA
+  const taxRate = 0.19; 
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000; // Example: Free shipping over 200,000 COP
+  const shipping = subtotal > 200000 ? 0 : 15000; 
   const total = subtotal + tax + shipping;
   return {
     items: mockCartItems.map(item => ({
       id: item.id,
       name: item.name,
       quantity: item.quantity,
-      price: item.price, // Price per unit
+      price: item.price,
       stock: item.stock,
       imageUrls: item.imageUrls || [],
     })),
@@ -81,7 +80,6 @@ export default function CheckoutPage() {
   });
 
   useEffect(() => {
-    // Recalculate summary if cart could change (e.g. if cart was in state)
     setOrderSummary(calculateOrderSummary());
     if (mockCartItems.length === 0) {
       toast({
@@ -113,7 +111,7 @@ export default function CheckoutPage() {
 
     const orderInput: PlaceOrderInput = {
       shippingDetails: shippingData,
-      cartItems: orderSummary.items.map(item => ({ // Ensure only necessary fields are sent
+      cartItems: orderSummary.items.map(item => ({
         id: item.id,
         name: item.name,
         quantity: item.quantity,
@@ -127,17 +125,16 @@ export default function CheckoutPage() {
 
     if (result.success && result.paymentUrl) {
         toast({
-            title: "Redirigiendo a Bold...",
-            description: result.message || "Serás redirigido para completar tu pago.",
+            title: "Redirigiendo a Coinbase...",
+            description: result.message || "Serás redirigido para completar tu pago con criptomonedas.",
         });
-        // Redirect to Bold's payment page
         window.location.href = result.paymentUrl; 
     } else {
       toast({
         title: "Problema con el Pedido",
         description: result.message || "No se pudo procesar el pedido. Inténtalo de nuevo o contacta a soporte.",
         variant: "destructive",
-        duration: 7000, // Longer duration for error messages
+        duration: 7000,
       });
       setIsSubmitting(false);
     }
@@ -215,10 +212,10 @@ export default function CheckoutPage() {
                 disabled={isSubmitting || !shippingForm.formState.isValid || orderSummary.items.length === 0}
               >
                 <Lock className="mr-2 h-5 w-5" />
-                {isSubmitting ? 'Procesando...' : 'Pagar con Bold'}
+                {isSubmitting ? 'Procesando...' : 'Pagar con Cripto (Coinbase)'}
               </Button>
               <p className="text-xs text-muted-foreground text-center w-full">
-                Serás redirigido a Bold para completar tu pago de forma segura.
+                Serás redirigido a Coinbase para completar tu pago de forma segura.
               </p>
               <p className="text-xs text-muted-foreground text-center w-full">
                 Al continuar, aceptas nuestros <Link href="/terms" className="underline hover:text-primary">Términos y Condiciones</Link>.

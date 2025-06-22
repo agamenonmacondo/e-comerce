@@ -34,26 +34,18 @@ export async function placeOrder(
   input: PlaceOrderInput
 ): Promise<{ success: boolean; message?: string; orderId?: string; paymentUrl?: string }> {
   
-  console.log("--- Iniciando placeOrder Action (Integración Bold) ---");
+  console.log("--- Iniciando placeOrder Action (Integración Coinbase) ---");
 
-  const boldSecretKey = process.env.BOLD_SECRET_KEY;
-  const boldClientId = process.env.BOLD_CLIENT_ID;
-  const boldApiUrlFromEnv = process.env.BOLD_URL; // Use BOLD_URL from .env
+  const coinbaseApiKey = process.env.COINBASE_API_KEY;
   const appUrl = process.env.NEXT_PUBLIC_APP_URL;
 
-  console.log("Verificando variables de entorno para Bold:");
-  console.log(`BOLD_SECRET_KEY disponible: ${!!boldSecretKey}`);
-  console.log(`BOLD_CLIENT_ID disponible: ${!!boldClientId}`);
-  console.log(`BOLD_URL disponible: ${!!boldApiUrlFromEnv}`); // Check BOLD_URL
+  console.log("Verificando variables de entorno para Coinbase:");
+  console.log(`COINBASE_API_KEY disponible: ${!!coinbaseApiKey}`);
   console.log(`NEXT_PUBLIC_APP_URL disponible: ${!!appUrl}`);
   
-  if (!boldSecretKey || !boldClientId) {
-    console.error("Error Crítico: Claves API de Bold (BOLD_SECRET_KEY o BOLD_CLIENT_ID) no configuradas en .env.");
-    return { success: false, message: "Error de configuración del servidor: credenciales de Bold incompletas. Revisa los logs del servidor." };
-  }
-  if (!boldApiUrlFromEnv) {
-    console.error("Error Crítico: BOLD_URL no configurada en .env.");
-    return { success: false, message: "Error de configuración del servidor: URL de la API de Bold no encontrada. Revisa los logs del servidor." };
+  if (!coinbaseApiKey || coinbaseApiKey === "YOUR_COINBASE_API_KEY_HERE") {
+    console.error("Error Crítico: COINBASE_API_KEY no configurada correctamente en .env.");
+    return { success: false, message: "Error de configuración del servidor: Falta la clave API de Coinbase. Revisa los logs del servidor y el archivo .env." };
   }
   if (!appUrl) {
     console.error("Error Crítico: NEXT_PUBLIC_APP_URL no configurado en .env.");
@@ -94,75 +86,64 @@ export async function placeOrder(
   const taxAmount = subtotal * taxRate;
   const shippingCost = subtotal > 200000 ? 0 : 15000; 
   const totalAmount = subtotal + taxAmount + shippingCost;
-  const amount_in_cents = Math.round(totalAmount * 100);
+  const itemsDescription = cartItems.map(item => `${item.name} (x${item.quantity})`).join(', ');
 
-  const boldPayload = {
-    data: {
-      order_id: order_id,
-      amount_in_cents: amount_in_cents,
-      currency: 'COP',
-      payment_description: `Pedido AVA Shop #${order_id}`,
-      redirect_url: `${appUrl}/order/success`, 
-      customer: {
-        name: shippingDetails.fullName,
-        email: shippingDetails.email,
-      },
-    }
+  const coinbasePayload = {
+    name: `Pedido AVA Shop #${order_id}`,
+    description: `Compra de: ${itemsDescription.substring(0, 190)}...`,
+    local_price: {
+      amount: totalAmount.toFixed(2),
+      currency: "COP"
+    },
+    pricing_type: "fixed_price",
+    metadata: {
+        order_id: order_id,
+        customer_name: shippingDetails.fullName,
+        customer_email: shippingDetails.email,
+    },
+    redirect_url: `${appUrl}/order/success?order_id=${order_id}`,
+    cancel_url: `${appUrl}/order/cancel?order_id=${order_id}`
   };
 
-  console.log("Payload para API de Bold:", JSON.stringify(boldPayload, null, 2));
-  console.log("Intentando conectar a Bold API en (desde BOLD_URL):", boldApiUrlFromEnv);
+  console.log("Payload para API de Coinbase Commerce:", JSON.stringify(coinbasePayload, null, 2));
 
   try {
-    const response = await fetch(boldApiUrlFromEnv, { // Use boldApiUrlFromEnv
+    const response = await fetch('https://api.commerce.coinbase.com/charges', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-Api-Key': boldSecretKey,
-        'X-Client-Id': boldClientId,
+        'X-CC-Api-Key': coinbaseApiKey,
+        'X-CC-Version': '2018-03-22',
       },
-      body: JSON.stringify(boldPayload),
+      body: JSON.stringify(coinbasePayload),
     });
 
-    const responseText = await response.text();
-    console.log("Respuesta de la API de Bold - Status:", response.status);
-    console.log("Respuesta de la API de Bold - Texto:", responseText);
+    const responseData = await response.json();
 
     if (!response.ok) {
-      let errorData;
-      try {
-        errorData = JSON.parse(responseText);
-      } catch (e) {
-        errorData = { message: `Respuesta no JSON: ${responseText}` };
-      }
-      const errorMessage = errorData?.errors?.[0]?.detail || errorData?.message || `Error HTTP ${response.status}`;
-      console.error('Error de la API de Bold:', errorMessage, 'Detalles:', errorData);
-      return { success: false, message: `Error al crear link de pago con Bold: ${errorMessage}` };
+      const errorMessage = responseData?.error?.message || `Error HTTP ${response.status}`;
+      console.error('Error de la API de Coinbase:', errorMessage, 'Detalles:', responseData);
+      return { success: false, message: `Error al crear el cargo de Coinbase: ${errorMessage}` };
     }
 
-    const responseData = JSON.parse(responseText);
-    const paymentUrl = responseData.data?.payment_url;
-    const boldTransactionId = responseData.data?.id;
+    const paymentUrl = responseData.data?.hosted_url;
 
     if (!paymentUrl) {
-      console.error('URL de pago no encontrada en la respuesta de Bold:', responseData);
-      return { success: false, message: 'No se pudo obtener el link de pago de Bold. Respuesta inesperada del servidor de Bold.' };
+      console.error('URL de pago no encontrada en la respuesta de Coinbase:', responseData);
+      return { success: false, message: 'No se pudo obtener la página de pago de Coinbase.' };
     }
 
-    console.log(`Link de pago de Bold generado: ${paymentUrl} para order ${order_id}, Bold Transaction ID: ${boldTransactionId}`);
+    console.log(`Página de pago de Coinbase generada: ${paymentUrl} para order ${order_id}`);
     
     return {
       success: true,
-      message: 'Link de pago generado. Redirigiendo...',
+      message: 'Página de pago generada. Redirigiendo...',
       orderId: order_id,
       paymentUrl: paymentUrl,
     };
 
   } catch (error: any) {
-    console.error('Error CRÍTICO al contactar la API de Bold (fetch failed o error de red):', error);
-    if (error.cause) {
-      console.error('Causa del error (si existe):', error.cause);
-    }
+    console.error('Error CRÍTICO al contactar la API de Coinbase (fetch failed o error de red):', error);
     return { success: false, message: `Error de conexión con la pasarela de pago: ${error.message || 'fetch failed'}. Revisa la consola del servidor.` };
   }
 }

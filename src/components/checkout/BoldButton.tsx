@@ -1,5 +1,5 @@
 'use client';
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 
 // Props based on Bold's documentation and our server action
 interface BoldButtonProps {
@@ -15,26 +15,49 @@ interface BoldButtonProps {
 }
 
 const BoldButton: React.FC<BoldButtonProps> = (props) => {
-  // We use dangerouslySetInnerHTML to ensure the <script> tag is rendered literally
-  // so that Bold's library can find and replace it with the payment button.
-  // The backslash in '<\/script>' is to prevent the string from being parsed as an actual script tag by the browser's parser prematurely.
-  const scriptHtml = `
-    <script
-      data-bold-button="dark-L"
-      data-api-key="${props.apiKey}"
-      data-order-id="${props.orderId}"
-      data-amount="${props.amount}"
-      data-currency="${props.currency}"
-      data-integrity-signature="${props.signature}"
-      data-redirection-url="${props.redirectionUrl}"
-      data-description="${props.description}"
-      data-customer-data='${props.customerData}'
-      data-billing-address='${props.billingAddress}'
-    ><\/script>
-  `;
+  const containerRef = useRef<HTMLDivElement>(null);
+  const BOLD_SCRIPT_URL = 'https://checkout.bold.co/library/boldPaymentButton.js';
 
-  // Render this script inside a div. The Bold library will replace the contents of this div.
-  return <div className="flex justify-center" dangerouslySetInnerHTML={{ __html: scriptHtml }} />;
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    // 1. Create the button's placeholder script tag with all the data
+    const buttonScript = document.createElement('script');
+    buttonScript.setAttribute('data-bold-button', 'dark-L');
+    buttonScript.setAttribute('data-api-key', props.apiKey);
+    buttonScript.setAttribute('data-order-id', props.orderId);
+    buttonScript.setAttribute('data-amount', String(props.amount));
+    buttonScript.setAttribute('data-currency', props.currency);
+    buttonScript.setAttribute('data-integrity-signature', props.signature);
+    buttonScript.setAttribute('data-redirection-url', props.redirectionUrl);
+    buttonScript.setAttribute('data-description', props.description);
+    buttonScript.setAttribute('data-customer-data', props.customerData);
+    buttonScript.setAttribute('data-billing-address', props.billingAddress);
+    // Use embedded checkout for a better user experience (opens in a modal)
+    buttonScript.setAttribute('data-render-mode', 'embedded');
+
+    // Clear the container and add the new button script
+    container.innerHTML = '';
+    container.appendChild(buttonScript);
+
+    // 2. Load the Bold library script to activate the button script we just added.
+    // This ensures the library runs after the button's placeholder is in the DOM.
+    let boldLibraryScript = document.querySelector(`script[src="${BOLD_SCRIPT_URL}"]`);
+    if (boldLibraryScript) {
+      // If it exists, remove and re-add to force re-evaluation.
+      // This is a common pattern for libraries that don't offer a manual re-init function.
+      boldLibraryScript.remove();
+    }
+    
+    boldLibraryScript = document.createElement('script');
+    boldLibraryScript.src = BOLD_SCRIPT_URL;
+    boldLibraryScript.async = true;
+    document.head.appendChild(boldLibraryScript);
+
+  }, [props]); // Re-run this logic whenever the payment data changes.
+
+  return <div ref={containerRef} className="w-full" />;
 };
 
 export default BoldButton;

@@ -6,7 +6,7 @@ import ProductList from '@/components/products/ProductList';
 import FilterSidebar from '@/components/products/FilterSidebar';
 import { products as allProducts, categories } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
-import ProductMarquee from '@/components/products/ProductMarquee';
+import HeroSection from '@/components/layout/HeroSection';
 
 export default function HomePage() {
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(allProducts);
@@ -60,11 +60,9 @@ export default function HomePage() {
     setCurrentSortKey(sortKey);
   };
 
-  const marqueeProducts = allProducts.slice(0, 12);
-
   return (
     <>
-      <ProductMarquee products={marqueeProducts} />
+      <HeroSection />
       <section id="products" className="py-12 md:py-16">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex flex-col md:flex-row gap-8">

@@ -10,13 +10,13 @@ export default function Header() {
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <Link href="/" className="ml-2 mr-4">
-          <span className="font-bold text-xl font-headline">AVA Shop</span>
+          <span className="font-bold text-xl font-headline text-primary">AVA Shop</span>
         </Link>
         <nav className="flex flex-1 items-center space-x-6 text-sm font-medium">
-          <Link href="/" className="text-foreground/70 transition-colors hover:text-foreground">
+          <Link href="/" className="text-foreground/70 transition-colors hover:text-primary">
             Todos los Productos
           </Link>
-          <Link href="/#categories" className="text-foreground/70 transition-colors hover:text-foreground">
+          <Link href="/#categories" className="text-foreground/70 transition-colors hover:text-primary">
             Categorías
           </Link>
         </nav>

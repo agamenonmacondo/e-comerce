@@ -31,7 +31,7 @@ export default function ProductMarquee({ products, title }: ProductMarqueeProps)
   };
 
   return (
-    <section className="py-12 md:py-16 bg-gradient-to-r from-primary/20 via-background to-accent/10 overflow-hidden">
+    <section className="py-12 md:py-16 bg-background overflow-hidden">
       <div className="container mx-auto px-4 md:px-6">
         <h2 className="text-3xl md:text-4xl font-bold font-headline text-center mb-10 text-foreground">
           {title}

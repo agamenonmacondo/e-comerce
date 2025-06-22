@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
@@ -14,9 +14,10 @@ import { Home, ShoppingCart, Mail, CreditCard, Bitcoin } from 'lucide-react';
 import Link from 'next/link';
 import { formatColombianCurrency } from '@/lib/utils';
 import { products as allProductsForSummary } from '@/lib/placeholder-data';
-import { placeOrder, PlaceOrderInput } from '@/lib/actions/order.actions';
+import { createBoldPaymentData, createCoinbaseCharge } from '@/lib/actions/order.actions';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import BoldButton from '@/components/checkout/BoldButton';
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido (mín. 2 caracteres)."),
@@ -25,21 +26,16 @@ const shippingFormSchema = z.object({
   state: z.string().min(2, "El departamento es requerido (mín. 2 caracteres)."),
   zipCode: z.string().optional(),
   country: z.string().min(2, "El país es requerido (mín. 2 caracteres).").default('Colombia'),
-  email: z.string().email("Debe ser un correo electrónico válido."), 
+  email: z.string().email("Debe ser un correo electrónico válido."),
 });
 
 type ShippingFormValues = z.infer<typeof shippingFormSchema>;
 
 const mockCartItems = [
-  { ...allProductsForSummary[0], quantity: 1, imageUrls: allProductsForSummary[0].imageUrls.slice(0,1) },
-  { ...allProductsForSummary[4], quantity: 1, imageUrls: allProductsForSummary[4].imageUrls.slice(0,1) },
+  { ...allProductsForSummary[0], quantity: 1, imageUrls: allProductsForSummary[0].imageUrls.slice(0, 1) },
+  { ...allProductsForSummary[4], quantity: 1, imageUrls: allProductsForSummary[4].imageUrls.slice(0, 1) },
 ].map(item => ({
-  id: item.id,
-  name: item.name,
-  quantity: item.quantity,
-  price: item.price,
-  stock: item.stock, 
-  imageUrls: item.imageUrls,
+  id: item.id, name: item.name, quantity: item.quantity, price: item.price, stock: item.stock, imageUrls: item.imageUrls,
 }));
 
 const calculateOrderSummary = () => {
@@ -47,106 +43,89 @@ const calculateOrderSummary = () => {
     return { items: [], subtotal: 0, shipping: 0, tax: 0, total: 0 };
   }
   const subtotal = mockCartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const taxRate = 0.19; 
+  const taxRate = 0.19;
   const tax = subtotal * taxRate;
-  const shipping = subtotal > 200000 ? 0 : 15000; 
+  const shipping = subtotal > 200000 ? 0 : 15000;
   const total = subtotal + tax + shipping;
-  return {
-    items: mockCartItems.map(item => ({
-      id: item.id,
-      name: item.name,
-      quantity: item.quantity,
-      price: item.price,
-      stock: item.stock,
-      imageUrls: item.imageUrls || [],
-    })),
-    subtotal,
-    shipping,
-    tax,
-    total,
-  };
+  return { items: mockCartItems, subtotal, shipping, tax, total };
 };
 
 export default function CheckoutPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [orderSummary, setOrderSummary] = useState(calculateOrderSummary());
-  const [submittingMethod, setSubmittingMethod] = useState<'bold' | 'coinbase' | null>(null);
+  
+  const [isBoldLoading, setIsBoldLoading] = useState(false);
+  const [isCoinbaseLoading, setIsCoinbaseLoading] = useState(false);
+  const [boldButtonData, setBoldButtonData] = useState<any>(null);
 
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
     defaultValues: { fullName: '', address: '', city: '', state: '', zipCode: '', country: 'Colombia', email: '' },
-    mode: 'onChange', 
+    mode: 'onChange',
   });
 
   useEffect(() => {
-    setOrderSummary(calculateOrderSummary());
-    if (mockCartItems.length === 0) {
-      toast({
-        title: "Carrito Vacío",
-        description: "No puedes proceder al pago con un carrito vacío. Añade algunos productos.",
-        variant: "destructive"
-      });
+    if (orderSummary.items.length === 0) {
+      toast({ title: "Carrito Vacío", description: "No puedes proceder al pago con un carrito vacío.", variant: "destructive" });
       router.push('/cart');
     }
-  }, [router, toast]);
+  }, [orderSummary.items, router, toast]);
 
-  async function handleFinalSubmit(method: 'bold' | 'coinbase') {
-    setSubmittingMethod(method);
-
+  const getValidatedOrderInput = async () => {
     const isShippingValid = await shippingForm.trigger();
     if (!isShippingValid) {
       toast({ title: "Información Incompleta", description: "Por favor, completa los detalles de envío correctamente.", variant: "destructive" });
-      setSubmittingMethod(null);
+      return null;
+    }
+    if (orderSummary.items.length === 0) {
+      toast({ title: "Carrito Vacío", description: "Tu carrito está vacío.", variant: "destructive" });
+      return null;
+    }
+    return {
+      shippingDetails: shippingForm.getValues(),
+      cartItems: orderSummary.items,
+      totalAmount: orderSummary.total,
+    };
+  };
+
+  async function handleBoldCheckout() {
+    setIsBoldLoading(true);
+    const orderInput = await getValidatedOrderInput();
+    if (!orderInput) {
+      setIsBoldLoading(false);
+      return;
+    }
+
+    const result = await createBoldPaymentData(orderInput);
+    
+    if (result.success && result.data) {
+      setBoldButtonData(result.data);
+    } else {
+      toast({ title: "Error al preparar el pago", description: result.message || "No se pudo preparar el pago con Bold.", variant: "destructive" });
+    }
+    setIsBoldLoading(false);
+  }
+
+  async function handleCoinbaseCheckout() {
+    setIsCoinbaseLoading(true);
+    const orderInput = await getValidatedOrderInput();
+    if (!orderInput) {
+      setIsCoinbaseLoading(false);
       return;
     }
     
-    if (orderSummary.items.length === 0) {
-      toast({ title: "Carrito Vacío", description: "Tu carrito está vacío.", variant: "destructive" });
-      setSubmittingMethod(null);
-      return;
-    }
+    const result = await createCoinbaseCharge(orderInput);
 
-    const shippingData = shippingForm.getValues();
-
-    const orderInput: PlaceOrderInput = {
-      shippingDetails: shippingData,
-      cartItems: orderSummary.items.map(item => ({
-        id: item.id,
-        name: item.name,
-        quantity: item.quantity,
-        price: item.price,
-        stock: item.stock,
-        imageUrls: item.imageUrls,
-      })),
-      paymentMethod: method,
-      totalAmount: orderSummary.total,
-    };
-
-    const result = await placeOrder(orderInput);
-
-    if (result.success) {
-      if (result.redirectUrl) {
-        // Coinbase flow: Redirect to payment gateway
-        window.location.href = result.redirectUrl;
-      } else if (result.orderId) {
-        // Bold (simulated) flow: Redirect to our success page
-        toast({
-            title: "¡Pedido Realizado con Éxito!",
-            description: result.message || `Tu pedido ${result.orderId} ha sido procesado.`,
-        });
-        router.push(`/order/success?order_id=${result.orderId}`);
-      }
+    if (result.success && result.redirectUrl) {
+      window.location.href = result.redirectUrl;
     } else {
-      toast({
-        title: "Problema con el Pedido",
-        description: result.message || "No se pudo procesar el pedido. Inténtalo de nuevo o contacta a soporte.",
-        variant: "destructive",
-        duration: 7000,
-      });
-      setSubmittingMethod(null);
+      toast({ title: "Problema con el Pedido", description: result.message || "No se pudo procesar el pedido con Coinbase.", variant: "destructive" });
+      setIsCoinbaseLoading(false);
     }
   }
+
+  const isPaymentProcessing = isBoldLoading || isCoinbaseLoading;
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8 md:py-12">
@@ -202,7 +181,7 @@ export default function CheckoutPage() {
                 <span>{orderSummary.shipping === 0 ? 'Gratis' : formatColombianCurrency(orderSummary.shipping)}</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">Impuestos ({(0.19 * 100).toFixed(0)}%)</span>
+                <span className="text-muted-foreground">Impuestos (19%)</span>
                 <span>{formatColombianCurrency(orderSummary.tax)}</span>
               </div>
               <Separator />
@@ -212,28 +191,23 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col space-y-4">
-              <div className="w-full space-y-2">
-                  <Button
-                    type="button"
-                    onClick={() => handleFinalSubmit('bold')}
-                    size="lg"
-                    className="w-full text-base transition-transform hover:scale-105 active:scale-95"
-                    disabled={submittingMethod !== null || !shippingForm.formState.isValid || orderSummary.items.length === 0}
-                  >
-                    <CreditCard className="mr-2 h-5 w-5" />
-                    {submittingMethod === 'bold' ? 'Procesando...' : 'Pago con Bold'}
-                  </Button>
-                  <Button
-                    type="button"
-                    onClick={() => handleFinalSubmit('coinbase')}
-                    size="lg"
-                    className="w-full text-base transition-transform hover:scale-105 active:scale-95"
-                    disabled={submittingMethod !== null || !shippingForm.formState.isValid || orderSummary.items.length === 0}
-                  >
-                    <Bitcoin className="mr-2 h-5 w-5" />
-                    {submittingMethod === 'coinbase' ? 'Procesando...' : 'Pago con Cripto Coinbase'}
-                  </Button>
-              </div>
+              {!boldButtonData ? (
+                <div className="w-full space-y-2">
+                    <Button type="button" onClick={handleBoldCheckout} size="lg" className="w-full text-base" disabled={isPaymentProcessing || !shippingForm.formState.isValid}>
+                        <CreditCard className="mr-2 h-5 w-5" />
+                        {isBoldLoading ? 'Preparando...' : 'Pago con Bold'}
+                    </Button>
+                    <Button type="button" onClick={handleCoinbaseCheckout} size="lg" className="w-full text-base" disabled={isPaymentProcessing || !shippingForm.formState.isValid}>
+                        <Bitcoin className="mr-2 h-5 w-5" />
+                        {isCoinbaseLoading ? 'Procesando...' : 'Pago con Cripto (Coinbase)'}
+                    </Button>
+                </div>
+              ) : (
+                <div className="w-full">
+                  <p className="text-sm text-center mb-2 text-muted-foreground">Haz clic en el botón de Bold para continuar.</p>
+                  <BoldButton {...boldButtonData} />
+                </div>
+              )}
               <p className="text-xs text-muted-foreground text-center w-full pt-2">
                 Al continuar, aceptas nuestros <Link href="/terms" className="underline hover:text-primary">Términos y Condiciones</Link>.
               </p>

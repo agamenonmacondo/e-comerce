@@ -123,12 +123,12 @@ export default function CheckoutPage() {
 
     const result = await placeOrder(orderInput);
 
-    if (result.success && result.paymentUrl) {
+    if (result.success && result.orderId) {
         toast({
-            title: "Redirigiendo a Coinbase...",
-            description: result.message || "Serás redirigido para completar tu pago con criptomonedas.",
+            title: "¡Pedido Realizado con Éxito!",
+            description: result.message || `Tu pedido ${result.orderId} ha sido procesado.`,
         });
-        window.location.href = result.paymentUrl; 
+        router.push(`/order/success?order_id=${result.orderId}`); 
     } else {
       toast({
         title: "Problema con el Pedido",
@@ -212,10 +212,10 @@ export default function CheckoutPage() {
                 disabled={isSubmitting || !shippingForm.formState.isValid || orderSummary.items.length === 0}
               >
                 <Lock className="mr-2 h-5 w-5" />
-                {isSubmitting ? 'Procesando...' : 'Pagar con Cripto (Coinbase)'}
+                {isSubmitting ? 'Procesando...' : 'Realizar Pedido'}
               </Button>
               <p className="text-xs text-muted-foreground text-center w-full">
-                Serás redirigido a Coinbase para completar tu pago de forma segura.
+                Tu pago será procesado de forma segura a través de nuestra pasarela.
               </p>
               <p className="text-xs text-muted-foreground text-center w-full">
                 Al continuar, aceptas nuestros <Link href="/terms" className="underline hover:text-primary">Términos y Condiciones</Link>.

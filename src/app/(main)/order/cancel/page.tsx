@@ -11,22 +11,18 @@ import { Suspense } from 'react';
 function CancelContent() {
   const searchParams = useSearchParams();
   const orderId = searchParams.get('order_id'); 
-  const boldTransactionId = searchParams.get('id'); 
-  // Potentially other params like 'reason' if Bold provides them
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-12 min-h-[60vh] flex items-center justify-center">
       <Card className="w-full max-w-lg text-center shadow-xl">
         <CardHeader>
           <XCircle className="mx-auto h-16 w-16 text-destructive mb-4" />
-          <CardTitle className="text-3xl font-bold font-headline">Proceso Cancelado o Fallido</CardTitle>
+          <CardTitle className="text-3xl font-bold font-headline">Proceso Cancelado</CardTitle>
         </CardHeader>
         <CardContent>
           <CardDescription className="text-lg text-muted-foreground mb-6">
             {orderId 
-              ? `El proceso de pago para el pedido ${orderId} fue cancelado o no se completó.`
-              : boldTransactionId 
-              ? `El proceso de pago (ID: ${boldTransactionId}) fue cancelado o no se completó.`
+              ? `El proceso de pago para el pedido ${orderId} fue cancelado.`
               : "El proceso de pago fue cancelado o no se completó."}
             <br />
             Tu carrito aún conserva tus artículos si deseas intentarlo de nuevo.

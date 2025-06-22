@@ -17,20 +17,20 @@ function SuccessContent() {
 
   const [title, setTitle] = useState('Estado del Pedido');
   const [message, setMessage] = useState('Gracias por tu compra. Estamos verificando los detalles.');
-  const [icon, setIcon] = useState(<Clock className="mx-auto h-16 w-16 text-yellow-500 mb-4" />);
+  const [icon, setIcon] = useState(<Clock className="mx-auto h-16 w-16 text-muted-foreground mb-4" />);
 
   useEffect(() => {
     if (status === 'APPROVED') {
       setTitle('¡Pedido Confirmado!');
       setMessage(`Tu pedido ${orderId || boldTransactionId || ''} ha sido recibido y está siendo procesado. Te enviaremos una confirmación pronto.`);
-      setIcon(<CheckCircle2 className="mx-auto h-16 w-16 text-green-500 mb-4" />);
+      setIcon(<CheckCircle2 className="mx-auto h-16 w-16 text-primary mb-4" />);
       // TODO: Consider clearing the cart here if it's stored client-side
       // The actual order fulfillment (DB update, stock reduction, email)
       // should ideally be handled by a webhook from Bold to your backend.
     } else if (status === 'PENDING') {
       setTitle('Pago Pendiente');
       setMessage(`Tu pago para el pedido ${orderId || boldTransactionId || ''} está pendiente. Te notificaremos una vez se confirme.`);
-      setIcon(<Clock className="mx-auto h-16 w-16 text-yellow-500 mb-4" />);
+      setIcon(<Clock className="mx-auto h-16 w-16 text-muted-foreground mb-4" />);
     } else if (status === 'REJECTED' || status === 'ERROR' || status === 'DECLINED') {
       setTitle('Pago Fallido');
       setMessage(`El pago para el pedido ${orderId || boldTransactionId || ''} no pudo ser procesado. Por favor, intenta de nuevo o contacta a soporte.`);
@@ -40,7 +40,7 @@ function SuccessContent() {
       // Or if it's our old simple success page before status parameter
       setTitle('¡Pedido Enviado a Procesar!');
       setMessage(`Tu pedido ${orderId} ha sido enviado para procesar el pago. Serás notificado sobre el estado.`);
-      setIcon(<CheckCircle2 className="mx-auto h-16 w-16 text-green-500 mb-4" />);
+      setIcon(<CheckCircle2 className="mx-auto h-16 w-16 text-primary mb-4" />);
     }
     // Add more conditions for other statuses Bold might return
   }, [orderId, boldTransactionId, status]);

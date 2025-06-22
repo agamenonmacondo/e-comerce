@@ -12,6 +12,10 @@ import { es } from 'date-fns/locale';
 import { formatColombianCurrency } from '@/lib/utils';
 
 
+interface OrderHistoryProps {
+    orders: Order[];
+}
+
 export default function OrderHistory({ orders }: OrderHistoryProps) {
   if (orders.length === 0) {
     return (
@@ -32,14 +36,14 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
     );
   }
 
-  const getStatusBadgeVariant = (status: Order['status']) => {
+  const getStatusBadgeVariant = (status: Order['status']): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (status) {
-      case 'Pendiente': return 'default';
+      case 'Pendiente': return 'secondary';
       case 'Procesando': return 'secondary';
       case 'Enviado': return 'outline'; 
       case 'Entregado': return 'default'; 
       case 'Cancelado': return 'destructive';
-      default: return 'default';
+      default: return 'outline';
     }
   };
   
@@ -72,9 +76,7 @@ export default function OrderHistory({ orders }: OrderHistoryProps) {
                 <TableCell>{format(parseISO(order.orderDate), 'dd MMM, yyyy', { locale: es })}</TableCell>
                 <TableCell>{formatColombianCurrency(order.totalAmount)}</TableCell>
                 <TableCell>
-                  <Badge variant={getStatusBadgeVariant(order.status)} 
-                         className={order.status === 'Entregado' ? 'bg-green-500/20 text-green-700 border-green-400' : 
-                                    order.status === 'Enviado' ? 'bg-blue-500/20 text-blue-700 border-blue-400' : ''}>
+                  <Badge variant={getStatusBadgeVariant(order.status)}>
                     {getStatusText(order.status)}
                   </Badge>
                 </TableCell>

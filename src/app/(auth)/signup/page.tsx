@@ -8,10 +8,10 @@ export default function SignupPage() {
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
            <Link href="/" className="inline-block mb-4">
-            <span className="font-bold text-3xl font-headline">GigaGO</span>
+            <span className="font-bold text-3xl font-headline">AVA Shop</span>
           </Link>
           <h2 className="text-2xl font-semibold text-foreground">Crear una Cuenta</h2>
-          <p className="text-muted-foreground">Únete a GigaGO hoy para empezar.</p>
+          <p className="text-muted-foreground">Únete a AVA Shop hoy para empezar.</p>
         </div>
         <SignupForm />
         <p className="mt-6 text-center text-sm text-muted-foreground">

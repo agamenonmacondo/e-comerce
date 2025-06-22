@@ -95,7 +95,7 @@ export default function AdminDashboardPage() {
             <BarChart3 className="mr-3 h-8 w-8 text-primary" />
             Panel de Administración
           </h1>
-          <p className="text-muted-foreground mt-1">Gestiona tu tienda GigaGO.</p>
+          <p className="text-muted-foreground mt-1">Gestiona tu tienda AVA Shop.</p>
         </div>
         <Button variant="outline" asChild>
           <Link href="/">
@@ -238,4 +238,3 @@ export default function AdminDashboardPage() {
     </div>
   );
 }
-

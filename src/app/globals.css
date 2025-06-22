@@ -4,45 +4,45 @@
 
 @layer base {
   :root {
-    --background: 198 100% 95.9%; /* Very light blue (#EBF9FF) - Kept */
-    --foreground: 220 25% 15%; /* Dark desaturated blue - Kept */
+    --background: 0 0% 100%;
+    --foreground: 220 20% 12%;
 
-    --card: 0 0% 100%; /* Pure white - Kept */
-    --card-foreground: 220 25% 15%; /* Kept */
+    --card: 0 0% 100%;
+    --card-foreground: 220 20% 12%;
+ 
+    --popover: 0 0% 100%;
+    --popover-foreground: 220 20% 12%;
+ 
+    --primary: 45 85% 55%; /* Gold/yellow for light mode */
+    --primary-foreground: 0 0% 100%;
+ 
+    --secondary: 220 20% 96%;
+    --secondary-foreground: 220 20% 12%;
+ 
+    --muted: 220 20% 96%;
+    --muted-foreground: 220 20% 45%;
+ 
+    --accent: 220 20% 96%;
+    --accent-foreground: 220 20% 12%;
+ 
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 0 0% 98%;
 
-    --popover: 0 0% 100%; /* Kept */
-    --popover-foreground: 220 25% 15%; /* Kept */
-
-    --primary: 181 85% 65%; /* Refined: Slightly deeper/less saturated electric blue */
-    --primary-foreground: 181 85% 10%; /* Refined: Darker, for contrast on new primary */
-
-    --secondary: 190 50% 88%; /* Refined: Adjusted to be a bit less saturated, still light */
-    --secondary-foreground: 190 50% 18%; /* Refined: Darker for text on new secondary */
-
-    --muted: 200 40% 94%; /* Refined: Slightly adjusted, very light gray-blue */
-    --muted-foreground: 200 25% 40%; /* Refined: Medium gray-blue for muted text */
-
-    --accent: 269 80% 62%; /* Refined: Slightly deeper/less saturated light purple */
-    --accent-foreground: 269 80% 10%; /* Refined: Darker for contrast on new accent */
-
-    --destructive: 0 84.2% 60.2%; /* Kept */
-    --destructive-foreground: 0 0% 98%; /* Kept */
-
-    --border: 200 35% 85%; /* Refined: Slightly adjusted light gray-blue border */
-    --input: 200 35% 90%;  /* Refined: Slightly adjusted for input */
-    --ring: 181 85% 55%;   /* Refined: A more saturated version of the new primary for ring */
-
-    --radius: 0.5rem; /* Kept */
+    --border: 220 20% 90%;
+    --input: 220 20% 92%;
+    --ring: 45 85% 55%;
+ 
+    --radius: 0.5rem;
 
     /* Sidebar variables - Light Theme */
-    --sidebar-background: 198 100% 95.9%;
-    --sidebar-foreground: 220 25% 15%;
-    --sidebar-primary: 181 85% 65%; 
-    --sidebar-primary-foreground: 181 85% 10%;
-    --sidebar-accent: 269 80% 62%;
-    --sidebar-accent-foreground: 269 80% 10%;
-    --sidebar-border: 200 35% 85%;
-    --sidebar-ring: 181 85% 55%;
+    --sidebar-background: 220 20% 98%;
+    --sidebar-foreground: 220 20% 12%;
+    --sidebar-primary: 45 85% 55%; 
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 20% 96%;
+    --sidebar-accent-foreground: 220 20% 12%;
+    --sidebar-border: 220 20% 90%;
+    --sidebar-ring: 45 85% 55%;
 
     --chart-1: hsl(var(--primary));
     --chart-2: hsl(var(--accent));
@@ -50,45 +50,45 @@
     --chart-4: 30 80% 60%; 
     --chart-5: 220 70% 65%;
   }
-
+ 
   .dark {
-    --background: 220 20% 10%; /* Very dark cool blue - Kept */
-    --foreground: 200 30% 90%; /* Light cyan-gray - Kept */
+    --background: 220 16% 12%;
+    --foreground: 210 40% 98%;
+ 
+    --card: 220 16% 16%;
+    --card-foreground: 210 40% 98%;
+ 
+    --popover: 220 16% 16%;
+    --popover-foreground: 210 40% 98%;
+ 
+    --primary: 45 90% 60%; /* Gold/yellow from screenshot */
+    --primary-foreground: 45 90% 10%;
+ 
+    --secondary: 220 16% 24%;
+    --secondary-foreground: 210 40% 98%;
+ 
+    --muted: 220 16% 24%;
+    --muted-foreground: 220 10% 65%;
+ 
+    --accent: 220 16% 24%;
+    --accent-foreground: 210 40% 98%;
+ 
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 0 0% 98%;
+ 
+    --border: 220 16% 24%;
+    --input: 220 16% 20%;
+    --ring: 45 90% 60%;
 
-    --card: 220 15% 14%; /* Darker cool blue - Kept */
-    --card-foreground: 200 30% 90%; /* Kept */
-
-    --popover: 220 15% 14%; /* Kept */
-    --popover-foreground: 200 30% 90%; /* Kept */
-
-    --primary: 181 80% 60%; /* Refined: Dark mode version of new primary */
-    --primary-foreground: 181 80% 8%; /* Refined: Very dark for contrast */
-
-    --secondary: 190 25% 22%; /* Refined: Darker, less saturated cyan/blue */
-    --secondary-foreground: 190 30% 85%; /* Refined: Lighter for text on new dark secondary */
-
-    --muted: 200 15% 25%; /* Refined: Adjusted very dark gray-blue */
-    --muted-foreground: 200 15% 65%; /* Refined: Adjusted for muted text */
-
-    --accent: 269 75% 70%; /* Refined: Dark mode version of new accent */
-    --accent-foreground: 269 75% 9%; /* Refined: Very dark for contrast */
-
-    --destructive: 0 62.8% 30.6%; /* Adjusted for better dark mode destructive - Kept original logic more or less */
-    --destructive-foreground: 0 0% 98%; /* Kept */
-
-    --border: 200 20% 30%; /* Refined: Adjusted dark gray-blue border */
-    --input: 200 20% 28%; /* Refined: Adjusted for input */
-    --ring: 181 80% 50%;   /* Refined: Brighter version of new dark primary for ring */
-    
     /* Sidebar variables - Dark Theme */
-    --sidebar-background: 220 20% 10%;
-    --sidebar-foreground: 200 30% 90%;
-    --sidebar-primary: 181 80% 60%;
-    --sidebar-primary-foreground: 181 80% 8%;
-    --sidebar-accent: 269 75% 70%;
-    --sidebar-accent-foreground: 269 75% 9%;
-    --sidebar-border: 200 20% 30%;
-    --sidebar-ring: 181 80% 50%;
+    --sidebar-background: 220 16% 12%;
+    --sidebar-foreground: 210 40% 98%;
+    --sidebar-primary: 45 90% 60%;
+    --sidebar-primary-foreground: 45 90% 10%;
+    --sidebar-accent: 220 16% 24%;
+    --sidebar-accent-foreground: 210 40% 98%;
+    --sidebar-border: 220 16% 24%;
+    --sidebar-ring: 45 90% 60%;
     
     --chart-1: hsl(var(--primary));
     --chart-2: hsl(var(--accent));
@@ -97,7 +97,7 @@
     --chart-5: 220 60% 75%;
   }
 }
-
+ 
 @layer base {
   * {
     @apply border-border;

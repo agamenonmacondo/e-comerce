@@ -114,10 +114,10 @@ export default function SalesReportPage() {
     setCurrentPage(1);
   };
   
-  const getStatusBadgeVariant = (status: MockTransaction['status']) => {
+  const getStatusBadgeVariant = (status: MockTransaction['status']): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (status) {
-      case 'Completado': return 'default'; // Will be styled with specific green
-      case 'Pendiente': return 'secondary'; // Will be styled with specific yellow
+      case 'Completado': return 'default';
+      case 'Pendiente': return 'secondary';
       case 'Fallido': return 'destructive';
       default: return 'outline';
     }
@@ -222,12 +222,7 @@ export default function SalesReportPage() {
                   <TableCell className="text-xs max-w-[180px] truncate" title={transaction.itemsSummary}>{transaction.itemsSummary}</TableCell>
                   <TableCell>{transaction.paymentMethod}</TableCell>
                   <TableCell>
-                     <Badge variant={getStatusBadgeVariant(transaction.status)}
-                            className={
-                                transaction.status === 'Completado' ? 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200' :
-                                transaction.status === 'Pendiente' ? 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200' :
-                                'hover:bg-destructive/80' // For 'Fallido', destructive variant is used
-                            }>
+                     <Badge variant={getStatusBadgeVariant(transaction.status)}>
                        {transaction.status}
                      </Badge>
                   </TableCell>

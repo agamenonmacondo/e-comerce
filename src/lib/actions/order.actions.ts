@@ -88,7 +88,7 @@ export async function placeOrder(
     }
   }
 
-  const order_id = `GIGA-${Date.now()}`; 
+  const order_id = `AVA-${Date.now()}`; 
   const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0);
   const taxRate = 0.19; 
   const taxAmount = subtotal * taxRate;
@@ -101,7 +101,7 @@ export async function placeOrder(
       order_id: order_id,
       amount_in_cents: amount_in_cents,
       currency: 'COP',
-      payment_description: `Pedido GigaGO #${order_id}`,
+      payment_description: `Pedido AVA Shop #${order_id}`,
       redirect_url: `${appUrl}/order/success`, 
       customer: {
         name: shippingDetails.fullName,

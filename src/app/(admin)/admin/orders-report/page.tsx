@@ -110,10 +110,10 @@ export default function OrdersReportPage() {
     setCurrentPage(1);
   };
   
-  const getStatusBadgeVariant = (status: MockOrder['status']) => {
+  const getStatusBadgeVariant = (status: MockOrder['status']): 'default' | 'secondary' | 'destructive' | 'outline' => {
     switch (status) {
       case 'Entregado': return 'default'; 
-      case 'Enviado': return 'default'; 
+      case 'Enviado': return 'outline'; 
       case 'Procesando': return 'secondary';
       case 'Pendiente': return 'secondary';
       case 'Cancelado': return 'destructive';
@@ -150,13 +150,7 @@ export default function OrdersReportPage() {
           {statuses.map(status => (
             summary.ordersByStatus[status] > 0 && (
             <div key={status} className="flex items-center space-x-4 rounded-md border p-4 bg-card">
-                 <Badge variant={getStatusBadgeVariant(status)} className={
-                        status === 'Entregado' ? 'bg-green-100 text-green-700 border-green-300 mr-2' :
-                        status === 'Enviado' ? 'bg-blue-100 text-blue-700 border-blue-300 mr-2' :
-                        status === 'Procesando' ? 'bg-yellow-100 text-yellow-700 border-yellow-300 mr-2' :
-                        status === 'Pendiente' ? 'bg-orange-100 text-orange-700 border-orange-300 mr-2' :
-                        status === 'Cancelado' ? 'mr-2' : 'mr-2'
-                    } >{status}</Badge>
+                 <Badge variant={getStatusBadgeVariant(status)} className="mr-2">{status}</Badge>
               <div>
                 <p className="text-sm font-medium text-muted-foreground">Pedidos {status.toLowerCase()}</p>
                 <p className="text-2xl font-bold">{summary.ordersByStatus[status]}</p>
@@ -222,14 +216,7 @@ export default function OrdersReportPage() {
                   <TableCell className="text-xs max-w-[180px] truncate" title={order.itemsSummary}>{order.itemsSummary}</TableCell>
                   <TableCell>{order.paymentMethod}</TableCell>
                   <TableCell>
-                     <Badge variant={getStatusBadgeVariant(order.status)}
-                            className={
-                                order.status === 'Entregado' ? 'bg-green-100 text-green-700 border-green-300 hover:bg-green-200' :
-                                order.status === 'Enviado' ? 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200' :
-                                order.status === 'Procesando' ? 'bg-yellow-100 text-yellow-700 border-yellow-300 hover:bg-yellow-200' :
-                                order.status === 'Pendiente' ? 'bg-orange-100 text-orange-700 border-orange-300 hover:bg-orange-200' :
-                                'hover:bg-destructive/80' // For 'Cancelado'
-                            }>
+                     <Badge variant={getStatusBadgeVariant(order.status)}>
                        {order.status}
                      </Badge>
                   </TableCell>

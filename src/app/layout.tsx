@@ -4,8 +4,8 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
 
 export const metadata: Metadata = {
-  title: 'GigaGO',
-  description: 'GigaGO - Tu Tienda Online de Tecnología',
+  title: 'AVA Shop',
+  description: 'AVA Shop - Tu Tienda Online de Tecnología',
 };
 
 export default function RootLayout({
@@ -21,7 +21,7 @@ export default function RootLayout({
       <body className="font-body antialiased">
         <ThemeProvider
           attribute="class"
-          defaultTheme="system"
+          defaultTheme="dark"
           enableSystem
           disableTransitionOnChange
         >

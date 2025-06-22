@@ -10,13 +10,15 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Home, Lock, ShoppingCart, Mail } from 'lucide-react';
+import { Home, Lock, ShoppingCart, Mail, CreditCard, Bitcoin } from 'lucide-react';
 import Link from 'next/link';
 import { formatColombianCurrency } from '@/lib/utils';
 import { products as allProductsForSummary } from '@/lib/placeholder-data';
-import { placeOrder, type PlaceOrderInput } from '@/lib/actions/order.actions';
+import { placeOrder, PlaceOrderInput } from '@/lib/actions/order.actions';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido (mín. 2 caracteres)."),
@@ -72,6 +74,7 @@ export default function CheckoutPage() {
   const router = useRouter();
   const [orderSummary, setOrderSummary] = useState(calculateOrderSummary());
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'bold' | 'coinbase'>('bold');
 
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
@@ -119,16 +122,24 @@ export default function CheckoutPage() {
         stock: item.stock,
         imageUrls: item.imageUrls,
       })),
+      paymentMethod: paymentMethod,
+      totalAmount: orderSummary.total,
     };
 
     const result = await placeOrder(orderInput);
 
-    if (result.success && result.orderId) {
+    if (result.success) {
+      if (result.redirectUrl) {
+        // Coinbase flow: Redirect to payment gateway
+        window.location.href = result.redirectUrl;
+      } else if (result.orderId) {
+        // Bold (simulated) flow: Redirect to our success page
         toast({
             title: "¡Pedido Realizado con Éxito!",
             description: result.message || `Tu pedido ${result.orderId} ha sido procesado.`,
         });
-        router.push(`/order/success?order_id=${result.orderId}`); 
+        router.push(`/order/success?order_id=${result.orderId}`);
+      }
     } else {
       toast({
         title: "Problema con el Pedido",
@@ -165,6 +176,34 @@ export default function CheckoutPage() {
                   <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
+            </CardContent>
+          </Card>
+          
+          <Card className="shadow-lg">
+            <CardHeader>
+              <CardTitle className="text-2xl font-headline flex items-center"><CreditCard className="mr-3 h-6 w-6 text-primary"/>Método de Pago</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RadioGroup
+                value={paymentMethod}
+                onValueChange={(value: 'bold' | 'coinbase') => setPaymentMethod(value)}
+                className="grid grid-cols-1 gap-4"
+              >
+                <Label htmlFor="payment-bold" className="flex items-center gap-4 rounded-md border p-4 hover:bg-accent cursor-pointer has-[:checked]:border-primary transition-all">
+                  <RadioGroupItem value="bold" id="payment-bold" />
+                  <div className="flex items-center gap-2 font-medium">
+                    <CreditCard className="h-5 w-5 text-muted-foreground" />
+                    <span>Tarjeta/PSE (Simulado con Bold)</span>
+                  </div>
+                </Label>
+                <Label htmlFor="payment-coinbase" className="flex items-center gap-4 rounded-md border p-4 hover:bg-accent cursor-pointer has-[:checked]:border-primary transition-all">
+                  <RadioGroupItem value="coinbase" id="payment-coinbase" />
+                  <div className="flex items-center gap-2 font-medium">
+                    <Bitcoin className="h-5 w-5 text-muted-foreground" />
+                    <span>Criptomonedas (Coinbase)</span>
+                  </div>
+                </Label>
+              </RadioGroup>
             </CardContent>
           </Card>
         </div>
@@ -212,10 +251,13 @@ export default function CheckoutPage() {
                 disabled={isSubmitting || !shippingForm.formState.isValid || orderSummary.items.length === 0}
               >
                 <Lock className="mr-2 h-5 w-5" />
-                {isSubmitting ? 'Procesando...' : 'Realizar Pedido'}
+                 {isSubmitting ? 'Procesando...' : (paymentMethod === 'coinbase' ? 'Continuar a Coinbase' : 'Realizar Pedido')}
               </Button>
               <p className="text-xs text-muted-foreground text-center w-full">
-                Tu pago será procesado de forma segura a través de nuestra pasarela.
+                {paymentMethod === 'coinbase' 
+                  ? 'Serás redirigido a Coinbase para completar tu pago de forma segura.'
+                  : 'Tu pago será procesado de forma segura (simulación).'
+                }
               </p>
               <p className="text-xs text-muted-foreground text-center w-full">
                 Al continuar, aceptas nuestros <Link href="/terms" className="underline hover:text-primary">Términos y Condiciones</Link>.

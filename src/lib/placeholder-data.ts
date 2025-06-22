@@ -16,6 +16,20 @@ export const categories: Category[] = [
 
 const now = new Date();
 
+// Image arrays for iPhone 16 models
+const iphone16ProMaxImages = [
+  '/images/iphone 16 promax/apple-iphone-16-pro-max-desert-titanium-1.png',
+  '/images/iphone 16 promax/iphone-16-pro-max-back-black-titanium-1.png',
+  '/images/iphone 16 promax/iphone-16-pro-max-different-colors-phones-1.png',
+];
+
+const iphone16Images = [
+  '/images/iphone 16/iphone-16-blue.png',
+  '/images/iphone 16/iphone-16-pink.png',
+  '/images/iphone 16/iphone-16-black.png',
+];
+
+
 export const products: Product[] = [
   // Detailed iPhone 16 Pro Max (ES version from new list)
   {
@@ -23,11 +37,7 @@ export const products: Product[] = [
     name: 'iPhone 16 Pro Max 256GB ES (Nuevo)',
     description: 'Experimenta el pináculo de la innovación con el iPhone 16 Pro Max. Con Dynamic Island, pantalla ProMotion siempre activa, el potente chip A18 Pro y un revolucionario sistema de cámaras Pro Fusion. Apple Intelligence integrado para una experiencia más personal y privada.',
     price: 4450000,
-    imageUrls: [
-      '/images/iphone_16_promax/121032-iphone-16-pro-max.png',
-      '/images/iphone_16_promax/Celular-Apple-iPhone-16-PRO---PRO-MAX-Desert-Titanium-2.png',
-      '/images/iphone_16_promax/iphone-16-pro-max-desert-titanium-pdp-image-position-2-en-ww.png',
-    ],
+    imageUrls: iphone16ProMaxImages,
     category: iphoneCategory,
     stock: 20,
     rating: 4.9,
@@ -95,7 +105,7 @@ export const products: Product[] = [
     name: 'iPhone 16 128GB SF (Nuevo)',
     description: 'El nuevo iPhone 16 con 128GB de almacenamiento, sellado de fábrica. Condición: Nuevo.',
     price: 3125000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: iphone16Images,
     category: iphoneCategory, stock: 25, rating: 4.8, reviewsCount: 70,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB', Variante: 'SF (Sellado Fábrica)' }, createdAt: now, updatedAt: now,
   },
@@ -104,7 +114,7 @@ export const products: Product[] = [
     name: 'iPhone 16 256GB (Nuevo)',
     description: 'El nuevo iPhone 16 con 256GB de almacenamiento. Condición: Nuevo.',
     price: 3600000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: iphone16Images,
     category: iphoneCategory, stock: 19, rating: 4.8, reviewsCount: 65,
     details: { Condición: 'Nuevo', Almacenamiento: '256GB' }, createdAt: now, updatedAt: now,
   },
@@ -113,7 +123,7 @@ export const products: Product[] = [
     name: 'iPhone 16 Pro 128GB ES (Nuevo)',
     description: 'El potente iPhone 16 Pro con 128GB de almacenamiento, variante ES. Condición: Nuevo.',
     price: 3820000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: iphone16ProMaxImages,
     category: iphoneCategory, stock: 15, rating: 4.9, reviewsCount: 85,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB', Variante: 'ES' }, createdAt: now, updatedAt: now,
   },
@@ -122,7 +132,7 @@ export const products: Product[] = [
     name: 'iPhone 16 Pro Max 256GB SF (Nuevo)',
     description: 'El impresionante iPhone 16 Pro Max con 256GB, sellado de fábrica. Condición: Nuevo.',
     price: 4990000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: iphone16ProMaxImages,
     category: iphoneCategory, stock: 12, rating: 4.9, reviewsCount: 95,
     details: { Condición: 'Nuevo', Almacenamiento: '256GB', Variante: 'SF (Sellado Fábrica)' }, createdAt: now, updatedAt: now,
   },
@@ -180,7 +190,7 @@ export const products: Product[] = [
     name: 'iPhone 16 128GB ES (Premium)',
     description: 'iPhone 16 con 128GB, variante ES. Condición: Premium, Garantía 6 meses.',
     price: 2800000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: iphone16Images,
     category: iphoneCategory, stock: 10, rating: 4.7, reviewsCount: 30,
     details: { Condición: 'Premium', Almacenamiento: '128GB', Variante: 'ES', Garantía: '6 meses' }, createdAt: now, updatedAt: now,
   },
@@ -314,5 +324,6 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 

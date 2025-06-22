@@ -12,7 +12,7 @@ export default function Header() {
       <div className="container flex h-16 max-w-screen-2xl items-center">
         <Link href="/" className="ml-2 mr-4 flex items-center gap-2">
           <Image
-            src="/images/avalogo/logo.png"
+            src="/images/AVALOGO/ava_logo.png"
             alt="AVA Shop Logo"
             width={32}
             height={32}

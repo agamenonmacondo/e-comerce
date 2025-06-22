@@ -10,15 +10,13 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
-import { Home, Lock, ShoppingCart, Mail, CreditCard, Bitcoin } from 'lucide-react';
+import { Home, ShoppingCart, Mail, CreditCard, Bitcoin } from 'lucide-react';
 import Link from 'next/link';
 import { formatColombianCurrency } from '@/lib/utils';
 import { products as allProductsForSummary } from '@/lib/placeholder-data';
 import { placeOrder, PlaceOrderInput } from '@/lib/actions/order.actions';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
 
 const shippingFormSchema = z.object({
   fullName: z.string().min(2, "El nombre completo es requerido (mín. 2 caracteres)."),
@@ -73,8 +71,7 @@ export default function CheckoutPage() {
   const { toast } = useToast();
   const router = useRouter();
   const [orderSummary, setOrderSummary] = useState(calculateOrderSummary());
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [paymentMethod, setPaymentMethod] = useState<'bold' | 'coinbase'>('bold');
+  const [submittingMethod, setSubmittingMethod] = useState<'bold' | 'coinbase' | null>(null);
 
   const shippingForm = useForm<ShippingFormValues>({
     resolver: zodResolver(shippingFormSchema),
@@ -94,19 +91,19 @@ export default function CheckoutPage() {
     }
   }, [router, toast]);
 
-  async function handleFinalSubmit() {
-    setIsSubmitting(true);
+  async function handleFinalSubmit(method: 'bold' | 'coinbase') {
+    setSubmittingMethod(method);
 
     const isShippingValid = await shippingForm.trigger();
     if (!isShippingValid) {
       toast({ title: "Información Incompleta", description: "Por favor, completa los detalles de envío correctamente.", variant: "destructive" });
-      setIsSubmitting(false);
+      setSubmittingMethod(null);
       return;
     }
     
     if (orderSummary.items.length === 0) {
       toast({ title: "Carrito Vacío", description: "Tu carrito está vacío.", variant: "destructive" });
-      setIsSubmitting(false);
+      setSubmittingMethod(null);
       return;
     }
 
@@ -122,7 +119,7 @@ export default function CheckoutPage() {
         stock: item.stock,
         imageUrls: item.imageUrls,
       })),
-      paymentMethod: paymentMethod,
+      paymentMethod: method,
       totalAmount: orderSummary.total,
     };
 
@@ -147,7 +144,7 @@ export default function CheckoutPage() {
         variant: "destructive",
         duration: 7000,
       });
-      setIsSubmitting(false);
+      setSubmittingMethod(null);
     }
   }
 
@@ -176,34 +173,6 @@ export default function CheckoutPage() {
                   <FormField control={shippingForm.control} name="country" render={({ field }) => ( <FormItem> <FormLabel>País</FormLabel> <FormControl><Input {...field} /></FormControl> <FormMessage /> </FormItem> )} />
                 </form>
               </Form>
-            </CardContent>
-          </Card>
-          
-          <Card className="shadow-lg">
-            <CardHeader>
-              <CardTitle className="text-2xl font-headline flex items-center"><CreditCard className="mr-3 h-6 w-6 text-primary"/>Método de Pago</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RadioGroup
-                value={paymentMethod}
-                onValueChange={(value: 'bold' | 'coinbase') => setPaymentMethod(value)}
-                className="grid grid-cols-1 gap-4"
-              >
-                <Label htmlFor="payment-bold" className="flex items-center gap-4 rounded-md border p-4 hover:bg-accent cursor-pointer has-[:checked]:border-primary transition-all">
-                  <RadioGroupItem value="bold" id="payment-bold" />
-                  <div className="flex items-center gap-2 font-medium">
-                    <CreditCard className="h-5 w-5 text-muted-foreground" />
-                    <span>Tarjeta/PSE (Simulado con Bold)</span>
-                  </div>
-                </Label>
-                <Label htmlFor="payment-coinbase" className="flex items-center gap-4 rounded-md border p-4 hover:bg-accent cursor-pointer has-[:checked]:border-primary transition-all">
-                  <RadioGroupItem value="coinbase" id="payment-coinbase" />
-                  <div className="flex items-center gap-2 font-medium">
-                    <Bitcoin className="h-5 w-5 text-muted-foreground" />
-                    <span>Criptomonedas (Coinbase)</span>
-                  </div>
-                </Label>
-              </RadioGroup>
             </CardContent>
           </Card>
         </div>
@@ -243,23 +212,29 @@ export default function CheckoutPage() {
               </div>
             </CardContent>
             <CardFooter className="flex-col space-y-4">
-              <Button
-                type="button"
-                onClick={handleFinalSubmit}
-                size="lg"
-                className="w-full text-base transition-transform hover:scale-105 active:scale-95"
-                disabled={isSubmitting || !shippingForm.formState.isValid || orderSummary.items.length === 0}
-              >
-                <Lock className="mr-2 h-5 w-5" />
-                 {isSubmitting ? 'Procesando...' : (paymentMethod === 'coinbase' ? 'Continuar a Coinbase' : 'Realizar Pedido')}
-              </Button>
-              <p className="text-xs text-muted-foreground text-center w-full">
-                {paymentMethod === 'coinbase' 
-                  ? 'Serás redirigido a Coinbase para completar tu pago de forma segura.'
-                  : 'Tu pago será procesado de forma segura (simulación).'
-                }
-              </p>
-              <p className="text-xs text-muted-foreground text-center w-full">
+              <div className="w-full space-y-2">
+                  <Button
+                    type="button"
+                    onClick={() => handleFinalSubmit('bold')}
+                    size="lg"
+                    className="w-full text-base transition-transform hover:scale-105 active:scale-95"
+                    disabled={submittingMethod !== null || !shippingForm.formState.isValid || orderSummary.items.length === 0}
+                  >
+                    <CreditCard className="mr-2 h-5 w-5" />
+                    {submittingMethod === 'bold' ? 'Procesando...' : 'Pago con Bold'}
+                  </Button>
+                  <Button
+                    type="button"
+                    onClick={() => handleFinalSubmit('coinbase')}
+                    size="lg"
+                    className="w-full text-base transition-transform hover:scale-105 active:scale-95"
+                    disabled={submittingMethod !== null || !shippingForm.formState.isValid || orderSummary.items.length === 0}
+                  >
+                    <Bitcoin className="mr-2 h-5 w-5" />
+                    {submittingMethod === 'coinbase' ? 'Procesando...' : 'Pago con Cripto Coinbase'}
+                  </Button>
+              </div>
+              <p className="text-xs text-muted-foreground text-center w-full pt-2">
                 Al continuar, aceptas nuestros <Link href="/terms" className="underline hover:text-primary">Términos y Condiciones</Link>.
               </p>
             </CardFooter>

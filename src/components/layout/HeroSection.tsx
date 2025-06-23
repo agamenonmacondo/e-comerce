@@ -56,7 +56,7 @@ export default function HeroSection() {
   return (
     <section className="relative bg-background w-full">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="grid md:grid-cols-2 gap-8 items-center py-12 md:py-24">
+        <div className="grid md:grid-cols-2 gap-8 items-center py-20 md:py-32">
           <div className="space-y-6 text-center md:text-left">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold font-headline tracking-tight">
               <span className="text-primary">AVA Shop:</span> La Tecnología Que Te Define

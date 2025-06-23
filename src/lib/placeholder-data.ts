@@ -18,15 +18,15 @@ const now = new Date();
 
 // Image arrays for iPhone 16 models
 const iphone16ProMaxImages = [
-  '/images/iphone%2016%20promax/apple-iphone-16-pro-max-desert-titanium-1.png',
-  '/images/iphone%2016%20promax/iphone-16-pro-max-back-black-titanium-1.png',
-  '/images/iphone%2016%20promax/iphone-16-pro-max-different-colors-phones-1.png',
+  '/images/apple-iphone-16-pro-max-desert-titanium-1.png',
+  '/images/iphone-16-pro-max-back-black-titanium-1.png',
+  '/images/iphone-16-pro-max-different-colors-phones-1.png',
 ];
 
 const iphone16Images = [
-  '/images/iphone%2016/iphone-16-blue.png',
-  '/images/iphone%2016/iphone-16-pink.png',
-  '/images/iphone%2016/iphone-16-black.png',
+  '/images/iphone-16-blue.png',
+  '/images/iphone-16-pink.png',
+  '/images/iphone-16-black.png',
 ];
 
 
@@ -324,6 +324,7 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 
 

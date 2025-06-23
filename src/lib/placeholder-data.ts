@@ -16,19 +16,25 @@ export const categories: Category[] = [
 
 const now = new Date();
 
-// --- Corrected Image Paths ---
-// NOTE: Using URL encoding (%20) for spaces in folder names.
-
+// --- Image Paths based on screenshot ---
 const iphone16ProMaxImages = [
-  '/images/iphone%2016%20promax/apple-iphone-16-pro-max-desert-titanium-1.png',
-  '/images/iphone%2016%20promax/iphone-16-pro-max-back-black-titanium-1.png',
-  '/images/iphone%2016%20promax/iphone-16-pro-max-different-colors-phones-1.png',
+  '/images/iphone_16_promax/121032-iphone-16-pro-max.png',
+  '/images/iphone_16_promax/iphone-16-pro-max-desert-titanium-pdp-image-position-2-en-ww.png',
+];
+
+const iphone16ProImages = [
+    '/images/iphone%2016%20pro/16pro.png',
+    '/images/iphone%2016%20pro/iphone-16pro.png',
+    '/images/iphone%2016%20pro/iPhone-16-Pro-Max-PNG-File-thumb.png',
 ];
 
 const iphone16Images = [
-  '/images/iphone%2016/iphone-16-blue.png',
-  '/images/iphone%2016/iphone-16-pink.png',
-  '/images/iphone%2016/iphone-16-black.png',
+  '/images/iphone16/images.png',
+  '/images/iphone16/iphone-16-plus-colors.png'
+];
+
+const airpodsPro2Images = [
+    '/images/airpods%20pro%202/sp880-airpods-Pro-2nd-gen.png'
 ];
 
 
@@ -116,7 +122,7 @@ export const products: Product[] = [
     name: 'iPhone 16 256GB (Nuevo)',
     description: 'El nuevo iPhone 16 con 256GB de almacenamiento. Condición: Nuevo.',
     price: 3600000,
-    imageUrls: [iphone16Images[1], iphone16Images[0], iphone16Images[2]], // Use pink first to differentiate
+    imageUrls: [iphone16Images[1], iphone16Images[0]], // Use different order to differentiate
     category: iphoneCategory, stock: 19, rating: 4.8, reviewsCount: 65,
     details: { Condición: 'Nuevo', Almacenamiento: '256GB' }, createdAt: now, updatedAt: now,
   },
@@ -125,7 +131,7 @@ export const products: Product[] = [
     name: 'iPhone 16 Pro 128GB ES (Nuevo)',
     description: 'El potente iPhone 16 Pro con 128GB de almacenamiento, variante ES. Condición: Nuevo.',
     price: 3820000,
-    imageUrls: iphone16ProMaxImages,
+    imageUrls: iphone16ProImages,
     category: iphoneCategory, stock: 15, rating: 4.9, reviewsCount: 85,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB', Variante: 'ES' }, createdAt: now, updatedAt: now,
   },
@@ -203,7 +209,7 @@ export const products: Product[] = [
     name: 'MacBook Air M2 256GB',
     description: 'Ultraligero y potente MacBook Air con chip M2. Almacenamiento de 256GB.',
     price: 3800000,
-    imageUrls: [iphone16ProMaxImages[0]], // Using a local image
+    imageUrls: ['https://placehold.co/600x400.png'], // Placeholder
     category: macbookCategory,
     stock: 10,
     rating: 4.8,
@@ -217,7 +223,7 @@ export const products: Product[] = [
     name: 'MacBook Pro M3 512GB',
     description: 'MacBook Pro de alto rendimiento con el nuevo chip M3. Almacenamiento de 512GB.',
     price: 6200000,
-    imageUrls: [iphone16ProMaxImages[1]], // Using a local image
+    imageUrls: ['https://placehold.co/600x400.png'], // Placeholder
     category: macbookCategory,
     stock: 8,
     rating: 4.9,
@@ -233,7 +239,7 @@ export const products: Product[] = [
     name: 'AirPods Pro (2da Generación)',
     description: 'AirPods Pro de segunda generación con cancelación de ruido mejorada y audio espacial.',
     price: 750000,
-    imageUrls: ['/images/airpods%20pro%202/sp880-airpods-Pro-2nd-gen.png'],
+    imageUrls: airpodsPro2Images,
     category: accesoriosCategory,
     stock: 30,
     rating: 4.7,
@@ -247,7 +253,7 @@ export const products: Product[] = [
     name: 'AirPods (3ra Generación)',
     description: 'AirPods de tercera generación con audio espacial y ajuste universal.',
     price: 550000,
-    imageUrls: ['/images/airpods%20pro%202/png-transparent-airpods-pro-thumbnail.png'],
+    imageUrls: ['https://placehold.co/600x400.png'], // Placeholder
     category: accesoriosCategory,
     stock: 25,
     rating: 4.6,
@@ -263,7 +269,7 @@ export const products: Product[] = [
     name: 'Apple Watch Series 9',
     description: 'El Apple Watch Series 9 con nuevas funciones de salud y el chip S9.',
     price: 1500000,
-    imageUrls: [iphone16ProMaxImages[2]], // Using a local image
+    imageUrls: ['https://placehold.co/600x400.png'], // Placeholder
     category: appleWatchCategory,
     stock: 15,
     rating: 4.8,
@@ -277,7 +283,7 @@ export const products: Product[] = [
     name: 'Apple Watch Ultra 2',
     description: 'El Apple Watch Ultra 2, diseñado para la aventura y la resistencia.',
     price: 2800000,
-    imageUrls: [iphone16ProMaxImages[0]], // Using a local image
+    imageUrls: ['https://placehold.co/600x400.png'], // Placeholder
     category: appleWatchCategory,
     stock: 10,
     rating: 4.9,
@@ -326,6 +332,7 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 
 

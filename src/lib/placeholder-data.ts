@@ -18,15 +18,15 @@ const now = new Date();
 
 // Image arrays for iPhone 16 models
 const iphone16ProMaxImages = [
-  '/images/iphone 16 promax/apple-iphone-16-pro-max-desert-titanium-1.png',
-  '/images/iphone 16 promax/iphone-16-pro-max-back-black-titanium-1.png',
-  '/images/iphone 16 promax/iphone-16-pro-max-different-colors-phones-1.png',
+  '/images/iphone%2016%20promax/apple-iphone-16-pro-max-desert-titanium-1.png',
+  '/images/iphone%2016%20promax/iphone-16-pro-max-back-black-titanium-1.png',
+  '/images/iphone%2016%20promax/iphone-16-pro-max-different-colors-phones-1.png',
 ];
 
 const iphone16Images = [
-  '/images/iphone 16/iphone-16-blue.png',
-  '/images/iphone 16/iphone-16-pink.png',
-  '/images/iphone 16/iphone-16-black.png',
+  '/images/iphone%2016/iphone-16-blue.png',
+  '/images/iphone%2016/iphone-16-pink.png',
+  '/images/iphone%2016/iphone-16-black.png',
 ];
 
 
@@ -78,7 +78,7 @@ export const products: Product[] = [
     name: 'iPhone 14 128GB (Nuevo)',
     description: 'Un excelente iPhone 14 con 128GB de almacenamiento. Condición: Nuevo.',
     price: 2400000,
-    imageUrls: ['/images/iphone_14/iPhone 14.png'],
+    imageUrls: ['/images/iphone_14/iPhone%2014.png'],
     category: iphoneCategory, stock: 18, rating: 4.6, reviewsCount: 90,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB' }, createdAt: now, updatedAt: now,
   },
@@ -87,7 +87,7 @@ export const products: Product[] = [
     name: 'iPhone 15 128GB SF (Nuevo)',
     description: 'Un excelente iPhone 15 con 128GB de almacenamiento, sellado de fábrica. Condición: Nuevo.',
     price: 2790000,
-    imageUrls: ['/images/iphone 15/iphone_15_hero.png'],
+    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
     category: iphoneCategory, stock: 20, rating: 4.7, reviewsCount: 100,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB', Variante: 'SF (Sellado Fábrica)' }, createdAt: now, updatedAt: now,
   },
@@ -96,7 +96,7 @@ export const products: Product[] = [
     name: 'iPhone 15 256GB SF (Nuevo)',
     description: 'Un excelente iPhone 15 con 256GB de almacenamiento, sellado de fábrica. Condición: Nuevo.',
     price: 3300000,
-    imageUrls: ['/images/iphone 15/650383081fa16-apple iphone 15.png'],
+    imageUrls: ['/images/iphone%2015/650383081fa16-apple%20iphone%2015.png'],
     category: iphoneCategory, stock: 22, rating: 4.7, reviewsCount: 110,
     details: { Condición: 'Nuevo', Almacenamiento: '256GB', Variante: 'SF (Sellado Fábrica)' }, createdAt: now, updatedAt: now,
   },
@@ -161,7 +161,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Plus 128GB (Usado)',
     description: 'iPhone 15 Plus con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 2550000,
-    imageUrls: ['/images/iphone 15/PNG.monsteriphone-15-plus-pro-pro-max-blue png.png'],
+    imageUrls: ['/images/iphone%2015/PNG.monsteriphone-15-plus-pro-pro-max-blue%20png.png'],
     category: iphoneCategory, stock: 7, rating: 4.5, reviewsCount: 40,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -170,7 +170,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro 256GB (Usado)',
     description: 'iPhone 15 Pro con 256GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 2800000,
-    imageUrls: ['/images/iphone 15/PNG.monsteriphone-15-plus-pro-pro-max-blue png.png'],
+    imageUrls: ['/images/iphone%2015/PNG.monsteriphone-15-plus-pro-pro-max-blue%20png.png'],
     category: iphoneCategory, stock: 6, rating: 4.6, reviewsCount: 55,
     details: { Condición: 'Usado', Almacenamiento: '256GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -179,7 +179,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro Max 256GB ES (Usado)',
     description: 'iPhone 15 Pro Max con 256GB, variante ES. Condición: Usado, Garantía 3 meses.',
     price: 3340000,
-    imageUrls: ['/images/iphone 15/PNG.monsteriphone-15-plus-pro-pro-max-blue png.png'],
+    imageUrls: ['/images/iphone%2015/PNG.monsteriphone-15-plus-pro-pro-max-blue%20png.png'],
     category: iphoneCategory, stock: 4, rating: 4.6, reviewsCount: 45,
     details: { Condición: 'Usado', Almacenamiento: '256GB', Variante: 'ES', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -324,6 +324,7 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 
 

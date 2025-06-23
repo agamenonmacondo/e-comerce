@@ -18,15 +18,15 @@ const now = new Date();
 
 // Image arrays for iPhone 16 models
 const iphone16ProMaxImages = [
-  '/images/apple-iphone-16-pro-max-desert-titanium-1.png',
-  '/images/iphone-16-pro-max-back-black-titanium-1.png',
-  '/images/iphone-16-pro-max-different-colors-phones-1.png',
+  '/images/iphone%2016%20promax/apple-iphone-16-pro-max-desert-titanium-1.png',
+  '/images/iphone%2016%20promax/iphone-16-pro-max-back-black-titanium-1.png',
+  '/images/iphone%2016%20promax/iphone-16-pro-max-different-colors-phones-1.png',
 ];
 
 const iphone16Images = [
-  '/images/iphone-16-blue.png',
-  '/images/iphone-16-pink.png',
-  '/images/iphone-16-black.png',
+  '/images/iphone16/iphone-16-blue.png',
+  '/images/iphone16/iphone-16-pink.png',
+  '/images/iphone16/iphone-16-black.png',
 ];
 
 
@@ -231,7 +231,7 @@ export const products: Product[] = [
     name: 'AirPods Pro (2da Generación)',
     description: 'AirPods Pro de segunda generación con cancelación de ruido mejorada y audio espacial.',
     price: 750000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: ['/images/airpods%20pro%202/airpods-pro-2.png'],
     category: accesoriosCategory,
     stock: 30,
     rating: 4.7,
@@ -324,6 +324,7 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 
 

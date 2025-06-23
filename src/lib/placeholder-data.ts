@@ -16,7 +16,9 @@ export const categories: Category[] = [
 
 const now = new Date();
 
-// Image arrays for iPhone 16 models
+// --- Corrected Image Paths ---
+// NOTE: Using URL encoding (%20) for spaces in folder names.
+
 const iphone16ProMaxImages = [
   '/images/iphone%2016%20promax/apple-iphone-16-pro-max-desert-titanium-1.png',
   '/images/iphone%2016%20promax/iphone-16-pro-max-back-black-titanium-1.png',
@@ -24,9 +26,9 @@ const iphone16ProMaxImages = [
 ];
 
 const iphone16Images = [
-  '/images/iphone16/iphone-16-blue.png',
-  '/images/iphone16/iphone-16-pink.png',
-  '/images/iphone16/iphone-16-black.png',
+  '/images/iphone%2016/iphone-16-blue.png',
+  '/images/iphone%2016/iphone-16-pink.png',
+  '/images/iphone%2016/iphone-16-black.png',
 ];
 
 
@@ -114,7 +116,7 @@ export const products: Product[] = [
     name: 'iPhone 16 256GB (Nuevo)',
     description: 'El nuevo iPhone 16 con 256GB de almacenamiento. Condición: Nuevo.',
     price: 3600000,
-    imageUrls: iphone16Images,
+    imageUrls: [iphone16Images[1], iphone16Images[0], iphone16Images[2]], // Use pink first to differentiate
     category: iphoneCategory, stock: 19, rating: 4.8, reviewsCount: 65,
     details: { Condición: 'Nuevo', Almacenamiento: '256GB' }, createdAt: now, updatedAt: now,
   },
@@ -152,7 +154,7 @@ export const products: Product[] = [
     name: 'iPhone 13 Pro Max 128GB (Usado)',
     description: 'iPhone 13 Pro Max con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 1990000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: ['/images/iphone%2013%20promax/02-iphone-13-pro-max-128gb-plateado-side.png'],
     category: iphoneCategory, stock: 5, rating: 4.4, reviewsCount: 60,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -161,7 +163,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Plus 128GB (Usado)',
     description: 'iPhone 15 Plus con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 2550000,
-    imageUrls: ['/images/iphone%2015/PNG.monsteriphone-15-plus-pro-pro-max-blue%20png.png'],
+    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
     category: iphoneCategory, stock: 7, rating: 4.5, reviewsCount: 40,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -170,7 +172,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro 256GB (Usado)',
     description: 'iPhone 15 Pro con 256GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 2800000,
-    imageUrls: ['/images/iphone%2015/PNG.monsteriphone-15-plus-pro-pro-max-blue%20png.png'],
+    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
     category: iphoneCategory, stock: 6, rating: 4.6, reviewsCount: 55,
     details: { Condición: 'Usado', Almacenamiento: '256GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -179,7 +181,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro Max 256GB ES (Usado)',
     description: 'iPhone 15 Pro Max con 256GB, variante ES. Condición: Usado, Garantía 3 meses.',
     price: 3340000,
-    imageUrls: ['/images/iphone%2015/PNG.monsteriphone-15-plus-pro-pro-max-blue%20png.png'],
+    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
     category: iphoneCategory, stock: 4, rating: 4.6, reviewsCount: 45,
     details: { Condición: 'Usado', Almacenamiento: '256GB', Variante: 'ES', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -201,7 +203,7 @@ export const products: Product[] = [
     name: 'MacBook Air M2 256GB',
     description: 'Ultraligero y potente MacBook Air con chip M2. Almacenamiento de 256GB.',
     price: 3800000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: [iphone16ProMaxImages[0]], // Using a local image
     category: macbookCategory,
     stock: 10,
     rating: 4.8,
@@ -215,7 +217,7 @@ export const products: Product[] = [
     name: 'MacBook Pro M3 512GB',
     description: 'MacBook Pro de alto rendimiento con el nuevo chip M3. Almacenamiento de 512GB.',
     price: 6200000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: [iphone16ProMaxImages[1]], // Using a local image
     category: macbookCategory,
     stock: 8,
     rating: 4.9,
@@ -231,7 +233,7 @@ export const products: Product[] = [
     name: 'AirPods Pro (2da Generación)',
     description: 'AirPods Pro de segunda generación con cancelación de ruido mejorada y audio espacial.',
     price: 750000,
-    imageUrls: ['/images/airpods%20pro%202/airpods-pro-2.png'],
+    imageUrls: ['/images/airpods%20pro%202/sp880-airpods-Pro-2nd-gen.png'],
     category: accesoriosCategory,
     stock: 30,
     rating: 4.7,
@@ -245,7 +247,7 @@ export const products: Product[] = [
     name: 'AirPods (3ra Generación)',
     description: 'AirPods de tercera generación con audio espacial y ajuste universal.',
     price: 550000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: ['/images/airpods%20pro%202/png-transparent-airpods-pro-thumbnail.png'],
     category: accesoriosCategory,
     stock: 25,
     rating: 4.6,
@@ -261,7 +263,7 @@ export const products: Product[] = [
     name: 'Apple Watch Series 9',
     description: 'El Apple Watch Series 9 con nuevas funciones de salud y el chip S9.',
     price: 1500000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: [iphone16ProMaxImages[2]], // Using a local image
     category: appleWatchCategory,
     stock: 15,
     rating: 4.8,
@@ -275,7 +277,7 @@ export const products: Product[] = [
     name: 'Apple Watch Ultra 2',
     description: 'El Apple Watch Ultra 2, diseñado para la aventura y la resistencia.',
     price: 2800000,
-    imageUrls: ['https://placehold.co/600x400.png'],
+    imageUrls: [iphone16ProMaxImages[0]], // Using a local image
     category: appleWatchCategory,
     stock: 10,
     rating: 4.9,
@@ -324,6 +326,7 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 
 

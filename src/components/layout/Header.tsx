@@ -38,18 +38,6 @@ export default function Header() {
                           />
                           <span className="font-bold text-xl font-headline text-primary">AVA Shop</span>
                       </Link>
-                      <Link
-                      href="/"
-                      className="text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                      Todos los Productos
-                      </Link>
-                      <Link
-                      href="/#products"
-                      className="text-muted-foreground transition-colors hover:text-foreground"
-                      >
-                      Categorías
-                      </Link>
                   </nav>
               </SheetContent>
             </Sheet>
@@ -66,12 +54,7 @@ export default function Header() {
             <span className="font-bold text-xl font-headline text-primary">AVA Shop</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link href="/" className="text-foreground/70 transition-colors hover:text-primary">
-              Todos los Productos
-            </Link>
-            <Link href="/#categories" className="text-foreground/70 transition-colors hover:text-primary">
-              Categorías
-            </Link>
+            {/* Navigation links removed */}
           </nav>
         </div>
 

@@ -59,11 +59,6 @@ export default function UserNav() {
             <LogIn className="mr-2 h-5 w-5" /> Iniciar Sesión
           </Link>
         </Button>
-        <Button variant="outline" asChild>
-          <Link href="/signup">
-            <UserPlus className="mr-2 h-5 w-5" /> Regístrate
-          </Link>
-        </Button>
       </>
     );
   }

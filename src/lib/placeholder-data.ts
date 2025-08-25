@@ -18,23 +18,23 @@ const now = new Date();
 
 // --- Image Paths based on screenshot ---
 const iphone16ProMaxImages = [
-  '/images/iphone_16_promax/121032-iphone-16-pro-max.png',
-  '/images/iphone_16_promax/iphone-16-pro-max-desert-titanium-pdp-image-position-2-en-ww.png',
+  'https://placehold.co/600x400.png',
+  'https://placehold.co/600x400.png',
 ];
 
 const iphone16ProImages = [
-    '/images/iphone%2016%20pro/16pro.png',
-    '/images/iphone%2016%20pro/iphone-16pro.png',
-    '/images/iphone%2016%20pro/iPhone-16-Pro-Max-PNG-File-thumb.png',
+    'https://placehold.co/600x400.png',
+    'https://placehold.co/600x400.png',
+    'https://placehold.co/600x400.png',
 ];
 
 const iphone16Images = [
-  '/images/iphone16/images.png',
-  '/images/iphone16/iphone-16-plus-colors.png'
+  'https://placehold.co/600x400.png',
+  'https://placehold.co/600x400.png'
 ];
 
 const airpodsPro2Images = [
-    '/images/airpods%20pro%202/sp880-airpods-Pro-2nd-gen.png'
+    'https://placehold.co/600x400.png'
 ];
 
 
@@ -77,7 +77,7 @@ export const products: Product[] = [
     name: 'iPhone 13 128GB (Nuevo)',
     description: 'Un excelente iPhone 13 con 128GB de almacenamiento. Condición: Nuevo.',
     price: 2030000,
-    imageUrls: ['/images/iphone_13/iPhone-13-PNG-Pic.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 15, rating: 4.5, reviewsCount: 80,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB' }, createdAt: now, updatedAt: now,
   },
@@ -86,7 +86,7 @@ export const products: Product[] = [
     name: 'iPhone 14 128GB (Nuevo)',
     description: 'Un excelente iPhone 14 con 128GB de almacenamiento. Condición: Nuevo.',
     price: 2400000,
-    imageUrls: ['/images/iphone_14/iPhone%2014.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 18, rating: 4.6, reviewsCount: 90,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB' }, createdAt: now, updatedAt: now,
   },
@@ -95,7 +95,7 @@ export const products: Product[] = [
     name: 'iPhone 15 128GB SF (Nuevo)',
     description: 'Un excelente iPhone 15 con 128GB de almacenamiento, sellado de fábrica. Condición: Nuevo.',
     price: 2790000,
-    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 20, rating: 4.7, reviewsCount: 100,
     details: { Condición: 'Nuevo', Almacenamiento: '128GB', Variante: 'SF (Sellado Fábrica)' }, createdAt: now, updatedAt: now,
   },
@@ -104,7 +104,7 @@ export const products: Product[] = [
     name: 'iPhone 15 256GB SF (Nuevo)',
     description: 'Un excelente iPhone 15 con 256GB de almacenamiento, sellado de fábrica. Condición: Nuevo.',
     price: 3300000,
-    imageUrls: ['/images/iphone%2015/650383081fa16-apple%20iphone%2015.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 22, rating: 4.7, reviewsCount: 110,
     details: { Condición: 'Nuevo', Almacenamiento: '256GB', Variante: 'SF (Sellado Fábrica)' }, createdAt: now, updatedAt: now,
   },
@@ -151,7 +151,7 @@ export const products: Product[] = [
     name: 'iPhone 13 128GB (Usado)',
     description: 'iPhone 13 con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 1260000,
-    imageUrls: ['/images/iphone_13/iphone-13-pink-select-2021-1.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 8, rating: 4.2, reviewsCount: 50,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -160,7 +160,7 @@ export const products: Product[] = [
     name: 'iPhone 13 Pro Max 128GB (Usado)',
     description: 'iPhone 13 Pro Max con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 1990000,
-    imageUrls: ['/images/iphone%2013%20promax/02-iphone-13-pro-max-128gb-plateado-side.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 5, rating: 4.4, reviewsCount: 60,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -169,7 +169,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Plus 128GB (Usado)',
     description: 'iPhone 15 Plus con 128GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 2550000,
-    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 7, rating: 4.5, reviewsCount: 40,
     details: { Condición: 'Usado', Almacenamiento: '128GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -178,7 +178,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro 256GB (Usado)',
     description: 'iPhone 15 Pro con 256GB de almacenamiento. Condición: Usado, Garantía 3 meses.',
     price: 2800000,
-    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 6, rating: 4.6, reviewsCount: 55,
     details: { Condición: 'Usado', Almacenamiento: '256GB', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -187,7 +187,7 @@ export const products: Product[] = [
     name: 'iPhone 15 Pro Max 256GB ES (Usado)',
     description: 'iPhone 15 Pro Max con 256GB, variante ES. Condición: Usado, Garantía 3 meses.',
     price: 3340000,
-    imageUrls: ['/images/iphone%2015/iphone_15_hero.png'],
+    imageUrls: ['https://placehold.co/600x400.png'],
     category: iphoneCategory, stock: 4, rating: 4.6, reviewsCount: 45,
     details: { Condición: 'Usado', Almacenamiento: '256GB', Variante: 'ES', Garantía: '3 meses' }, createdAt: now, updatedAt: now,
   },
@@ -332,6 +332,7 @@ export function getProductsByCategory(categorySlug: string): Product[] {
     
 
     
+
 
 
 

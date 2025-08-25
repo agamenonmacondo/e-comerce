@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
+import { toast, useToast } from '@/hooks/use-toast';
 import { Mail, Lock } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { auth } from '@/lib/firebase/firebaseConfig';
@@ -50,7 +50,6 @@ export default function LoginForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    form.control.disabled = true;
     try {
       await signInWithEmailAndPassword(auth, values.email, values.password);
       toast({
@@ -70,35 +69,33 @@ export default function LoginForm() {
         variant: 'destructive',
       });
     } finally {
-      form.control.disabled = false;
+      // form.formState.isSubmitting is automatically set to false by react-hook-form after onSubmit
     }
   }
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    try {
-      const result = await signInWithPopup(auth, provider);
-      const user = result.user;
-      toast({
-        title: "Inicio de Sesión con Google Exitoso",
-        description: `¡Bienvenido, ${user.displayName || user.email}!`,
-      });
-      router.push('/dashboard');
-    } catch (error: any) {
+ try {
+ await signInWithRedirect(auth, provider);
+ } catch (error: any) {
       console.error("Error during Google sign in:", error);
-      let errorMessage = "Ocurrió un error al iniciar sesión con Google.";
-      if (error.code === 'auth/account-exists-with-different-credential') {
+ let errorMessage = "Ocurrió un error al iniciar sesión con Google.";
+ if (error.code === 'auth/account-exists-with-different-credential') {
         errorMessage = "Ya existe una cuenta con este correo electrónico usando un método de inicio de sesión diferente.";
-      } else if (error.code === 'auth/popup-closed-by-user') {
-        errorMessage = "El proceso de inicio de sesión con Google fue cancelado.";
-        toast({ title: "Proceso Cancelado", description: errorMessage });
-        return;
+      } else if (error.code !== 'auth/redirect-cancelled-by-user') { // Handle general errors, ignore user cancellation
+ toast({ title: "Error de Inicio de Sesión con Google", description: errorMessage, variant: 'destructive' });
+ } else {
+ toast({ title: "Proceso Cancelado", description: "El proceso de inicio de sesión con Google fue cancelado." });
       }
-      toast({
-        title: "Error de Inicio de Sesión con Google",
-        description: errorMessage,
-        variant: 'destructive',
-      });
+
+      // Re-enable form if not redirecting
+      if (error.code !== 'auth/auth-domain-config-error' && error.code !== 'auth/operation-not-allowed' && error.code !== 'auth/unauthorized-domain') {
+         toast({
+           title: "Error de Inicio de Sesión con Google",
+           description: errorMessage,
+           variant: 'destructive',
+         });
+      }
     }
   };
 

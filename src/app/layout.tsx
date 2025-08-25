@@ -1,7 +1,20 @@
+
 import type {Metadata} from 'next';
+import { Inter, Source_Code_Pro } from 'next/font/google';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/layout/ThemeProvider';
+import { cn } from '@/lib/utils';
+
+const fontSans = Inter({
+  subsets: ['latin'],
+  variable: '--font-sans',
+});
+
+const fontMono = Source_Code_Pro({
+  subsets: ['latin'],
+  variable: '--font-mono',
+});
 
 export const metadata: Metadata = {
   title: 'AVA Shop',
@@ -15,10 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      {/* The <head> section with direct font links has been removed.
-          Next.js will generate the <head> based on the metadata object.
-          Fonts should be re-added using next/font if this fixes the issue. */}
-      <body className="font-body antialiased">
+      <body className={cn("font-body antialiased", fontSans.variable, fontMono.variable)}>
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

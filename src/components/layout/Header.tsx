@@ -1,6 +1,5 @@
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -29,13 +28,7 @@ export default function Header() {
                           href="/"
                           className="flex items-center gap-2 text-lg font-semibold -ml-2"
                       >
-                          <Image
-                              src="/images/AVALOGO/ava_logo.png"
-                              alt="AVA Shop Logo"
-                              width={28}
-                              height={28}
-                              className="h-7 w-7"
-                          />
+                          
                           <span className="font-bold text-xl font-headline text-primary">AVA Shop</span>
                       </Link>
                   </nav>
@@ -44,13 +37,7 @@ export default function Header() {
           </div>
           {/* Desktop Logo & Nav */}
           <Link href="/" className="mr-6 hidden md:flex items-center gap-2">
-            <Image
-                src="/images/AVALOGO/ava_logo.png"
-                alt="AVA Shop Logo"
-                width={32}
-                height={32}
-                className="h-8 w-8"
-            />
+            
             <span className="font-bold text-xl font-headline text-primary">AVA Shop</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">

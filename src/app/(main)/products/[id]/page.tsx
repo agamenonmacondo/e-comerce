@@ -3,7 +3,6 @@
 
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
-import { useParams } from 'next/navigation';
 import { getProductById, products as allProducts } from '@/lib/placeholder-data';
 import type { Product } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -16,19 +15,18 @@ import { CheckCircle, ChevronLeft, ChevronRight, Minus, Plus, ShoppingCart, Star
 import Link from 'next/link';
 import ProductList from '@/components/products/ProductList';
 import { formatColombianCurrency } from '@/lib/utils';
+import { useRouter } from 'next/navigation';
 
-
-export default function ProductDetailPage() {
-  const params = useParams();
+export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const { id } = params;
   const [product, setProduct] = useState<Product | null>(null);
   const [quantity, setQuantity] = useState(1);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
   const { toast } = useToast();
+  const router = useRouter();
 
   useEffect(() => {
     if (id) {
-      // TODO: Fetch product from Firestore in a real app
       const fetchedProduct = getProductById(Array.isArray(id) ? id[0] : id);
       setProduct(fetchedProduct || null);
       setCurrentImageIndex(0); 
@@ -43,7 +41,6 @@ export default function ProductDetailPage() {
     );
   }
 
-  // TODO: Fetch related products from Firestore
   const relatedProducts = allProducts.filter(p => p.category.id === product.category.id && p.id !== product.id).slice(0, 4);
 
   const handleQuantityChange = (amount: number) => {
@@ -51,16 +48,12 @@ export default function ProductDetailPage() {
   };
 
   const handleAddToCart = () => {
-    // TODO: Implement actual add to cart logic (e.g., update state/context or call a server action)
+    console.log(`Simulando añadir ${quantity} de ${product.name} al carrito.`);
     toast({
-      title: `¡${product.name} añadido al carrito!`,
-      description: `Cantidad: ${quantity}`,
-      action: (
-        <Button variant="outline" size="sm" asChild>
-          <Link href="/cart">Ver Carrito</Link>
-        </Button>
-      ),
+        title: "Producto Añadido",
+        description: `${quantity} x ${product.name} se ha añadido a tu carrito.`,
     });
+    // Removed router.push('/cart') to ensure stability first.
   };
 
   const nextImage = () => {
@@ -147,7 +140,7 @@ export default function ProductDetailPage() {
 
         <Card className="shadow-lg">
           <CardHeader>
-            <Link href={`/#categories`} className="text-sm text-primary hover:underline mb-1">{product.category.name}</Link>
+            <Link href={`/#products`} className="text-sm text-primary hover:underline mb-1">{product.category.name}</Link>
             <CardTitle className="text-3xl lg:text-4xl font-bold font-headline">{product.name}</CardTitle>
             {product.rating && (
               <div className="flex items-center gap-2 mt-2">
@@ -234,4 +227,3 @@ export default function ProductDetailPage() {
     </div>
   );
 }
-

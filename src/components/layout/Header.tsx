@@ -10,14 +10,14 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 // Simple SVG Logo for AVA
 const AvaLogo = ({ className }: { className?: string }) => (
     <svg 
-      viewBox="0 0 100 100" 
+      viewBox="0 0 60 60" 
       fill="none" 
       xmlns="http://www.w3.org/2000/svg" 
       className={className}
     >
-        <path d="M20 80L35 20L50 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
-        <path d="M50 80L65 20L80 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
-        <path d="M30 60H70" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/>
+        <path d="M0 60L15 0L30 60" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" strokeLinecap="round"/>
+        <path d="M30 60L45 0L60 60" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" strokeLinecap="round"/>
+        <path d="M10 40H50" stroke="currentColor" strokeWidth="7" strokeLinecap="round"/>
     </svg>
 );
 

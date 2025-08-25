@@ -125,6 +125,10 @@ export default function CheckoutPage() {
     }
   }
 
+  const handleBoldClose = () => {
+    setBoldButtonData(null); // This will re-render the original payment buttons
+  };
+
   const isPaymentProcessing = isBoldLoading || isCoinbaseLoading;
 
   return (
@@ -205,7 +209,7 @@ export default function CheckoutPage() {
               ) : (
                 <div className="w-full">
                   <p className="text-sm text-center mb-2 text-muted-foreground">Haz clic en el botón de Bold para continuar.</p>
-                  <BoldButton {...boldButtonData} />
+                  <BoldButton {...boldButtonData} onClose={handleBoldClose} />
                 </div>
               )}
               <p className="text-xs text-muted-foreground text-center w-full pt-2">

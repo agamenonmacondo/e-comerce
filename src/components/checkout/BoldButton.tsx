@@ -1,3 +1,4 @@
+
 'use client';
 import React, { useEffect, useRef } from 'react';
 
@@ -12,6 +13,7 @@ interface BoldButtonProps {
   description: string;
   customerData: string; // JSON string
   billingAddress: string; // JSON string
+  onClose: () => void; // Callback to reset the state in the parent
 }
 
 const BoldButton: React.FC<BoldButtonProps> = (props) => {
@@ -19,6 +21,14 @@ const BoldButton: React.FC<BoldButtonProps> = (props) => {
   const BOLD_SCRIPT_URL = 'https://checkout.bold.co/library/boldPaymentButton.js';
 
   useEffect(() => {
+    const handleBoldClose = () => {
+      console.log('Bold checkout closed.');
+      props.onClose();
+    };
+
+    // Add event listener to the window to catch the close event from Bold
+    window.addEventListener('bold.checkout.closed', handleBoldClose);
+
     const container = containerRef.current;
     if (!container) return;
 
@@ -54,6 +64,14 @@ const BoldButton: React.FC<BoldButtonProps> = (props) => {
     boldLibraryScript.src = BOLD_SCRIPT_URL;
     boldLibraryScript.async = true;
     document.head.appendChild(boldLibraryScript);
+
+    // Cleanup listener on component unmount
+    return () => {
+        window.removeEventListener('bold.checkout.closed', handleBoldClose);
+        if (boldLibraryScript) {
+            boldLibraryScript.remove();
+        }
+    };
 
   }, [props]); // Re-run this logic whenever the payment data changes.
 

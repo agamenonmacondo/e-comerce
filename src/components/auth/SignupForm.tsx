@@ -18,7 +18,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Mail, Lock, User } from 'lucide-react';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { auth } from '@/lib/firebase/firebaseConfig';
-import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithRedirect } from 'firebase/auth';
+import { createUserWithEmailAndPassword, updateProfile, GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { useRouter } from 'next/navigation';
 import { Separator } from '../ui/separator';
 
@@ -57,7 +57,6 @@ export default function SignupForm() {
   });
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
-    form.formState.isSubmitting = true;
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, values.email, values.password);
       if (userCredential.user) {
@@ -83,17 +82,14 @@ export default function SignupForm() {
         description: errorMessage,
         variant: 'destructive',
       });
-    } finally {
-      form.formState.isSubmitting = false;
     }
   }
 
   const handleGoogleSignIn = async () => {
     const provider = new GoogleAuthProvider();
-    // Use signInWithRedirect instead of signInWithPopup
     try {
-      await signInWithRedirect(auth, provider);
-      // The redirect will handle the rest, no need for result here
+      const result = await signInWithPopup(auth, provider);
+      const user = result.user;
       toast({
         title: "Registro/Inicio de Sesión con Google Exitoso",
         description: `¡Bienvenido, ${user.displayName || user.email}!`,
@@ -101,8 +97,10 @@ export default function SignupForm() {
       router.push('/dashboard');
     } catch (error: any) {
       console.error("Error during Google sign in:", error);
-      // Handle redirect-specific errors or general errors
-      let errorMessage = "Ocurrió un error durante la redirección de Google. Por favor, inténtalo de nuevo.";
+      let errorMessage = "Ocurrió un error al iniciar sesión con Google.";
+      if (error.code === 'auth/account-exists-with-different-credential') {
+        errorMessage = "Ya existe una cuenta con este correo electrónico usando un método de inicio de sesión diferente.";
+      } else if (error.code === 'auth/popup-closed-by-user') {
         errorMessage = "El proceso de inicio de sesión con Google fue cancelado.";
         toast({ title: "Proceso Cancelado", description: errorMessage });
         return;

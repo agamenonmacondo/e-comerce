@@ -9,9 +9,9 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 // Simple SVG Logo for AVA
 const AvaLogo = () => (
-    <svg width="40" height="40" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M20 80L35 20L50 80" stroke="currentColor" strokeWidth="10" strokeLinejoin="round" strokeLinecap="round"/>
-        <path d="M50 80L65 20L80 80" stroke="currentColor" strokeWidth="10" strokeLinejoin="round" strokeLinecap="round"/>
+    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
+        <path d="M20 80L35 20L50 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
+        <path d="M50 80L65 20L80 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
         <path d="M30 60H70" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/>
     </svg>
 );
@@ -39,14 +39,14 @@ export default function Header() {
                           className="flex items-center gap-2 text-lg font-semibold -ml-2"
                       >
                           <AvaLogo />
-                          <span className="font-bold text-xl font-headline text-primary">AVA Shop</span>
+                          <span className="font-bold text-xl font-headline">AVA Shop</span>
                       </Link>
                   </nav>
               </SheetContent>
             </Sheet>
           </div>
           {/* Desktop Logo & Nav */}
-          <Link href="/" className="mr-6 hidden md:flex items-center gap-2 text-primary">
+          <Link href="/" className="mr-6 hidden md:flex items-center gap-2">
             <AvaLogo />
             <span className="font-bold text-xl font-headline">AVA Shop</span>
           </Link>

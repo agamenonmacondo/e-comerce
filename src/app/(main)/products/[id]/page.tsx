@@ -53,7 +53,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
         title: "Producto Añadido",
         description: `${quantity} x ${product.name} se ha añadido a tu carrito.`,
     });
-    // Removed router.push('/cart') to ensure stability first.
+    router.push('/cart');
   };
 
   const nextImage = () => {

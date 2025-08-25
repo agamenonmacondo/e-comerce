@@ -1,26 +1,12 @@
 
 import Link from 'next/link';
+import Image from 'next/image';
 import { Menu, Search, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import UserNav from './UserNav';
 import { ThemeToggle } from './ThemeToggle';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-
-// Simple SVG Logo for AVA
-const AvaLogo = ({ className }: { className?: string }) => (
-    <svg 
-      viewBox="0 0 60 60" 
-      fill="none" 
-      xmlns="http://www.w3.org/2000/svg" 
-      className={className}
-    >
-        <path d="M0 60L15 0L30 60" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" strokeLinecap="round"/>
-        <path d="M30 60L45 0L60 60" stroke="currentColor" strokeWidth="8" strokeLinejoin="round" strokeLinecap="round"/>
-        <path d="M10 40H50" stroke="currentColor" strokeWidth="7" strokeLinecap="round"/>
-    </svg>
-);
-
 
 export default function Header() {
   return (
@@ -43,7 +29,7 @@ export default function Header() {
                           href="/"
                           className="flex items-center gap-2 text-lg font-semibold -ml-2"
                       >
-                          <AvaLogo className="h-8 w-8 text-primary" />
+                          <Image src="/images/logo.svg" alt="AVA Shop Logo" width={32} height={32} className="text-primary" />
                           <span className="font-bold text-xl font-headline">AVA Shop</span>
                       </Link>
                   </nav>
@@ -52,7 +38,7 @@ export default function Header() {
           </div>
           {/* Desktop Logo & Nav */}
           <Link href="/" className="mr-6 hidden md:flex items-center gap-2">
-            <AvaLogo className="h-8 w-8 text-primary" />
+            <Image src="/images/logo.svg" alt="AVA Shop Logo" width={32} height={32} className="text-primary" />
             <span className="font-bold text-xl font-headline">AVA Shop</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">

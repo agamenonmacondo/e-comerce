@@ -8,8 +8,13 @@ import { ThemeToggle } from './ThemeToggle';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 // Simple SVG Logo for AVA
-const AvaLogo = () => (
-    <svg viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary h-8 w-8">
+const AvaLogo = ({ className }: { className?: string }) => (
+    <svg 
+      viewBox="0 0 100 100" 
+      fill="none" 
+      xmlns="http://www.w3.org/2000/svg" 
+      className={className}
+    >
         <path d="M20 80L35 20L50 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
         <path d="M50 80L65 20L80 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
         <path d="M30 60H70" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/>
@@ -38,7 +43,7 @@ export default function Header() {
                           href="/"
                           className="flex items-center gap-2 text-lg font-semibold -ml-2"
                       >
-                          <AvaLogo />
+                          <AvaLogo className="h-8 w-8 text-primary" />
                           <span className="font-bold text-xl font-headline">AVA Shop</span>
                       </Link>
                   </nav>
@@ -47,7 +52,7 @@ export default function Header() {
           </div>
           {/* Desktop Logo & Nav */}
           <Link href="/" className="mr-6 hidden md:flex items-center gap-2">
-            <AvaLogo />
+            <AvaLogo className="h-8 w-8 text-primary" />
             <span className="font-bold text-xl font-headline">AVA Shop</span>
           </Link>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium">

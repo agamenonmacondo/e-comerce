@@ -9,7 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 
 // Simple SVG Logo for AVA
 const AvaLogo = () => (
-    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary">
+    <svg width="32" height="32" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-primary h-8 w-8">
         <path d="M20 80L35 20L50 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
         <path d="M50 80L65 20L80 80" stroke="currentColor" strokeWidth="12" strokeLinejoin="round" strokeLinecap="round"/>
         <path d="M30 60H70" stroke="currentColor" strokeWidth="10" strokeLinecap="round"/>
